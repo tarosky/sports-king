@@ -29,7 +29,7 @@
 	},
     "autoload": {
         "psr-4": {
-            "Tarosky\\Common": "./src"
+            "Tarosky\\Common\\": "./src"
         }
     },
     "config": {
