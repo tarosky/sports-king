@@ -9,6 +9,7 @@
 /.gitignore export-ignore
 /bin export-ignore
 /composer.lock export-ignore
+/phpstan.neon export-ignore
 /phpunit.xml.dist export-ignore
 /stylelint.config.js export-ignore
 /tests export-ignore
