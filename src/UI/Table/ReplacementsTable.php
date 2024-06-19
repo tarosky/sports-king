@@ -83,33 +83,31 @@ class ReplacementsTable extends \WP_List_Table {
 	 * @param object $item
 	 * @param string $column_name
 	 *
-	 * @return bool|int|string
+	 * @return string
 	 */
-	public function column_default($item, $column_name){
+	public function column_default( $item, $column_name ) {
 		$model = Replacements::instance();
-		switch($column_name){
+		switch ( $column_name ) {
 			case 'type':
-				return esc_html($item->label);
-				break;
+				return esc_html( $item->label );
 			case 'replaced':
 				$out = [];
-				foreach( ['orig', 'replaced'] as $p ){
-					$out[] = sprintf('<input class="regular-text sk-repl-%1$s" type="text" value="%2$s" />', esc_attr($p), esc_attr($item->{$p}));
+				foreach ( [ 'orig', 'replaced' ] as $p ) {
+					$out[] = sprintf( '<input class="regular-text sk-repl-%1$s" type="text" value="%2$s" />', esc_attr( $p ), esc_attr( $item->{$p} ) );
 					$out[] = ' → ';
 				}
-				array_pop($out);
-				$out = implode(' ', $out);
-				$out .= $this->row_actions([
+				array_pop( $out );
+				$out = implode( ' ', $out );
+				$out .= $this->row_actions( [
 					'save'   => sprintf( '<a href="#" class="save-repl" data-id="%s">保存</a>', $item->id ),
-				    'delete' => sprintf( '<a href="#" class="delete-repl" data-id="%s">削除</a>', $item->id ),
-				]);
+					'delete' => sprintf( '<a href="#" class="delete-repl" data-id="%s">削除</a>', $item->id ),
+				] );
 				return $out;
 			case 'updated':
-				return mysql2date(get_option('date_format').' '.get_option('time_format'), $item->updated);
-				break;
+				return mysql2date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $item->updated );
 			default:
 				// Do nothing.
-				break;
+				return '';
 		}
 	}
 

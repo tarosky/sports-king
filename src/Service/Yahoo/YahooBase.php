@@ -71,7 +71,7 @@ abstract class YahooBase extends Singleton {
 	 * @param string $old_status
 	 * @param \WP_Post $post
 	 *
-	 * @return mixed
+	 * @return void
 	 */
 	abstract public function transition_post_status($new_status, $old_status, $post);
 

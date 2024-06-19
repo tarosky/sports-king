@@ -299,7 +299,7 @@ class AdPositionManager extends Singleton {
 	public function metabox_cb( $post, $screen ) {
 		$terms = get_the_terms( $post, 'ad-position' );
 		$tags  = [];
-		if ( is_array( $terms ) && ! is_wp_error( $terms ) ) {
+		if ( $terms && ! is_wp_error( $terms ) ) {
 			foreach ( $terms as $term ) {
 				$tags[] = $term->name;
 			}

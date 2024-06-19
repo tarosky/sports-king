@@ -86,14 +86,14 @@ SQL;
 			SELECT COUNT(*) FROM {$this->table}
 			WHERE {$wheres}
 SQL;
-		if ( $this->get_var( $query ) ) {
+		$count = $this->get_var( $query );
+		if ( $count ) {
 			// Record exists. Update.
-
+			return (int) $count;
 		} else {
 			// Just add.
 			return $this->insert( $values );
 		}
-
 	}
 
 	/**

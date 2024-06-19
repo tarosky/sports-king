@@ -1,0 +1,16 @@
+name: Backlog Notification
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  notify:
+    uses: tarosky/workflows/.github/workflows/backlog.yml@main
+    with:
+      project: BASKETBALL_KING
+    secrets: inherit

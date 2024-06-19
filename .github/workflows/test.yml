@@ -1,0 +1,32 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+
+  phplint:
+    uses: tarosky/workflows/.github/workflows/phplint.yml@main
+    with:
+      version: 8.0
+
+  phpstan:
+    uses: tarosky/workflows/.github/workflows/phplint.yml@main
+    with:
+      version: 8.0
+      composer_command: analyze
+
+  short-open-tag:
+    uses: tarosky/workflows/.github/workflows/php-short-open-tag.yml@main
+
+  status-check:
+    name: Status Check
+    runs-on: ubuntu-latest
+    needs: [ short-open-tag, phplint, phpstan ]
+    steps:
+      - name: Check Status
+        run: echo "Status Check"

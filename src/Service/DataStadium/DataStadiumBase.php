@@ -3,9 +3,8 @@
 namespace Tarosky\Common\Service\DataStadium;
 
 
-use Tarosky\Common\Models\Matches;
+use Tarosky\BasketBallKing\Models\Matches;
 use Tarosky\Common\Models\Replacements;
-use Tarosky\Common\Pattern\Singleton;
 use Tarosky\Common\Models\TeamMaster;
 
 /**

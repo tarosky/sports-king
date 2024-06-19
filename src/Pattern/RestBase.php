@@ -37,7 +37,7 @@ abstract class RestBase extends Singleton {
 	 *
 	 * @param \WP_REST_Server $wp_rest_server
 	 *
-	 * @return mixed
+	 * @return void
 	 */
 	abstract public function rest_init( $wp_rest_server );
 
