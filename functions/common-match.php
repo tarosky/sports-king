@@ -20,7 +20,7 @@ function sk_stats_title() {
 	} else {
 		$abroad      = ( 'japan' === get_query_var( 'abroad' ) ) ? 0 : 1;
 		$league_id   = \Tarosky\BasketBallKing\Statics\Leagues::get_league_id( $abroad, get_query_var( 'league' ) );
-		$league      = \Tarosky\BasketBallKing\Master\LeagueMaster::label( $league_id );
+		$league      = \Tarosky\Common\Master\LeagueMaster::label( $league_id );
 		$extra_title = [];
 		switch ( get_query_var( 'stats' ) ) {
 			case 'player-result':
@@ -44,7 +44,7 @@ function sk_stats_title() {
 				break;
 		}
 		// todo: Bリーグで決めうちになっている
-		if ( ! \Tarosky\BasketBallKing\Master\LeagueMaster::is_abroad_league( get_query_var( 'league' ) ) ) {
+		if ( ! \Tarosky\Common\Master\LeagueMaster::is_abroad_league( get_query_var( 'league' ) ) ) {
 			array_unshift( $extra_title, 'Bリーグ' );
 		}
 		return implode( " {$sep} ", $extra_title );
@@ -70,11 +70,11 @@ function sk_match_title( $match ) {
 		$name = $league->name . ' ' . $name;
 	} else {
 		//リーグがない（カップ戦）
-		$name = \Tarosky\BasketBallKing\Master\LeagueMaster::label( $match->league_id );
+		$name = \Tarosky\Common\Master\LeagueMaster::label( $match->league_id );
 	}
 	$titles = [ $name, $versus ];
 	// todo: Bリーグで決めうちになっている
-	if ( ! \Tarosky\BasketBallKing\Master\LeagueMaster::is_abroad_league( $match->league_id ) ) {
+	if ( ! \Tarosky\Common\Master\LeagueMaster::is_abroad_league( $match->league_id ) ) {
 		array_unshift( $titles, 'Bリーグ' );
 	}
 	return implode( " {$sep} ", $titles );

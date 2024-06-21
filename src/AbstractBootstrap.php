@@ -77,11 +77,21 @@ abstract class AbstractBootstrap extends Singleton {
 	}
 
 	/**
+	 * ここで依存性を注入する
+	 *
+	 * @return void
+	 */
+	protected function inject_dependencies() {
+		// Do something here.
+	}
+
+	/**
 	 * Bootstrap constructor.
 	 *
 	 * @param array $settings 設定項目
 	 */
 	public function __construct( array $settings = [] ) {
+		$this->inject_dependencies();
 		$this->do_autoloads();
 
 		// コマンドを自動登録
