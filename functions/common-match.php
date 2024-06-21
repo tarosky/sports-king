@@ -12,14 +12,14 @@ function sk_stats_title() {
 	$sep      = apply_filters( 'document_title_separator', '-' );
 	$match_id = get_query_var( 'match_id' );
 	if ( $match_id ) {
-		$match = \Tarosky\BasketBallKing\Models\Matches::instance()->get_match_by_id( $match_id );
+		$match = \Tarosky\Common\Models\Matches::instance()->get_match_by_id( $match_id );
 		if ( ! $match ) {
 			return '試合詳細';
 		}
 		return sk_match_title( $match );
 	} else {
 		$abroad      = ( 'japan' === get_query_var( 'abroad' ) ) ? 0 : 1;
-		$league_id   = \Tarosky\BasketBallKing\Statics\Leagues::get_league_id( $abroad, get_query_var( 'league' ) );
+		$league_id   = \Tarosky\Common\Statics\Leagues::get_league_id( $abroad, get_query_var( 'league' ) );
 		$league      = \Tarosky\Common\Master\LeagueMaster::label( $league_id );
 		$extra_title = [];
 		switch ( get_query_var( 'stats' ) ) {
@@ -91,7 +91,7 @@ function sk_match_title( $match ) {
  * @return bool|string|void
  */
 function sk_stat_url( $type, $abroad, $league_id, $season = false, $occasion = '' ) {
-	$segment = \Tarosky\BasketBallKing\Statics\Leagues::get_url_segment( $abroad, $league_id );
+	$segment = \Tarosky\Common\Statics\Leagues::get_url_segment( $abroad, $league_id );
 	$segment = "/stats{$segment}{$type}";
 	if ( $season ) {
 		$segment = untrailingslashit( $segment ) . "/{$season}/";
@@ -102,3 +102,29 @@ function sk_stat_url( $type, $abroad, $league_id, $season = false, $occasion = '
 
 	return $segment ? home_url( $segment ) : false;
 }
+
+/**
+ * 日程結果のURLを返す
+ *
+ * @param int $id
+ *
+ * @return string
+ */
+function sk_match_url( $id ) {
+	return home_url( "/stats/match/{$id}.html" );
+}
+
+/**
+ * 今年のシーズン年を返す
+ *
+ * @return string
+ */
+function sk_current_season() {
+	$year = (int) date_i18n( 'Y' );
+	if ( 9 > date_i18n( 'n' ) ) {
+		$year--;
+	}
+	return $year;
+}
+
+

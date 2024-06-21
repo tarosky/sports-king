@@ -282,8 +282,16 @@ abstract class Model extends Singleton {
 
 	/**
 	 * Build hook
+	 *
+	 * @param array $args Arguments for overriding properties.
 	 */
-	public function build() {
+	public function build( $args = [] ) {
+		$args = wp_parse_args( $args, [
+			'name'    => '',
+		] );
+		if ( ! empty( $args['name'] ) ) {
+			$this->name = $args['name'];
+		}
 		add_action( 'admin_init', [ $this, 'build_hook' ] );
 
 	}

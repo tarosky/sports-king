@@ -3,7 +3,7 @@
 namespace Tarosky\Common\Service\DataStadium;
 
 
-use Tarosky\BasketBallKing\Models\Matches;
+use Tarosky\Common\Models\Matches;
 use Tarosky\Common\Models\Replacements;
 use Tarosky\Common\Models\TeamMaster;
 

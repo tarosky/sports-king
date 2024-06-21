@@ -3,10 +3,10 @@
 namespace Tarosky\Common\UI;
 
 
-use Tarosky\BasketBallKing\Models\MatchRelationships;
-use Tarosky\BasketBallKing\Statics\Leagues;
+use Tarosky\Common\Models\MatchRelationships;
 use Tarosky\Common\Models\ObjectRelationships;
 use Tarosky\Common\Pattern\Singleton;
+use Tarosky\Common\Statics\Leagues;
 use Tarosky\Common\Utility\Input;
 
 /**

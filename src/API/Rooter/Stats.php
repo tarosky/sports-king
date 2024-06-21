@@ -3,13 +3,13 @@
 namespace Tarosky\Common\API\Rooter;
 
 
-use Tarosky\BasketBallKing\Models\Matches;
-use Tarosky\BasketBallKing\Statics\Leagues;
 use Tarosky\Common\Master\LeagueMaster;
+use Tarosky\Common\Models\Matches;
 use Tarosky\Common\Models\Players;
 use Tarosky\Common\Models\Replacements;
 use Tarosky\Common\Models\TeamMaster;
 use Tarosky\Common\Pattern\RooterBase;
+use Tarosky\Common\Statics\Leagues;
 use Tarosky\Common\Utility\Input;
 
 /**
@@ -100,7 +100,7 @@ class Stats extends RooterBase {
                         }
 						if ( ! ( $season = $wp_query->get( 'season' ) ) ) {
 							// 期間が指定されていなかったら
-						    $season = bk_current_season();
+						    $season = sk_current_season();
 						}
 						if ( ! ( $occasion = $wp_query->get( 'occasion' ) ) ) {
 							// 期間が指定されていなかったら
@@ -149,7 +149,7 @@ class Stats extends RooterBase {
 				}
 				break;
 			case 'player-result':
-				if (! $league_id || ! ( $ranking = bk_get_player_result( $league_id ) ) || ! LeagueMaster::is_available( $league_id ) ) {
+				if (! $league_id || ! ( $ranking = sk_get_player_result( $league_id ) ) || ! LeagueMaster::is_available( $league_id ) ) {
 					$wp_query->set_404();
 					return;
 				}
@@ -160,11 +160,11 @@ class Stats extends RooterBase {
 				] );
 				break;
 			case 'rank':
-				if ( ! $league_id || ! ( $ranking = bk_get_ranking( $league_id ) ) || ! LeagueMaster::is_available( $league_id ) ) {
+				if ( ! $league_id || ! ( $ranking = sk_get_ranking( $league_id ) ) || ! LeagueMaster::is_available( $league_id ) ) {
 					$wp_query->set_404();
 					return;
                 }
-				$wc_ranking = bk_get_ranking( $league_id, '', true );
+				$wc_ranking = sk_get_ranking( $league_id, '', true );
 				$this->load_template( 'single', 'rank', [
 					'league_id'  => $league_id,
 					'abroad'     => $abroad,

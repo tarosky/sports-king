@@ -42,7 +42,7 @@ function sk_get_category_root( $post = null ) {
 		return null;
 	}
 	$terms     = get_the_category( $post->ID );
-	if ( ! $terms || is_wp_error( $terms ) ) {
+	if ( ! $terms ) {
 		return null;
 	}
 	$ancestors = null;
