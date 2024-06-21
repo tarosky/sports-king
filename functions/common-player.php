@@ -168,6 +168,31 @@ function sk_get_player_by_name ( $name ) {
 	return false;
 }
 
+
+/**
+ * プレイヤーをタグで取得する
+ *
+ * @param WP_Term $term Post tag.
+ * @return WP_Post|null
+ */
+function sk_get_player_by_tag( $term ) {
+	foreach ( get_posts([
+		'post_type'      => 'player',
+		'post_status'    => 'publish',
+		'posts_per_page' => 1,
+		'tax_query'      => [
+			[
+				'taxonomy' => 'post_tag',
+				'terms'    => $term->term_id,
+				'field'    => 'term_id',
+			],
+		],
+	]) as $post ) {
+		return $post;
+	}
+	return null;
+}
+
 /**
  * ダミーイメージを返す
  *
