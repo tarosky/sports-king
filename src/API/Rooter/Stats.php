@@ -1,6 +1,6 @@
 <?php
 
-namespace Tarosky\BasketBallKing\API\Rooter;
+namespace Tarosky\Common\API\Rooter;
 
 
 use Tarosky\BasketBallKing\Models\Matches;
