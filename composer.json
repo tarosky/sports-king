@@ -9,7 +9,7 @@
         ],
         "fix": [
 			"phpcbf --standard=phpcs.ruleset.xml $(find ./app -name '*.php')",
-            "phpcs --standard=phpcs.ruleset.xml $(find ./funcitons -name '*.php')"
+            "phpcbf --standard=phpcs.ruleset.xml $(find ./funcitons -name '*.php')"
 		],
         "analyze": "phpstan analyze --memory-limit=2G"
     },
@@ -36,7 +36,7 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.3.1",
-        "wp-coding-standards/wpcs": "^2.0",
+        "wp-coding-standards/wpcs": "^3.0",
 		"phpcompatibility/php-compatibility": "^9.3",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
         "phpstan/phpstan": "^1.11",
