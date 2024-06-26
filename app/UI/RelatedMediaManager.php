@@ -81,9 +81,7 @@ class RelatedMediaManager extends Singleton {
 	 * @param \WP_Post $post
 	 */
 	public function render_meta_box( \WP_Post $post ) {
-		wp_enqueue_script( 'related-media', get_template_directory_uri().'/assets/js/admin/related-media-helper.js', [
-			'jquery-ui-autocomplete', 'jquery-effects-highlight',
-		], sk_theme_version(), true );
+		wp_enqueue_script( 'related-media' );
 		wp_nonce_field( 'related_media', '_relatedmedianonce', false );
 		$media = self::get_media( $post->ID );
 		?>

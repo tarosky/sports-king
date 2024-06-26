@@ -1,0 +1,70 @@
+@-webkit-keyframes blink {
+  0% {
+    color: #000;
+  }
+  100% {
+    color: #f00;
+  }
+}
+@-moz-keyframes blink {
+  0% {
+    color: #000;
+  }
+  100% {
+    color: #f00;
+  }
+}
+@keyframes blink {
+  0% {
+    color: #000;
+  }
+  100% {
+    color: #f00;
+  }
+}
+
+.sk_delivery {
+  &__label {
+    display: block;
+    margin: 5px 0;
+    font-weight: bold;
+  }
+  &__flag {
+    display: none;
+    text-align: center;
+    .sk_delivery__ad + & {
+      display: block;
+      padding: 0.5em;
+      -webkit-animation: blink 1.5s ease-in-out infinite alternate;
+      -moz-animation: blink 1.5s ease-in-out infinite alternate;
+      animation: blink 1.5s ease-in-out infinite alternate;
+    }
+  }
+  &__ad {
+    position: relative;
+    opacity: .6;
+  }
+  &__notice {
+    color: #aaa;
+    font-size: 0.85em;
+  }
+  &__status{
+    z-index: 1;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 5px;
+    background: #aaa;
+    color: #fff;
+    &--active{
+      background: #e44a38;
+    }
+    & + .inside{
+      position: relative;
+      z-index: 2;
+    }
+  }
+
+}
+
+

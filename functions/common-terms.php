@@ -16,7 +16,7 @@
 function sk_get_term_ancestors( $term, $taxonomy = 'category', $include_myself = true ) {
 	$term = get_term( $term, $taxonomy );
 	if ( ! $term || is_wp_error( $term ) ) {
-		return [ ];
+		return [];
 	}
 	$terms = [ ];
 	if ( $include_myself ) {

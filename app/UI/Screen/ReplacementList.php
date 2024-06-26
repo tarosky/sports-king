@@ -162,7 +162,7 @@ class ReplacementList extends ScreenBase {
 	 */
 	public function enqueue_scripts( $page ) {
 		if ( false !== strpos($page, '_sk_replacements') ) {
-			wp_enqueue_script('sk-replacements-helper', get_template_directory_uri().'/assets/js/admin/replace-helper.js', ['jquery-effects-highlight'], sk_theme_version(), true);
+			wp_enqueue_script('sk-replacements-helper' );
 		}
 
 	}

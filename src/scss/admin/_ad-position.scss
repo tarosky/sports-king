@@ -1,0 +1,26 @@
+//
+// 広告ポジションのボックス
+//
+.adPosition{
+  &__info{
+    color: #444;
+  }
+  &__item{
+    width: 33%;
+    float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    &:nth-child(3n+1){
+      clear: left;
+    }
+  }
+  &__label {
+    font-weight: bold;
+  }
+  &__description {
+    color: #888;
+    font-size: 0.85em;
+  }
+}

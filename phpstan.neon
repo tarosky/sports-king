@@ -1,7 +1,7 @@
 parameters:
     level: 0
     paths:
-        - src
+        - app
         - functions
     scanFiles:
         - vendor/php-stubs/wordpress-stubs/wordpress-stubs.php

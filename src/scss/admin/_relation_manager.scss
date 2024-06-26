@@ -1,0 +1,211 @@
+.sk_relation {
+  margin: 10px 0;
+  padding-bottom: 10px;
+  border-bottom: 3px double #ddd;
+  &__block {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px 10px;
+  }
+  &__field {
+    width: 50%;
+    box-sizing: border-box;
+    padding: 0 10px;
+    float: left;
+  }
+  &__label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+  }
+}
+
+.sk_match{
+  margin: 10px 0;
+  padding: 10px;
+  border-bottom: 1px dashed #ddd;
+  border-top: 3px double #ddd;
+  &__title{
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  &__status{
+
+  }
+  &__type{
+    margin-left: 1em;
+  }
+  &__name{
+    display: inline-block;
+    padding: 3px 5px;
+    color: #000;
+    font-weight:bold;
+    background: #ddd;
+    border: 1px solid #aaa;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    margin-right: 20px;
+    a{
+      margin-left: 5px;
+    }
+    &--no{
+      display: inline-block;
+      padding: 3px 5px;
+      background: #888;
+      color: #fff;
+      border: 1px solid #666;
+      border-radius: 2px;
+    }
+  }
+}
+
+.sk-search{
+  &__paragraph{
+    margin: 1em 0;
+    padding: 1em;
+    border-top: 1px solid #ddd;
+    &:first-child{
+      border-top: none;
+    }
+  }
+  &__label{
+    &--block {
+      font-weight: bold;
+    }
+  }
+  &__small{
+    margin-left: 0.5em;
+    font-weight:normal;
+  }
+  &__result{
+    padding: 0;
+    margin: 1em 0 0;
+    border-top: 1px solid #ddd;
+  }
+  &__item{
+    list-style: none;
+    margin: 0;
+    padding: 10px 80px 10px 5px;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+    &:nth-child(even){
+      background: #f9f9f9;
+    }
+    &--title{
+      font-weight: bold;
+    }
+    &--loading{
+      color: #999;
+      text-align: center;
+      padding: 10px;
+    }
+  }
+  &__fix{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
+
+}
+
+.sk_featured_players{
+  &__lsit{
+    padding: 0;
+  }
+  &__item{
+    list-style: none;
+    margin: 0;
+    padding: 10px 30px;
+    position: relative;
+    &:nth-child(even) {
+      background: #f9f9f9;
+    }
+    &:first-child{
+      border-top: 1px solid #ddd;
+    }
+    border-bottom: 1px solid #ddd;
+    .close, .drag{
+      position: absolute;
+      margin-top: -12px;
+      &:link, &:visited{
+        color: #888;
+        text-decoration: none;
+      }
+      &:hover, &:active{
+        color: red;
+      }
+    }
+    .close{
+      right: 5px;
+      top: 50%;
+    }
+    .drag{
+      left: 5px;
+      top: 50%;
+      cursor: move;
+    }
+  }
+  &__name {
+    margin-right: 1em;
+  }
+  &__team {
+    color: #888;
+  }
+
+}
+
+
+.sk_related_media{
+  &__display{
+    margin-top: 10px;
+  }
+  &__image{
+    float: left;
+    margin-right: 1.5em;
+  }
+  &__title{
+    font-weight: bold;
+    margin-bottom: 0.5em;
+    font-size: 1.2em;
+  }
+  &__category{
+    color: #888;
+  }
+}
+
+// ぱんくず
+.sk_content-structure {
+
+	&-header {
+		font-size: 14px;
+		display: flex;
+		justify-content: start;
+		margin-bottom: 15px;
+		align-items: center;
+
+		h3,
+		p {
+			line-height: 1.1;
+			font-size: 1em;
+			margin: 0 15px 0 0;
+		}
+	}
+
+	&-body {
+		display: none;
+
+		&.is-open {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			gap: 15px;
+		}
+	}
+
+	label {
+		display: block;
+		font-weight: bold;
+		margin-bottom: 5px;
+	}
+
+}

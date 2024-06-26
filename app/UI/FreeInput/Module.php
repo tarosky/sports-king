@@ -103,10 +103,7 @@ abstract class Module extends Singleton {
 	 * 必要なスクリプトを読み込む
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script( 'meta-box', get_template_directory_uri() . '/assets/js/admin/media-box.js', [
-			'jquery-effects-highlight',
-			'jquery-ui-sortable',
-		] );
+		wp_enqueue_script( 'media-box' );
 	}
 
 	/**

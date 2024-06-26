@@ -41,7 +41,7 @@ class DeliveryManager extends Singleton {
 						'add_meta_box',
 					], $post_type, 'side', 'default' );
 					// JSも追加
-					wp_enqueue_script( 'sk-delivery-helper', get_template_directory_uri() . '/assets/js/admin/delivery-helper.js', [ 'jquery' ], sk_theme_version(), true );
+					wp_enqueue_script( 'sk-delivery-helper' );
 					wp_localize_script( 'sk-delivery-helper', 'SkDeliveryHelper', $this->get_fields($post_type) );
 				}
 			}, 9 );
@@ -143,13 +143,13 @@ class DeliveryManager extends Singleton {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param type $post_type
 	 * @return type
 	 */
 	protected function get_fields( $post_type ) {
 		$ret_fields = $this->fields;
-		
+
 		switch( $post_type ){
 			case 'bkapp':
 				foreach( $ret_fields as $key => $field ) {
@@ -165,13 +165,13 @@ class DeliveryManager extends Singleton {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param type $post
 	 * @return int
 	 */
 	protected function get_current_value( $post ) {
 		$ret_current_value = $this->get_status( $post );
-		
+
 		switch( get_post_type($post) ){
 			case 'bkapp':
 				$ret_current_value = 5;

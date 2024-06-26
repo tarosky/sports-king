@@ -94,7 +94,7 @@ class RecommendManager extends Singleton {
 			'order' => [
 				'date' => 'DESC',
 			],
-			'posts_per_page' => 1,			
+			'posts_per_page' => 1,
 		] ) ) );
 	}
 
@@ -104,7 +104,7 @@ class RecommendManager extends Singleton {
 	 * @param \WP_Post $post
 	 */
 	public function add_meta_box( \WP_Post $post ) {
-			wp_enqueue_script( 'sk-link-helper', get_template_directory_uri() . '/assets/js/admin/link-helper.js', [ 'jquery-ui-autocomplete', 'jquery-effects-highlight' ], sk_theme_version(), true );
+			wp_enqueue_script( 'sk-link-helper' );
 			$links = array_filter( (array) get_post_meta( $post->ID, '_recommend_links', true ), function($link){
 				return ! empty( $link );
 			} );
@@ -222,7 +222,7 @@ class RecommendManager extends Singleton {
 			<?php
 			wp_nonce_field( 'update_recommends_image', '_recommendimagesnonce', false );
 	}
-	
+
 	/**
 	 * 保存
 	 *
@@ -251,7 +251,7 @@ class RecommendManager extends Singleton {
 			}
 			update_post_meta( $post_id, '_recommend_links', $links );
 		}
-		
+
 		if ( $this->input->verify_nonce( 'update_recommends_image', '_recommendimagesnonce' ) ) {
 			$links    = [];
 			$urls     = (array) $this->input->post( 'sk_recommend_image_url' );

@@ -9,7 +9,7 @@
         "fix": [
 			"phpcbf --standard=phpcs.ruleset.xml $(find ./src -name '*.php')"
 		],
-        "analyze": "phpstan analyze --memory-limit=1G"
+        "analyze": "phpstan analyze --memory-limit=2G"
     },
     "license": "GPL-3.0-or-later",
     "authors": [
@@ -46,7 +46,7 @@
 	},
     "autoload": {
         "psr-4": {
-            "Tarosky\\Common\\": "./src"
+            "Tarosky\\Common\\": "./app"
         }
     },
     "config": {

@@ -1,0 +1,243 @@
+@charset "UTF-8";
+
+@import "soccer_field";
+@import "delivery_setting";
+@import "relation_manager";
+@import "token-input-facebook";
+@import "recommend_manager";
+@import "best_manager";
+@import "ad-position";
+@import "pickup-eidtor";
+@import "footer-media-eidtor";
+
+.regular-textarea {
+  box-sizing: border-box;
+  width: 100%;
+  resize: vertical;
+}
+
+.clearfix {
+  *zoom: 1;
+  &:before,
+  &:after {
+    content: " ";
+    display: table;
+  }
+
+  &:after {
+    clear: both;
+  }
+
+}
+
+.freeInput {
+  &__selector {
+
+  }
+  &__description {
+    margin-top: 0.5em;
+  }
+
+  &__label {
+    display: block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 25%;
+    float: left;
+    text-align: center;
+    position: relative;
+    border: 1px solid #ddd;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+    background: #f9f9f9;
+    padding: 15px 0;
+    &:hover {
+      background: #fffcc4;
+    }
+    input:checked {
+      position: relative;
+      z-index: 2;
+    }
+    &--text {
+      position: relative;
+      z-index: 3;
+    }
+    &--border {
+      display: none;
+      input:checked + & {
+        z-index: 1;
+        position: absolute;
+        content: "";
+        display: block;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        background: #fff;
+        border-bottom: 1px solid #fff;
+      }
+    }
+  }
+  &__html {
+    box-sizing: border-box;
+    width: 96% !important;
+    margin: 0 2% 10px;
+  }
+  &__tab {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+    .form-table {
+      th {
+        text-align: right;
+        vertical-align: middle;
+      }
+    }
+    textarea {
+      width: 90%;
+    }
+  }
+  &__table {
+    margin-top: 0;
+  }
+
+  &__row {
+    &--title {
+      font-weight: bold;
+    }
+  }
+
+  &__controller {
+    &--list {
+      padding: 10px 0;
+      text-align: center;
+      a {
+        display: block;
+        width: 80%;
+        margin: 0 auto;
+      }
+    }
+  }
+  &__notice {
+    margin-top: 0 !important;
+    padding: 1em;
+    font-size: 0.85em;
+    color: #888;
+    strong {
+      color: #000;
+    }
+  }
+  &__list {
+    padding: 0;
+    counter-reset: list-section;
+    li {
+      position: relative;
+      list-style: none;
+      margin: 0;
+      padding: 10px 40px;
+      border-top: 1px solid #ddd;
+      &:before {
+        counter-increment: list-section;
+        content: counters(list-section, '.');
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        font-size: 20px;
+        color: #aaa;
+        font-weight: bold;
+      }
+      &:nth-child(odd) {
+        background: #f9f9f9;
+      }
+      .close, .drag {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        &:link, &:visited {
+          color: #aaa;
+          text-decoration: none;
+        }
+        &:hover, &:active {
+          color: red;
+          text-decoration: none;
+        }
+      }
+      .close {
+        margin-top: -48px;
+      }
+      .drag {
+        margin-top: 16px;
+        cursor: move;
+      }
+      &.list-placeholder {
+        border: 3px dashed #ddd;
+        height: 50px;
+        &:before {
+          content: "";
+        }
+      }
+      &.ui-sortable-helper {
+        opacity: .6;
+      }
+    }
+  }
+  &__template {
+    display: none;
+  }
+}
+
+// 一覧画像系
+.widefat {
+  .column-thumbnail {
+    width: 40px;
+    img {
+      max-width: 100%;
+      width: auto;
+      height: auto;
+    }
+  }
+}
+
+// URLインプット
+.url-suggest {
+  &-status {
+    display: none;
+    color: #6dda00;
+    &.internal {
+      display: inline;
+    }
+  }
+}
+
+// 画像セレクター
+.image-selector {
+  &-place-holder {
+    display: none;
+    background: #f9f9f9;
+    border: 1px dotted #ddd;
+    &:first-child {
+      display: inline-block;
+    }
+  }
+
+  &-container {
+    display: inline-block;
+    margin-right: 10px;
+    position: relative;
+    &:hover {
+      .image-selector-delete {
+        display: inline-block;
+      }
+    }
+  }
+
+  .wp-core-ui &-delete {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) !important;
+  }
+
+}

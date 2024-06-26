@@ -28,11 +28,7 @@ trait RichInput {
 			// 外部サイト
 			$title = '';
 		}
-		$path = '/assets/js/admin/url-suggest.js';
-		wp_enqueue_script( 'url-selector', get_template_directory_uri() . $path, [ 'jquery-ui-autocomplete' ], filemtime( get_template_directory() . $path ), true );
-		wp_localize_script( 'url-selector', 'SkUrlSuggest', [
-			'endpoint' => admin_url( 'admin-ajax.php?action=sk_search_link' ),
-		] );
+		wp_enqueue_script( 'url-selector' );
 		?>
 		<input type="text" class="regular-text url-suggest" name="<?= esc_attr( $name ) ?>"
 		       id="<?= esc_attr( $name ) ?>"
@@ -52,8 +48,7 @@ trait RichInput {
 	 */
 	protected function image_input( $name, $value, $max = 1, $is_display = true ) {
 		wp_enqueue_media();
-		$path = '/assets/js/admin/image-selector.js';
-		wp_enqueue_script( 'image-selector', get_template_directory_uri() . $path, [ 'jquery' ], filemtime( get_template_directory() . $path ), true );
+		wp_enqueue_script( 'image-selector' );
 		$image_ids = array_filter( array_map( 'trim', explode( ',', $value ) ), function ( $id ) {
 			return is_numeric( $id );
 		} );
@@ -67,7 +62,7 @@ trait RichInput {
 		}
 		$width  = esc_attr(get_option( 'thumbnail_size_w', 150 ));
 		$height = esc_attr(get_option( 'thumbnail_size_h', 150 ));
-		
+
 		$html = <<<HTML
 <div class="image-selector">
 HTML;

@@ -1,0 +1,73 @@
+.pickup-editor{
+  &__form{
+    width: 50%;
+    float: left;
+    margin-bottom: 20px;
+  }
+
+  &__line{
+    min-height: 50px;
+    border-bottom: 1px solid #ddd;
+    padding: 20px;
+    &:first-child{
+      border-top: 1px solid #ddd;
+    }
+    &:first-child .moveUp,
+    &:last-child .moveDown{
+      display: none;
+    }
+  }
+
+  &__controller{
+    width: 100%;
+    text-align: center;
+  }
+
+  &__wrap{
+    display: inline-block;
+    width: 30%;
+    padding: 10px;
+    background: #fff;
+    border-radius: 3px;
+    margin: 0 10px 10px 0;
+    &:first-child .moveLeft,
+    &:last-child .moveRight{
+      display: none;
+    }
+	.image_input{
+		img{
+			max-width: 150px;
+		}
+	}
+    img{
+      max-width: 60px;
+      width: auto;
+      height: auto;
+      float: left;
+      margin-right: 10px;
+    }
+  }
+
+  &__label{
+    display: block;
+    margin: 5px 0;
+  }
+  &__input{
+    width: 100%;
+  }
+
+}
+
+.adds-editor{
+  &__wrap{
+    display: inline-block;
+    width: 48%;
+    padding: 10px 5px;
+    background: #fff;
+    border-radius: 3px;
+    margin: 10px 5px;
+    textarea{
+      width: 100%;
+    }
+  }
+}
