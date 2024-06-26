@@ -11,14 +11,17 @@ jobs:
 
   phplint:
     uses: tarosky/workflows/.github/workflows/phplint.yml@main
-    with:
-      version: 8.0
 
   phpstan:
-    uses: tarosky/workflows/.github/workflows/phplint.yml@main
+    uses: tarosky/workflows/.github/workflows/phpcs.yml@main
     with:
       version: 8.0
       composer_command: analyze
+
+  phpcs:
+    uses: tarosky/workflows/.github/workflows/phpcs.yml@main
+    with:
+      version: 8.0
 
   short-open-tag:
     uses: tarosky/workflows/.github/workflows/php-short-open-tag.yml@main
