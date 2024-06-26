@@ -137,6 +137,9 @@ abstract class AbstractBootstrap extends Singleton {
 		// 管理画面用CSS
 		list( $url, $hash ) = $this->asset_info( '/assets/css/admin/sports-admin.css' );
 		wp_register_style( 'sports-admin', $url, [], $hash, 'screen' );
+		// Relation Manager
+		list( $url, $hash ) = $this->asset_info( '/assets/js/admin/relation-helper.js' );
+		wp_register_script( 'sk-relation-helper', $url, [ 'jquery-tokeninput', 'jquery-ui-dialog' ], $hash, 'screen' );
 		// 画像セレクター
 		list( $url, $hash ) = $this->asset_info( '/assets/js/admin/image-selector.js' );
 		wp_register_script( 'image-selector', $url, [ 'jquery' ], $hash, true );

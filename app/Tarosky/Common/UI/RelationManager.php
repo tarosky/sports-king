@@ -118,7 +118,7 @@ class RelationManager extends Singleton {
 			return;
 		}
 		// スクリプトを読み込み
-		wp_enqueue_script( 'sk-relation-helper', get_template_directory_uri() . '/assets/js/admin/relation-helper.js', [ 'jquery-tokeninput', 'jquery-ui-dialog' ], sk_theme_version(), true );
+		wp_enqueue_script( 'sk-relation-helper' );
 		// nonceフィールド
 		wp_nonce_field( 'update_relation', '_newsrelationnonce', false );
 		// 関係する試合のフォーム
