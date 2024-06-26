@@ -55,7 +55,7 @@ function sk_players_team( $post = null ) {
  */
 function sk_get_player_news( $limit = 10, $post = null ) {
 	$post = get_post( $post );
-	return \Tarosky\Common\Models\ObjectRelationships::instance()->get_siblings( 'player', $post->ID, $limit, 0, ['logbook'] );
+	return \Tarosky\Common\Tarosky\Common\Models\ObjectRelationships::instance()->get_siblings( 'player', $post->ID, $limit, 0, ['logbook'] );
 }
 
 /**
@@ -156,7 +156,7 @@ function sk_position_label( $position ) {
  * @return bool|WP_Post
  */
 function sk_get_player_by_name ( $name ) {
-	$name = \Tarosky\Common\Models\Replacements::instance()->normalize( 'player', sk_hankaku($name) );
+	$name = \Tarosky\Common\Tarosky\Common\Models\Replacements::instance()->normalize( 'player', sk_hankaku($name) );
 	foreach ( get_posts([
 		'post_type' => 'player',
 		'post_status' => 'publish',

@@ -45,7 +45,7 @@ function sk_get_writer( $post = null ) {
  */
 function sk_related_players( $post = null ) {
 	$post = get_post( $post );
-	$players = \Tarosky\Common\Models\ObjectRelationships::instance()->get_relation( 'player', $post->ID, ['logbook'] );
+	$players = \Tarosky\Common\Tarosky\Common\Models\ObjectRelationships::instance()->get_relation( 'player', $post->ID, ['logbook'] );
 	return array_filter( $players, function( $player ) {
 		return 'publish' == $player->post_status;
 	} );
@@ -62,7 +62,7 @@ function sk_related_players( $post = null ) {
 function sk_related_teams( $post = null ) {
 	$post = get_post( $post );
 
-	return \Tarosky\Common\Models\ObjectRelationships::instance()->get_relation( 'team', $post->ID, ['logbook'] );
+	return \Tarosky\Common\Tarosky\Common\Models\ObjectRelationships::instance()->get_relation( 'team', $post->ID, ['logbook'] );
 }
 
 

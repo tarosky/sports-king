@@ -12,15 +12,15 @@ function sk_stats_title() {
 	$sep      = apply_filters( 'document_title_separator', '-' );
 	$match_id = get_query_var( 'match_id' );
 	if ( $match_id ) {
-		$match = \Tarosky\Common\Models\Matches::instance()->get_match_by_id( $match_id );
+		$match = \Tarosky\Common\Tarosky\Common\Models\Matches::instance()->get_match_by_id( $match_id );
 		if ( ! $match ) {
 			return '試合詳細';
 		}
 		return sk_match_title( $match );
 	} else {
 		$abroad      = ( 'japan' === get_query_var( 'abroad' ) ) ? 0 : 1;
-		$league_id   = \Tarosky\Common\Statics\Leagues::get_league_id( $abroad, get_query_var( 'league' ) );
-		$league      = \Tarosky\Common\Master\LeagueMaster::label( $league_id );
+		$league_id   = \Tarosky\Common\Tarosky\Common\Statics\Leagues::get_league_id( $abroad, get_query_var( 'league' ) );
+		$league      = \Tarosky\Common\Tarosky\Common\Master\LeagueMaster::label( $league_id );
 		$extra_title = [];
 		switch ( get_query_var( 'stats' ) ) {
 			case 'player-result':
@@ -44,7 +44,7 @@ function sk_stats_title() {
 				break;
 		}
 		// todo: Bリーグで決めうちになっている
-		if ( ! \Tarosky\Common\Master\LeagueMaster::is_abroad_league( get_query_var( 'league' ) ) ) {
+		if ( ! \Tarosky\Common\Tarosky\Common\Master\LeagueMaster::is_abroad_league( get_query_var( 'league' ) ) ) {
 			array_unshift( $extra_title, 'Bリーグ' );
 		}
 		return implode( " {$sep} ", $extra_title );
@@ -70,11 +70,11 @@ function sk_match_title( $match ) {
 		$name = $league->name . ' ' . $name;
 	} else {
 		//リーグがない（カップ戦）
-		$name = \Tarosky\Common\Master\LeagueMaster::label( $match->league_id );
+		$name = \Tarosky\Common\Tarosky\Common\Master\LeagueMaster::label( $match->league_id );
 	}
 	$titles = [ $name, $versus ];
 	// todo: Bリーグで決めうちになっている
-	if ( ! \Tarosky\Common\Master\LeagueMaster::is_abroad_league( $match->league_id ) ) {
+	if ( ! \Tarosky\Common\Tarosky\Common\Master\LeagueMaster::is_abroad_league( $match->league_id ) ) {
 		array_unshift( $titles, 'Bリーグ' );
 	}
 	return implode( " {$sep} ", $titles );
@@ -91,7 +91,7 @@ function sk_match_title( $match ) {
  * @return bool|string|void
  */
 function sk_stat_url( $type, $abroad, $league_id, $season = false, $occasion = '' ) {
-	$segment = \Tarosky\Common\Statics\Leagues::get_url_segment( $abroad, $league_id );
+	$segment = \Tarosky\Common\Tarosky\Common\Statics\Leagues::get_url_segment( $abroad, $league_id );
 	$segment = "/stats{$segment}{$type}";
 	if ( $season ) {
 		$segment = untrailingslashit( $segment ) . "/{$season}/";
