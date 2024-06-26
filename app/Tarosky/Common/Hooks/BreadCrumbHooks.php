@@ -1,12 +1,8 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Hooks;
+namespace Tarosky\Common\Hooks;
 
-use Tarosky\Common\Tarosky\Common\Pattern\HookPattern;
-use function Tarosky\Common\Hooks\add_action;
-use function Tarosky\Common\Hooks\add_filter;
-use function Tarosky\Common\Hooks\is_attachment;
-use function Tarosky\Common\Hooks\sk_get_main_league;
+use Tarosky\Common\Pattern\HookPattern;
 
 /**
  * パンクズリストの共通処理

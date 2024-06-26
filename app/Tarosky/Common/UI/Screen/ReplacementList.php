@@ -1,22 +1,11 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI\Screen;
+namespace Tarosky\Common\UI\Screen;
 
 
-use Tarosky\Common\Tarosky\Common\Models\Replacements;
-use Tarosky\Common\Tarosky\Common\UI\Table\ReplacementsTable;
-use Tarosky\Common\Tarosky\Common\Utility\Input;
-use function Tarosky\Common\UI\Screen\add_action;
-use function Tarosky\Common\UI\Screen\admin_url;
-use function Tarosky\Common\UI\Screen\current_user_can;
-use function Tarosky\Common\UI\Screen\esc_attr;
-use function Tarosky\Common\UI\Screen\esc_html;
-use function Tarosky\Common\UI\Screen\status_header;
-use function Tarosky\Common\UI\Screen\submit_button;
-use function Tarosky\Common\UI\Screen\wp_create_nonce;
-use function Tarosky\Common\UI\Screen\wp_enqueue_script;
-use function Tarosky\Common\UI\Screen\wp_send_json;
-use const Tarosky\Common\UI\Screen\DOING_AJAX;
+use Tarosky\Common\Models\Replacements;
+use Tarosky\Common\UI\Table\ReplacementsTable;
+use Tarosky\Common\Utility\Input;
 
 class ReplacementList extends ScreenBase {
 

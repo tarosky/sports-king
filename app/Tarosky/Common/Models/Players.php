@@ -1,18 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Models;
+namespace Tarosky\Common\Models;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\Model;
-use function Tarosky\Common\Models\apply_filters;
-use function Tarosky\Common\Models\get_post;
-use function Tarosky\Common\Models\get_post_meta;
-use function Tarosky\Common\Models\get_posts;
-use function Tarosky\Common\Models\get_term_by;
-use function Tarosky\Common\Models\get_terms;
-use function Tarosky\Common\Models\get_the_ID;
-use function Tarosky\Common\Models\has_term;
-use function Tarosky\Common\Models\is_wp_error;
+use Tarosky\Common\Pattern\Model;
 
 /**
  * 旧プレイヤーデータを扱う

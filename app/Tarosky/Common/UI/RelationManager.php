@@ -1,41 +1,13 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI;
+namespace Tarosky\Common\UI;
 
 
-use Tarosky\Common\Tarosky\Common\Models\MatchRelationships;
-use Tarosky\Common\Tarosky\Common\Models\ObjectRelationships;
-use Tarosky\Common\Tarosky\Common\Pattern\Singleton;
-use Tarosky\Common\Tarosky\Common\Statics\Leagues;
-use Tarosky\Common\Tarosky\Common\Utility\Input;
-use function Tarosky\Common\UI\add_action;
-use function Tarosky\Common\UI\add_meta_box;
-use function Tarosky\Common\UI\admin_url;
-use function Tarosky\Common\UI\date_i18n;
-use function Tarosky\Common\UI\esc_attr;
-use function Tarosky\Common\UI\esc_html;
-use function Tarosky\Common\UI\esc_url;
-use function Tarosky\Common\UI\get_current_screen;
-use function Tarosky\Common\UI\get_permalink;
-use function Tarosky\Common\UI\get_post;
-use function Tarosky\Common\UI\get_post_meta;
-use function Tarosky\Common\UI\get_queried_object;
-use function Tarosky\Common\UI\get_taxonomy;
-use function Tarosky\Common\UI\get_term_by;
-use function Tarosky\Common\UI\geT_term_link;
-use function Tarosky\Common\UI\get_the_title;
-use function Tarosky\Common\UI\is_singular;
-use function Tarosky\Common\UI\is_wp_error;
-use function Tarosky\Common\UI\selected;
-use function Tarosky\Common\UI\update_post_meta;
-use function Tarosky\Common\UI\wp_dropdown_categories;
-use function Tarosky\Common\UI\wp_enqueue_script;
-use function Tarosky\Common\UI\wp_is_post_autosave;
-use function Tarosky\Common\UI\wp_is_post_revision;
-use function Tarosky\Common\UI\wp_nonce_field;
-use function Tarosky\Common\UI\wp_parse_args;
-use function Tarosky\Common\UI\wp_send_json;
-use const Tarosky\Common\UI\DOING_AJAX;
+use Tarosky\Common\Models\MatchRelationships;
+use Tarosky\Common\Models\ObjectRelationships;
+use Tarosky\Common\Pattern\Singleton;
+use Tarosky\Common\Statics\Leagues;
+use Tarosky\Common\Utility\Input;
 
 /**
  * Class DeliveryManager

@@ -1,11 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Models;
+namespace Tarosky\Common\Models;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\Model;
-use function Tarosky\Common\Models\add_action;
-use function Tarosky\Common\Models\current_time;
+use Tarosky\Common\Pattern\Model;
 
 /**
  * 投稿と試合の関係を司るクラス
@@ -230,7 +228,7 @@ SQL;
             }
 		    $ab = ! empty( $row->abroad ) ? $row->abroad : 0 ;
             $l_id = ! empty( $row->league_id ) ? $row->league_id : 0 ;
-			$league = \Tarosky\Common\Tarosky\Common\Statics\Leagues::get_league($ab, $l_id);
+			$league = \Tarosky\Common\Statics\Leagues::get_league($ab, $l_id);
 			$sprintf[] = $league ? '['.$league['label'].']' : '' ;
             $sprintf[] = mysql2date( 'Y.m.d', $row->game_date ) ;
 			return [

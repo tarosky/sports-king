@@ -1,13 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Hooks;
+namespace Tarosky\Common\Hooks;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\HookPattern;
-use function Tarosky\Common\Hooks\add_action;
-use function Tarosky\Common\Hooks\apply_filters;
-use function Tarosky\Common\Hooks\get_queried_object;
-use function Tarosky\Common\Hooks\register_taxonomy;
+use Tarosky\Common\Pattern\HookPattern;
 
 /**
  * タクソノミー「リーグ」を登録する

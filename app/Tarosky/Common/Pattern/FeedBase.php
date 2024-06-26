@@ -1,15 +1,6 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Pattern;
-
-use function Tarosky\Common\Pattern\add_filter;
-use function Tarosky\Common\Pattern\apply_filters;
-use function Tarosky\Common\Pattern\current_time;
-use function Tarosky\Common\Pattern\get_bloginfo;
-use function Tarosky\Common\Pattern\get_post;
-use function Tarosky\Common\Pattern\get_post_meta;
-use function Tarosky\Common\Pattern\remove_filter;
-use function Tarosky\Common\Pattern\strip_shortcodes;
+namespace Tarosky\Common\Pattern;
 
 /**
  * フィードクラスの元になる抽象クラス

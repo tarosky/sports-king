@@ -1,16 +1,8 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common;
+namespace Tarosky\Common;
 
-use Tarosky\Common\Tarosky\Common\Pattern\Singleton;
-use function Tarosky\Common\add_action;
-use function Tarosky\Common\is_admin;
-use function Tarosky\Common\plugin_dir_url;
-use function Tarosky\Common\untrailingslashit;
-use function Tarosky\Common\wp_enqueue_style;
-use function Tarosky\Common\wp_localize_script;
-use function Tarosky\Common\wp_register_script;
-use function Tarosky\Common\wp_register_style;
+use Tarosky\Common\Pattern\Singleton;
 
 /**
  * ブートストラップファイル
@@ -119,7 +111,7 @@ abstract class AbstractBootstrap extends Singleton {
 						$class_name = 'Tarosky\\Common\\Commands\\' . $match[1];
 						if ( class_exists( $class_name ) ) {
 							$reflection = new \ReflectionClass( $class_name );
-							if ( ! $reflection->isAbstract() && $reflection->isSubclassOf( 'Tarosky\\Common\\Tarosky\\Common\\Command' ) ) {
+							if ( ! $reflection->isAbstract() && $reflection->isSubclassOf( 'Tarosky\\Common\\Command' ) ) {
 								/**
 								 * @var Command $class_name
 								 */

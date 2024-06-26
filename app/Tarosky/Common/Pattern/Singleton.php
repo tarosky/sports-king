@@ -1,6 +1,6 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Pattern;
+namespace Tarosky\Common\Pattern;
 
 /**
  * Singleton Class

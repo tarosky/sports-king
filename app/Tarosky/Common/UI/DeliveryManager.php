@@ -1,24 +1,10 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI;
+namespace Tarosky\Common\UI;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\Singleton;
-use Tarosky\Common\Tarosky\Common\Utility\Input;
-use Tarosky\Common\UI\type;
-use function Tarosky\Common\UI\add_action;
-use function Tarosky\Common\UI\checked;
-use function Tarosky\Common\UI\do_action;
-use function Tarosky\Common\UI\esc_attr;
-use function Tarosky\Common\UI\esc_html;
-use function Tarosky\Common\UI\get_post;
-use function Tarosky\Common\UI\get_post_meta;
-use function Tarosky\Common\UI\get_post_type;
-use function Tarosky\Common\UI\is_admin;
-use function Tarosky\Common\UI\update_post_meta;
-use function Tarosky\Common\UI\wp_is_post_autosave;
-use function Tarosky\Common\UI\wp_is_post_revision;
-use function Tarosky\Common\UI\wp_nonce_field;
+use Tarosky\Common\Pattern\Singleton;
+use Tarosky\Common\Utility\Input;
 
 /**
  * Class DeliveryManager

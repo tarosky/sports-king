@@ -1,8 +1,7 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Pattern;
-use Tarosky\Common\Tarosky\Common\Utility\Input;
-use function Tarosky\Common\Pattern\add_action;
+namespace Tarosky\Common\Pattern;
+use Tarosky\Common\Utility\Input;
 
 /**
  * REST APIのベースクラス

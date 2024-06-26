@@ -1,22 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI;
+namespace Tarosky\Common\UI;
 
-use Tarosky\Common\Tarosky\Common\Pattern\Singleton;
-use Tarosky\Common\Tarosky\Common\Utility\Input;
-use function Tarosky\Common\UI\add_action;
-use function Tarosky\Common\UI\admin_url;
-use function Tarosky\Common\UI\esc_attr;
-use function Tarosky\Common\UI\get_post_meta;
-use function Tarosky\Common\UI\get_posts;
-use function Tarosky\Common\UI\is_admin;
-use function Tarosky\Common\UI\update_post_meta;
-use function Tarosky\Common\UI\wp_enqueue_script;
-use function Tarosky\Common\UI\wp_is_post_autosave;
-use function Tarosky\Common\UI\wp_is_post_revision;
-use function Tarosky\Common\UI\wp_nonce_field;
-use function Tarosky\Common\UI\wp_send_json;
-use const Tarosky\Common\UI\DOING_AJAX;
+use Tarosky\Common\Pattern\Singleton;
+use Tarosky\Common\Utility\Input;
 
 /**
  * Recommend manager
@@ -86,7 +73,7 @@ class BestManager extends Singleton {
 					}
 				}
 			}
- *
+ * 
  */
 
 			$omit_title = '省略名無し';
@@ -113,7 +100,7 @@ class BestManager extends Singleton {
 	public function add_meta_box( \WP_Post $post ) {
 			wp_enqueue_script( 'sk-best-member-helper', get_template_directory_uri() . '/assets/js/admin/best-member-helper.js', [ 'jquery-ui-autocomplete', 'jquery-effects-highlight' ], sk_theme_version(), true );
 
-
+			
 			$args = [
 				'post_type'      => [ 'player' ],
 				'post_status'    => [ 'publish' ],
@@ -121,7 +108,7 @@ class BestManager extends Singleton {
 				'include' => -1,
 				'suppress_filters' => false,
 			];
-
+			
 			$includes = (array)get_post_meta( $post->ID, '_best_member_selects', true );
 			if( current($includes) ) {
 				$args['include'] = implode( ', ', $includes );
@@ -150,14 +137,14 @@ class BestManager extends Singleton {
 							}
 						}
 					}
- *
+ * 
  */
-
+					
 					$omit_title = '省略名無し';
 					if( $omit = sk_tscfp('_player_best_member_omit', $player) ) {
 						$omit_title = $omit;
 					}
-
+					
 					$best_list[] = [
 						'id' => $player->ID,
 						'image' => $image_tag,

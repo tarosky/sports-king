@@ -1,8 +1,7 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Utility;
-use Tarosky\Common\Tarosky\Common\Pattern\Singleton;
-use function Tarosky\Common\Utility\wp_verify_nonce;
+namespace Tarosky\Common\Utility;
+use Tarosky\Common\Pattern\Singleton;
 
 
 /**

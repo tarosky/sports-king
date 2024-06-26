@@ -1,18 +1,8 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Hooks;
+namespace Tarosky\Common\Hooks;
 
-use Tarosky\Common\Tarosky\Common\Pattern\HookPattern;
-use function Tarosky\Common\Hooks\add_action;
-use function Tarosky\Common\Hooks\add_filter;
-use function Tarosky\Common\Hooks\apply_filters;
-use function Tarosky\Common\Hooks\esc_attr;
-use function Tarosky\Common\Hooks\esc_html;
-use function Tarosky\Common\Hooks\get_post;
-use function Tarosky\Common\Hooks\get_the_terms;
-use function Tarosky\Common\Hooks\is_wp_error;
-use function Tarosky\Common\Hooks\register_post_type;
-use function Tarosky\Common\Hooks\selected;
+use Tarosky\Common\Pattern\HookPattern;
 
 /**
  * 投稿タイプ「選手」を登録するフック
@@ -159,7 +149,7 @@ class PlayerRegisterHooks extends HookPattern {
 		if ( ! $team_id ) {
 			return;
 		}
-		if ( \Tarosky\Common\Tarosky\Common\Models\Players::instance()->is_national_team( $team_id ) ) {
+		if ( \Tarosky\Common\Models\Players::instance()->is_national_team( $team_id ) ) {
 			$meta_query = (array) $wp_query->get( 'meta_query' );
 			$meta_query = array_values( array_filter( $meta_query ) );
 			$wp_query->set( 'meta_query', array_merge( $meta_query, [

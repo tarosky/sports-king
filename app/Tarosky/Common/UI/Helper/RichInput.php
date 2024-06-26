@@ -1,16 +1,6 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI\Helper;
-
-use function Tarosky\Common\UI\Helper\esc_attr;
-use function Tarosky\Common\UI\Helper\esc_url;
-use function Tarosky\Common\UI\Helper\get_bloginfo;
-use function Tarosky\Common\UI\Helper\get_posts;
-use function Tarosky\Common\UI\Helper\get_the_title;
-use function Tarosky\Common\UI\Helper\url_to_postid;
-use function Tarosky\Common\UI\Helper\wp_enqueue_media;
-use function Tarosky\Common\UI\Helper\wp_enqueue_script;
-use function Tarosky\Common\UI\Helper\wp_get_attachment_image_src;
+namespace Tarosky\Common\UI\Helper;
 
 /**
  * リッチな入力エリアを追加するTrait

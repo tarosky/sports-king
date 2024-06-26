@@ -1,12 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Pattern;
+namespace Tarosky\Common\Pattern;
 
 
-use Tarosky\Common\Tarosky\Common\Utility\Input;
-use function Tarosky\Common\Pattern\add_action;
-use function Tarosky\Common\Pattern\is_wp_error;
-use function Tarosky\Common\Pattern\wp_send_json;
+use Tarosky\Common\Utility\Input;
 
 /**
  * Ajaxユーティリティ

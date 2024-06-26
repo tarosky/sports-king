@@ -1,15 +1,11 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI;
+namespace Tarosky\Common\UI;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\Singleton;
-use Tarosky\Common\Tarosky\Common\UI\Helper\RichInput;
-use Tarosky\Common\Tarosky\Common\Utility\Input;
-use function Tarosky\Common\UI\add_action;
-use function Tarosky\Common\UI\update_term_meta;
-use function Tarosky\Common\UI\wp_editor;
-use function Tarosky\Common\UI\wp_nonce_field;
+use Tarosky\Common\Pattern\Singleton;
+use Tarosky\Common\UI\Helper\RichInput;
+use Tarosky\Common\Utility\Input;
 
 /**
  * 媒体カテゴリーを司る

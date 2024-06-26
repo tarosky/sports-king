@@ -1,11 +1,8 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\API\Ajax;
+namespace Tarosky\Common\API\Ajax;
 
-use Tarosky\Common\Tarosky\Common\Pattern\AjaxBase;
-use function Tarosky\Common\API\Ajax\get_post_type_object;
-use function Tarosky\Common\API\Ajax\get_the_category;
-use function Tarosky\Common\API\Ajax\get_the_permalink;
+use Tarosky\Common\Pattern\AjaxBase;
 
 /**
  * Link search endpoint

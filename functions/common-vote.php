@@ -145,7 +145,7 @@ function sk_vote_result( $post = null ) {
 
 	$return = [];
 	if( $choices = sk_vote_selection( $post ) ) {
-		$results = \Tarosky\Common\Tarosky\Common\Models\VoteResults::instance()->get_scores( $post->ID );
+		$results = \Tarosky\Common\Models\VoteResults::instance()->get_scores( $post->ID );
 
 		foreach ( $results as $result ) {
 			$return [0][] = [
@@ -156,7 +156,7 @@ function sk_vote_result( $post = null ) {
 			];
 		}
 	} else {
-		$results = \Tarosky\Common\Tarosky\Common\Models\VoteResults::instance()->get_scores( $post->ID, true );
+		$results = \Tarosky\Common\Models\VoteResults::instance()->get_scores( $post->ID, true );
 		$vote_list = sk_vote_list( $post );
 
 		$search_list = [];
@@ -208,7 +208,7 @@ function sk_vote_result( $post = null ) {
  * @return string
  */
 function sk_vote_attribute_label( $key ) {
-	$labels = \Tarosky\Common\Tarosky\Common\Models\VoteResults::instance()->additional_keys;
+	$labels = \Tarosky\Common\Models\VoteResults::instance()->additional_keys;
 	return isset( $labels[ $key ] ) ? $labels[ $key ] : '属性';
 }
 
@@ -221,7 +221,7 @@ function sk_vote_attribute_label( $key ) {
  */
 function sk_vote_attributes( $post = null ) {
 	$post = get_post( $post );
-	return \Tarosky\Common\Tarosky\Common\Models\VoteResults::instance()->get_attributes( $post->ID );
+	return \Tarosky\Common\Models\VoteResults::instance()->get_attributes( $post->ID );
 }
 
 /**

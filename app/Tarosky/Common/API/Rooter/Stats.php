@@ -1,24 +1,16 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\API\Rooter;
+namespace Tarosky\Common\API\Rooter;
 
 
-use Tarosky\Common\Tarosky\Common\Master\LeagueMaster;
-use Tarosky\Common\Tarosky\Common\Models\Matches;
-use Tarosky\Common\Tarosky\Common\Models\Players;
-use Tarosky\Common\Tarosky\Common\Models\Replacements;
-use Tarosky\Common\Tarosky\Common\Models\TeamMaster;
-use Tarosky\Common\Tarosky\Common\Pattern\RooterBase;
-use Tarosky\Common\Tarosky\Common\Statics\Leagues;
-use Tarosky\Common\Tarosky\Common\Utility\Input;
-use function Tarosky\Common\API\Rooter\add_action;
-use function Tarosky\Common\API\Rooter\get_permalink;
-use function Tarosky\Common\API\Rooter\get_posts;
-use function Tarosky\Common\API\Rooter\get_queried_object;
-use function Tarosky\Common\API\Rooter\get_query_var;
-use function Tarosky\Common\API\Rooter\get_term_by;
-use function Tarosky\Common\API\Rooter\home_url;
-use function Tarosky\Common\API\Rooter\wp_redirect;
+use Tarosky\Common\Master\LeagueMaster;
+use Tarosky\Common\Models\Matches;
+use Tarosky\Common\Models\Players;
+use Tarosky\Common\Models\Replacements;
+use Tarosky\Common\Models\TeamMaster;
+use Tarosky\Common\Pattern\RooterBase;
+use Tarosky\Common\Statics\Leagues;
+use Tarosky\Common\Utility\Input;
 
 /**
  * 統計情報を表示する

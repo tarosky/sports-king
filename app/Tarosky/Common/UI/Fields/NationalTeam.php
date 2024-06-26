@@ -1,14 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI\Fields;
+namespace Tarosky\Common\UI\Fields;
 
 
 use Tarosky\TSCF\UI\Fields\Select;
-use function Tarosky\Common\UI\Fields\get_posts;
-use function Tarosky\Common\UI\Fields\get_term_by;
-use function Tarosky\Common\UI\Fields\get_terms;
-use function Tarosky\Common\UI\Fields\get_the_title;
-use function Tarosky\Common\UI\Fields\is_wp_error;
 
 
 /**

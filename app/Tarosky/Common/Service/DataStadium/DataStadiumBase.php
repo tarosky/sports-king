@@ -1,15 +1,11 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Service\DataStadium;
+namespace Tarosky\Common\Service\DataStadium;
 
 
-use Tarosky\Common\Tarosky\Common\Models\Matches;
-use Tarosky\Common\Tarosky\Common\Models\Replacements;
-use Tarosky\Common\Tarosky\Common\Models\TeamMaster;
-use function Tarosky\Common\Service\DataStadium\current_time;
-use function Tarosky\Common\Service\DataStadium\date_i18n;
-use function Tarosky\Common\Service\DataStadium\is_wp_error;
-use function Tarosky\Common\Service\DataStadium\untrailingslashit;
+use Tarosky\Common\Models\Matches;
+use Tarosky\Common\Models\Replacements;
+use Tarosky\Common\Models\TeamMaster;
 
 /**
  * DataStadiumの接続インターフェース

@@ -1,29 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI;
+namespace Tarosky\Common\UI;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\Singleton;
-use function Tarosky\Common\UI\add_action;
-use function Tarosky\Common\UI\add_filter;
-use function Tarosky\Common\UI\apply_filters;
-use function Tarosky\Common\UI\checked;
-use function Tarosky\Common\UI\esc_attr;
-use function Tarosky\Common\UI\esc_html;
-use function Tarosky\Common\UI\get_current_screen;
-use function Tarosky\Common\UI\get_post_meta;
-use function Tarosky\Common\UI\get_posts;
-use function Tarosky\Common\UI\get_term;
-use function Tarosky\Common\UI\get_term_by;
-use function Tarosky\Common\UI\get_terms;
-use function Tarosky\Common\UI\get_the_terms;
-use function Tarosky\Common\UI\is_singular;
-use function Tarosky\Common\UI\is_wp_error;
-use function Tarosky\Common\UI\mysql2date;
-use function Tarosky\Common\UI\register_post_type;
-use function Tarosky\Common\UI\register_taxonomy;
-use function Tarosky\Common\UI\wp_insert_term;
-use function Tarosky\Common\UI\wp_update_term;
+use Tarosky\Common\Pattern\Singleton;
 
 /**
  * 広告ポジションを司るクラス

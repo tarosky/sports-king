@@ -1,6 +1,6 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI\Fields;
+namespace Tarosky\Common\UI\Fields;
 
 
 use Tarosky\TSCF\UI\Fields\Select;

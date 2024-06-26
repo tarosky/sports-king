@@ -1,6 +1,6 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common;
+namespace Tarosky\Common;
 
 /**
  * Abstract Command

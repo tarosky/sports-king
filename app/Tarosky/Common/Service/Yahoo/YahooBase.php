@@ -1,19 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Service\Yahoo;
+namespace Tarosky\Common\Service\Yahoo;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\Singleton;
-use function Tarosky\Common\Service\Yahoo\add_action;
-use function Tarosky\Common\Service\Yahoo\get_option;
-use function Tarosky\Common\Service\Yahoo\get_post;
-use function Tarosky\Common\Service\Yahoo\get_post_meta;
-use function Tarosky\Common\Service\Yahoo\get_post_thumbnail_id;
-use function Tarosky\Common\Service\Yahoo\has_post_thumbnail;
-use function Tarosky\Common\Service\Yahoo\mysql2date;
-use function Tarosky\Common\Service\Yahoo\strip_shortcodes;
-use function Tarosky\Common\Service\Yahoo\update_post_meta;
-use function Tarosky\Common\Service\Yahoo\wp_get_attachment_image_src;
+use Tarosky\Common\Pattern\Singleton;
 
 /**
  * Yahooの接続情報を司るクラス

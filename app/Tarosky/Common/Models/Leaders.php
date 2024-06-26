@@ -1,9 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Models;
+namespace Tarosky\Common\Models;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\Model;
+use Tarosky\Common\Pattern\Model;
 
 class Leaders extends Model {
 

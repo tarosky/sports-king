@@ -1,13 +1,10 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Pattern;
+namespace Tarosky\Common\Pattern;
 
 
-use Tarosky\Common\Tarosky\Common\Utility\Input;
-use Tarosky\Common\Tarosky\Common\Utility\StringHelper;
-use function Tarosky\Common\Pattern\add_action;
-use function Tarosky\Common\Pattern\add_filter;
-use function Tarosky\Common\Pattern\do_action;
+use Tarosky\Common\Utility\Input;
+use Tarosky\Common\Utility\StringHelper;
 
 /**
  * 既存のWP_Queryをハイジャックする

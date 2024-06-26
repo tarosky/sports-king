@@ -1,14 +1,6 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI\FreeInput;
-
-use function Tarosky\Common\UI\FreeInput\add_action;
-use function Tarosky\Common\UI\FreeInput\add_meta_box;
-use function Tarosky\Common\UI\FreeInput\get_post_meta;
-use function Tarosky\Common\UI\FreeInput\is_admin;
-use function Tarosky\Common\UI\FreeInput\update_post_meta;
-use function Tarosky\Common\UI\FreeInput\wp_is_post_autosave;
-use function Tarosky\Common\UI\FreeInput\wp_is_post_revision;
+namespace Tarosky\Common\UI\FreeInput;
 
 /**
  * 投稿タイプに表示する

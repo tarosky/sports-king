@@ -1,12 +1,10 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\API\Rest;
+namespace Tarosky\Common\API\Rest;
 
 
-use Tarosky\Common\Tarosky\Common\Models\VoteResults;
-use Tarosky\Common\Tarosky\Common\Pattern\RestBase;
-use function Tarosky\Common\API\Rest\get_post;
-use function Tarosky\Common\API\Rest\register_rest_route;
+use Tarosky\Common\Models\VoteResults;
+use Tarosky\Common\Pattern\RestBase;
 
 
 /**

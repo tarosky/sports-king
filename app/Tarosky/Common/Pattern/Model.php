@@ -1,14 +1,8 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Pattern;
+namespace Tarosky\Common\Pattern;
 
-use Tarosky\Common\Tarosky\Common\Utility\StringHelper;
-use function Tarosky\Common\Pattern\add_action;
-use function Tarosky\Common\Pattern\current_time;
-use function Tarosky\Common\Pattern\dbDelta;
-use function Tarosky\Common\Pattern\get_option;
-use function Tarosky\Common\Pattern\update_option;
-use function Tarosky\Common\Pattern\wp_parse_args;
+use Tarosky\Common\Utility\StringHelper;
 
 /**
  * Model base

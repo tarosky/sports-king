@@ -1,17 +1,11 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI\FreeInput;
+namespace Tarosky\Common\UI\FreeInput;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\Singleton;
-use Tarosky\Common\Tarosky\Common\UI\Helper\RichInput;
-use Tarosky\Common\Tarosky\Common\Utility\Input;
-use function Tarosky\Common\UI\FreeInput\checked;
-use function Tarosky\Common\UI\FreeInput\esc_attr;
-use function Tarosky\Common\UI\FreeInput\esc_html;
-use function Tarosky\Common\UI\FreeInput\esc_textarea;
-use function Tarosky\Common\UI\FreeInput\wp_enqueue_script;
-use function Tarosky\Common\UI\FreeInput\wp_nonce_field;
+use Tarosky\Common\Pattern\Singleton;
+use Tarosky\Common\Utility\Input;
+use Tarosky\Common\UI\Helper\RichInput;
 
 /**
  * Class FreeInputModule

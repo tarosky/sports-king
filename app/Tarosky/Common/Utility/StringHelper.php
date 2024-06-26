@@ -1,7 +1,7 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Utility;
-use Tarosky\Common\Tarosky\Common\Pattern\Singleton;
+namespace Tarosky\Common\Utility;
+use Tarosky\Common\Pattern\Singleton;
 
 
 /**

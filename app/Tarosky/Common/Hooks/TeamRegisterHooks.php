@@ -1,14 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Hooks;
+namespace Tarosky\Common\Hooks;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\HookPattern;
-use function Tarosky\Common\Hooks\add_action;
-use function Tarosky\Common\Hooks\add_filter;
-use function Tarosky\Common\Hooks\apply_filters;
-use function Tarosky\Common\Hooks\get_post_type;
-use function Tarosky\Common\Hooks\register_post_type;
+use Tarosky\Common\Pattern\HookPattern;
 
 /**
  * 投稿タイプ「チーム」を登録するフック
@@ -102,7 +97,7 @@ class TeamRegisterHooks extends HookPattern {
 				printf(
 					'<a href="%s">%s</a>',
 					esc_url( admin_url( 'edit.php?post_type=player&team_id='.$post_id ) ),
-					number_format_i18n( \Tarosky\Common\Tarosky\Common\Models\Players::instance()->get_player_count( $post_id ) ) . '人'
+					number_format_i18n( \Tarosky\Common\Models\Players::instance()->get_player_count( $post_id ) ).'人'
 				);
 				break;
 			default:

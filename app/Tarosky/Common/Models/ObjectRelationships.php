@@ -1,11 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Models;
+namespace Tarosky\Common\Models;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\Model;
-use function Tarosky\Common\Models\add_action;
-use function Tarosky\Common\Models\current_time;
+use Tarosky\Common\Pattern\Model;
 
 /**
  * 投稿と投稿の関係を司るクラス

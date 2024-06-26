@@ -1,18 +1,11 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Models;
+namespace Tarosky\Common\Models;
 
 
-use Tarosky\Common\Tarosky\Common\Master\LeagueMaster;
-use Tarosky\Common\Tarosky\Common\Pattern\Model;
-use Tarosky\Common\Tarosky\Common\Statics\Leagues;
-use function Tarosky\Common\Models\current_time;
-use function Tarosky\Common\Models\date_i18n;
-use function Tarosky\Common\Models\get_post_meta;
-use function Tarosky\Common\Models\get_posts;
-use function Tarosky\Common\Models\get_term_meta;
-use function Tarosky\Common\Models\get_terms;
-use function Tarosky\Common\Models\mysql2date;
+use Tarosky\Common\Master\LeagueMaster;
+use Tarosky\Common\Pattern\Model;
+use Tarosky\Common\Statics\Leagues;
 
 /**
  * データを取得する

@@ -1,12 +1,6 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI\FreeInput;
-
-use function Tarosky\Common\UI\FreeInput\add_action;
-use function Tarosky\Common\UI\FreeInput\esc_html;
-use function Tarosky\Common\UI\FreeInput\get_term_meta;
-use function Tarosky\Common\UI\FreeInput\is_admin;
-use function Tarosky\Common\UI\FreeInput\update_term_meta;
+namespace Tarosky\Common\UI\FreeInput;
 
 /**
  * タクソノミーに表示する

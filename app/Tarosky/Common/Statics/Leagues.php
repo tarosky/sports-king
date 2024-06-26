@@ -1,10 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Statics;
+namespace Tarosky\Common\Statics;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\ConstantHolder;
-use function Tarosky\Common\Statics\date_i18n;
+use Tarosky\Common\Pattern\ConstantHolder;
 
 /**
  * リーグ情報の定数

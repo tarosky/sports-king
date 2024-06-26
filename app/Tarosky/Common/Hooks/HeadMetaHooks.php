@@ -1,22 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Hooks;
+namespace Tarosky\Common\Hooks;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\HookPattern;
-use function Tarosky\Common\Hooks\add_action;
-use function Tarosky\Common\Hooks\add_filter;
-use function Tarosky\Common\Hooks\apply_filters;
-use function Tarosky\Common\Hooks\get_query_var;
-use function Tarosky\Common\Hooks\get_term_link;
-use function Tarosky\Common\Hooks\is_404;
-use function Tarosky\Common\Hooks\is_attachment;
-use function Tarosky\Common\Hooks\is_category;
-use function Tarosky\Common\Hooks\is_page;
-use function Tarosky\Common\Hooks\is_search;
-use function Tarosky\Common\Hooks\is_tag;
-use function Tarosky\Common\Hooks\is_tax;
-use function Tarosky\Common\Hooks\remove_action;
+use Tarosky\Common\Pattern\HookPattern;
 
 /**
  * headのタグでデフォルトのものを外す

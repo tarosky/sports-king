@@ -1,15 +1,10 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\API;
+namespace Tarosky\Common\API;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\FeedBase;
-use Tarosky\Common\Tarosky\Common\Pattern\Singleton;
-use function Tarosky\Common\API\add_action;
-use function Tarosky\Common\API\add_filter;
-use function Tarosky\Common\API\apply_filters;
-use function Tarosky\Common\API\is_feed;
-use function Tarosky\Common\API\wp_die;
+use Tarosky\Common\Pattern\FeedBase;
+use Tarosky\Common\Pattern\Singleton;
 
 /**
  * フィードの配信に責任を持つクラス

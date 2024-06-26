@@ -1,21 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI;
+namespace Tarosky\Common\UI;
 
-use Tarosky\Common\Tarosky\Common\Pattern\Singleton;
-use Tarosky\Common\Tarosky\Common\Utility\Input;
-use function Tarosky\Common\UI\add_action;
-use function Tarosky\Common\UI\admin_url;
-use function Tarosky\Common\UI\checked;
-use function Tarosky\Common\UI\esc_attr;
-use function Tarosky\Common\UI\is_admin;
-use function Tarosky\Common\UI\update_post_meta;
-use function Tarosky\Common\UI\wp_enqueue_script;
-use function Tarosky\Common\UI\wp_is_post_autosave;
-use function Tarosky\Common\UI\wp_is_post_revision;
-use function Tarosky\Common\UI\wp_nonce_field;
-use function Tarosky\Common\UI\wp_send_json;
-use const Tarosky\Common\UI\DOING_AJAX;
+use Tarosky\Common\Pattern\Singleton;
+use Tarosky\Common\Utility\Input;
 
 /**
  * Recommend manager

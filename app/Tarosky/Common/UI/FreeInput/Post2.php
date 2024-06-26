@@ -1,6 +1,6 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI\FreeInput;
+namespace Tarosky\Common\UI\FreeInput;
 
 
 class Post2 extends Post {

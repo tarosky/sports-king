@@ -1,9 +1,9 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\Master;
+namespace Tarosky\Common\Master;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\MasterBase;
+use Tarosky\Common\Pattern\MasterBase;
 
 /**
  * Class LeagueMaster

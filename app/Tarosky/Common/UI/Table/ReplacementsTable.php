@@ -1,13 +1,10 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI\Table;
+namespace Tarosky\Common\UI\Table;
 
 
-use Tarosky\Common\Tarosky\Common\Models\Replacements;
-use Tarosky\Common\Tarosky\Common\Utility\Input;
-use function Tarosky\Common\UI\Table\admin_url;
-use function Tarosky\Common\UI\Table\esc_html;
-use function Tarosky\Common\UI\Table\mysql2date;
+use Tarosky\Common\Models\Replacements;
+use Tarosky\Common\Utility\Input;
 
 class ReplacementsTable extends \WP_List_Table {
 

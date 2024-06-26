@@ -1,14 +1,10 @@
 <?php
 
-namespace Tarosky\Common\Tarosky\Common\UI\Screen;
+namespace Tarosky\Common\UI\Screen;
 
 
-use Tarosky\Common\Tarosky\Common\Pattern\Singleton;
-use Tarosky\Common\Tarosky\Common\Utility\Input;
-use function Tarosky\Common\UI\Screen\add_action;
-use function Tarosky\Common\UI\Screen\add_menu_page;
-use function Tarosky\Common\UI\Screen\add_submenu_page;
-use function Tarosky\Common\UI\Screen\esc_html;
+use Tarosky\Common\Pattern\Singleton;
+use Tarosky\Common\Utility\Input;
 
 /**
  * 管理画面になにかを追加したい場合はこれを使う
