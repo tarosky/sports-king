@@ -8,7 +8,7 @@ use Tarosky\Common\Pattern\HookPattern;
 /**
  * パーマリンクの共通処理
  */
-class Permalinks extends HookPattern {{
+class Permalinks extends HookPattern {
 
 	/**
 	 * {@inheritDoc}
