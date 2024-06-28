@@ -29,7 +29,11 @@ class ObjectRelationships extends Model {
 	 * フックを登録
 	 */
 	protected function hooks() {
+		// 投稿が削除されたら、関連付けもすべて削除
 		add_action( 'delete_post', [ $this, 'delete_post' ] );
+		// クエリバーを追加
+		add_filter( 'query_vars', [ $this, 'add_query_vars' ] );
+		add_filter( 'posts_join', [ $this, 'posts_join' ], 10, 2 );
 	}
 
 	/**
@@ -191,5 +195,61 @@ SQL;
 		return array_map( function ( $row ) {
 			return new \WP_Post( $row );
 		}, call_user_func_array( [ $this, 'results' ], $placeholders ) );
+	}
+
+
+	/**
+	 * クエリバーを追加。
+	 *
+	 * @param string[] $vars クエリバー。
+	 * @return string[]
+	 */
+	public function add_query_vars( $vars ) {
+		$vars[] = 'related_with';
+		$vars[] = 'relation_type';
+		return $vars;
+	}
+
+	/**
+	 * クエリバーが指定されている場合は関連する記事をJOINする。
+	 *
+	 * @param string    $join  JOIN句。
+	 * @param \WP_Query $query クエリオブジェクト。
+	 *
+	 * @return string
+	 */
+	public function posts_join( $join, $query ) {
+		$with = $query->get( 'related_with' );
+		$type = $query->get( 'relation_type' );
+		if ( empty( $with ) || empty( $type ) ) {
+			// 関連が正しく指定されていなければ何もしない。
+			return $join;
+		}
+		// 複数指定を受け入れるため、配列に変換。
+		$with = array_map( function( $id ) {
+			return (int) trim( $id );
+		}, explode( ',', $with ) );
+		// WHERE句を生成
+		$wheres = [
+			$this->db->prepare( 'type=%s', $type ),
+		];
+		if ( 1 < count( $with ) ) {
+			// 複数指定されている場合はIN句を使う。
+			$wheres[] = sprintf( 'object_id IN (%s)', implode( ',', $with ) );
+		} else {
+			// 1つなのでIN句は使わない。
+			$wheres[] = $this->db->prepare( 'object_id = %d', $with[0] );
+		}
+		$wheres = implode( ' AND ', $wheres );
+		// JOIN句を生成。
+		$join .= <<<SQL
+			INNER JOIN (
+			    SELECT DISTINCT subject_id
+			    FROM {$this->table}
+			    WHERE {$wheres}
+			) AS rel_posts
+			ON rel_posts.subject_id = {$this->db->posts}.ID
+SQL;
+		return $join;
 	}
 }

@@ -293,7 +293,7 @@ abstract class Model extends Singleton {
 			$this->name = $args['name'];
 		}
 		add_action( 'admin_init', [ $this, 'build_hook' ] );
-
+		$this->hooks();
 	}
 
 	/**
