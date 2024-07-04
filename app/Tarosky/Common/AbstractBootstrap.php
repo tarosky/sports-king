@@ -19,7 +19,6 @@ abstract class AbstractBootstrap extends Singleton {
 	protected function autoloads() {
 		$store = [];
 		foreach ( [
-			'Tarosky\\Common\\UI\\FreeInput' => false,
 			'Tarosky\\Common\\API\\Ajax'     => false,
 			'Tarosky\\Common\\UI\\Screen'    => true,
 			'Tarosky\\Common\\API\\Rest'     => false,

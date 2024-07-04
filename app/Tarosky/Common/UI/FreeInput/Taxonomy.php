@@ -7,7 +7,7 @@ namespace Tarosky\Common\UI\FreeInput;
  *
  * @package Tarosky\Common\UI\FreeInput
  */
-abstract class Taxonomy extends Module {
+class Taxonomy extends Module {
 
 	protected $taxonomies = [];
 
@@ -18,17 +18,20 @@ abstract class Taxonomy extends Module {
 	 *
 	 * @return array
 	 */
-	public static function get_raw_data_from( $object ) {
-		return get_term_meta( $object->term_id, static::$name, true );
+	public function get_raw_data_from( $object ) {
+		return get_term_meta( $object->term_id, $this->name, true );
 	}
 
 	/**
 	 * コンストラクタ
+	 *
+	 * @param array{taxonomies: string[], name: string, title: string, description: string, nonce_key: string} $setting
 	 */
-	protected function __construct() {
+	protected function __construct( $setting = [] ) {
+		parent::__construct( $setting );
 		if ( is_admin() ) {
 			foreach ( $this->taxonomies as $taxonomy ) {
-				add_action( "{$taxonomy}_edit_form_fields", [ $this, 'edit_form_fields' ], 10, 2 );
+				add_action( "{$taxonomy}_edit_form_fields", [ $this, 'edit_form_fields' ], 100, 2 );
 			}
 			add_action( 'edited_terms', [ $this, 'save_term' ], 10, 2 );
 		}
@@ -41,10 +44,10 @@ abstract class Taxonomy extends Module {
 	 * @param string $taxonomy
 	 */
 	public function save_term( $term_id, $taxonomy ) {
-		if ( false === array_search( $taxonomy, $this->taxonomies ) || ! $this->verify()  ) {
+		if ( ! in_array( $taxonomy, $this->taxonomies, true ) || ! $this->verify()  ) {
 			return;
 		}
-		update_term_meta( $term_id, static::$name, $this->normalize() );
+		update_term_meta( $term_id, $this->name, $this->normalize() );
 	}
 
 	/**
@@ -58,7 +61,7 @@ abstract class Taxonomy extends Module {
 		?>
 		<tr>
 			<th>
-				<?= esc_html( $this->title ) ?>
+				<?php echo esc_html( $this->title ) ?>
 			</th>
 			<td class="freeInput__row">
 				<?php
@@ -70,5 +73,26 @@ abstract class Taxonomy extends Module {
 			</td>
 		</tr>
 		<?php
+	}
+
+	/**
+	 * フィールドの値を設定する
+	 *
+	 * @param array{taxonomies: string[], name: string, title: string, description: string, nonce_key: string} $setting
+	 * @return void
+	 */
+	protected function set_up( $setting ) {
+		$setting = wp_parse_args( $setting, [
+			'taxonomies'  => [],
+			'name'        => '',
+			'title'       => '',
+			'description' => '',
+			'nonce_key'   => '',
+		] );
+		$this->taxonomies = $setting['taxonomies'];
+		$this->name = $setting['name'];
+		$this->title = $setting['title'];
+		$this->description = $setting['description'];
+		$this->nonce_key = $setting['nonce_key'];
 	}
 }

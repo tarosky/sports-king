@@ -9,19 +9,26 @@ use Tarosky\Common\UI\Helper\RichInput;
 
 /**
  * Class FreeInputModule
+ *
+ * もとはシングルトン実装だったが、継承クラスが再現なく増えるので、次のような実装にした。
+ * 1. static::instance() だとシングルトン実装で1つのインスタンスを取得。
+ * 2. static::generate( $setting ) だと設定を元にしたインスタンスを生成
+ *
  * @package Tarosky\Common\UI
  * @property-read Input $input
  */
-abstract class Module extends Singleton {
+abstract class Module {
 
 	use RichInput;
+
+	private static $instances = [];
 
 	/**
 	 * Name of this field.
 	 *
 	 * @var string
 	 */
-	protected static $name = '';
+	protected $name = '';
 
 	/**
 	 * ノンスが保存されているキー
@@ -113,8 +120,8 @@ abstract class Module extends Singleton {
 	 *
 	 * @return array
 	 */
-	public static function get_data( $object ) {
-		$data = static::get_raw_data( $object );
+	public function get_data( $object ) {
+		$data = $this->get_raw_data( $object );
 		return $data[ $data['active'] ];
 	}
 
@@ -125,12 +132,12 @@ abstract class Module extends Singleton {
 	 *
 	 * @return mixed
 	 */
-	public static function get_raw_data( $object ) {
-		$data = static::get_raw_data_from( $object );
+	public function get_raw_data( $object ) {
+		$data = $this->get_raw_data_from( $object );
 		if ( $data ) {
 			return $data;
 		} else {
-			return static::get_default_value();
+			return $this->get_default_value();
 		}
 	}
 
@@ -141,7 +148,7 @@ abstract class Module extends Singleton {
 	 *
 	 * @return array
 	 */
-	public static function get_raw_data_from( $object ) {
+	public function get_raw_data_from( $object ) {
 		// Should override.
 		return [];
 	}
@@ -151,7 +158,7 @@ abstract class Module extends Singleton {
 	 *
 	 * @return array
 	 */
-	protected static function get_default_value() {
+	protected function get_default_value() {
 		return [
 			'active' => 'text',
 			'text'   => [
@@ -178,7 +185,7 @@ abstract class Module extends Singleton {
 	 * @return string
 	 */
 	protected function key( $name ) {
-		return esc_attr( static::$name . '_' . $name );
+		return esc_attr( $this->name . '_' . $name );
 	}
 
 	/**
@@ -188,7 +195,7 @@ abstract class Module extends Singleton {
 	 */
 	public function show_ui( $object ) {
 		wp_nonce_field( $this->nonce_action, $this->nonce_key, false, true );
-		$data = static::get_raw_data( $object );
+		$data = $this->get_raw_data( $object );
 		?>
 		<div class="freeInput__selector">
 			<?php
@@ -202,10 +209,10 @@ abstract class Module extends Singleton {
 			) :
 				?>
 				<label class="freeInput__label">
-					<input type="radio" name="<?= $this->key( 'active' ) ?>"
-					       value="<?= esc_attr( $key ) ?>" <?php checked( $key === $data['active'] ) ?> />
+					<input type="radio" name="<?php echo $this->key( 'active' ) ?>"
+					       value="<?php echo esc_attr( $key ) ?>" <?php checked( $key === $data['active'] ) ?> />
 					<span class="freeInput__label--border"></span>
-					<span class="freeInput__label--text"><?= esc_html( $label ) ?></span>
+					<span class="freeInput__label--text"><?php echo esc_html( $label ) ?></span>
 				</label>
 			<?php endforeach; ?>
 			<div style="clear:both;"></div>
@@ -216,15 +223,15 @@ abstract class Module extends Singleton {
 			<table class="form-table freeInput__table">
 				<tr>
 					<th>
-						<label for="<?= $this->key( 'text_title' ) ?>">テキスト</label>
+						<label for="<?php echo $this->key( 'text_title' ) ?>">テキスト</label>
 					</th>
 					<td>
-						<textarea rows="2" name="<?= $this->key( 'text_title' ) ?>"
-						          id="<?= $this->key( 'text_title' ) ?>"><?= esc_textarea( $data['text']['title'] ) ?></textarea>
+						<textarea rows="2" name="<?php echo $this->key( 'text_title' ) ?>"
+						          id="<?php echo $this->key( 'text_title' ) ?>"><?php echo esc_textarea( $data['text']['title'] ) ?></textarea>
 					</td>
 				</tr>
 				<tr>
-					<th><label<?= $this->key( 'text_url' ) ?>>URL</label></th>
+					<th><label<?php echo $this->key( 'text_url' ) ?>>URL</label></th>
 					<td>
 						<?php $this->url_input( $this->key( 'text_url' ), $data['text']['url'] ) ?>
 					</td>
@@ -236,27 +243,27 @@ abstract class Module extends Singleton {
 		<div class="freeInput__tab" data-type="image">
 			<table class="form-table freeInput__table">
 				<tr>
-					<th><label for="<?= $this->key( 'image_id' ) ?>">画像ファイル</label></th>
+					<th><label for="<?php echo $this->key( 'image_id' ) ?>">画像ファイル</label></th>
 					<td>
 						<?php $this->image_input( $this->key( 'image_id' ), $data['image']['id'], 1 ) ?>
 					</td>
 				</tr>
 				<tr>
-					<th><label for="<?= $this->key( 'image_url' ) ?>">URL</label></th>
+					<th><label for="<?php echo $this->key( 'image_url' ) ?>">URL</label></th>
 					<td>
 						<?php $this->url_input( $this->key( 'image_url' ), $data['image']['url'] ) ?>
 					</td>
 				</tr>
 				<tr>
 					<th>
-						<label for="<?= $this->key( 'image_caption' ) ?>">
+						<label for="<?php echo $this->key( 'image_caption' ) ?>">
 							キャプション
 							<small class="description">（任意）</small>
 						</label>
 					</th>
 					<td>
-						<textarea rows="2" name="<?= $this->key( 'image_caption' ) ?>"
-						          id="<?= $this->key( 'image_caption' ) ?>"><?= esc_textarea( $data['image']['caption'] ) ?></textarea>
+						<textarea rows="2" name="<?php echo $this->key( 'image_caption' ) ?>"
+						          id="<?php echo $this->key( 'image_caption' ) ?>"><?php echo esc_textarea( $data['image']['caption'] ) ?></textarea>
 					</td>
 				</tr>
 			</table>
@@ -274,8 +281,8 @@ abstract class Module extends Singleton {
 							<label>
 								<small>テキスト:</small>
 								<br/>
-								<input type="text" class="regular-text" name="<?= $this->key( 'list_text[]' ) ?>"
-								       value="<?= esc_attr( $list['text'] ) ?>"/>
+								<input type="text" class="regular-text" name="<?php echo $this->key( 'list_text[]' ) ?>"
+								       value="<?php echo esc_attr( $list['text'] ) ?>"/>
 							</label>
 						</p>
 						<p>
@@ -297,7 +304,7 @@ abstract class Module extends Singleton {
 						<label>
 							<small>テキスト:</small>
 							<br/>
-							<input type="text" class="regular-text" name="<?= $this->key( 'list_text[]' ) ?>"
+							<input type="text" class="regular-text" name="<?php echo $this->key( 'list_text[]' ) ?>"
 							       value=""/>
 						</label>
 					</p>
@@ -317,15 +324,28 @@ abstract class Module extends Singleton {
 
 		<div class="freeInput__tab" data-type="html">
 			<p class="freeInput__notice">
-				この項目にはHTMLを自由に入稿することができます。
+				この項目にはHTMLを自由に入稿できます。
 				外部サービスのエンベッドタグなどを目的にしていますので、
 				<strong>複雑なレイアウトのHTMLを入力しない</strong>よう注意してください。
 			</p>
 			<textarea class="freeInput__html" id="$data['html']['content']" rows="10"
-			          name="<?= $this->key( 'html_content' ) ?>"
-			          id="<?= $this->key( 'html_content' ) ?>"><?= esc_textarea( isset( $data['html']['content']) ? $data['html']['content'] :"" ) ?></textarea>
+			          name="<?php echo $this->key( 'html_content' ) ?>"
+			          id="<?php echo $this->key( 'html_content' ) ?>"><?php echo esc_textarea( isset( $data['html']['content']) ? $data['html']['content'] :"" ) ?></textarea>
 		</div><!-- // .freeInput__tab -->
 		<?php
+	}
+
+	/**
+	 * Singleton実装のフォールバック
+	 *
+	 * @return static
+	 */
+	public static function instance() {
+		$class_name = get_called_class();
+		if ( ! isset( self::$instances[ $class_name ] ) ) {
+			self::$instances[ $class_name ] = new $class_name();
+		}
+		return self::$instances[ $class_name ];
 	}
 
 	/**
@@ -346,4 +366,35 @@ abstract class Module extends Singleton {
 		}
 	}
 
+	/**
+	 * 設定を元にインスタンスを作成する
+	 *
+	 * @param array $setting 設定
+	 * @return static
+	 */
+	public static function generate( $setting ) {
+		$class_name = get_called_class();
+		$instance = new $class_name( $setting );
+		return $instance;
+	}
+
+	/**
+	 * コンストラクタ
+	 *
+	 * @param array $setting
+	 */
+	protected function __construct( $setting = [] ) {
+		if ( ! empty( $setting ) ) {
+			$this->set_up( $setting );
+		}
+	}
+
+	/**
+	 * 設定を自身のインスタンスに割り当てる
+	 *
+	 * @param array $setting 設定
+	 *
+	 * @return mixed
+	 */
+	abstract protected function set_up( $setting );
 }
