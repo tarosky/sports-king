@@ -30,9 +30,9 @@ function sk_breadcrumb( $args = [] ) {
 		'nav_class'  => 'breadcrumb-nav',
 		'list_class' => 'breadcrumb-nav__list',
 	] );
-	if ( function_exists( 'bcn_display' ) ) {
+	if ( function_exists( 'bcn_display_list' ) ) {
 		printf( '<nav class="%s">', esc_attr( $args['nav_class'] ) );
-		printf(  '<ol class="%s">', esc_attr( $args['list_class'] ) );
+		printf(  '<ol class="%s"  itemscope itemtype="http://schema.org/BreadcrumbList">', esc_attr( $args['list_class'] ) );
 		bcn_display_list();
 		echo '</ol>';
 		echo '</nav>';
