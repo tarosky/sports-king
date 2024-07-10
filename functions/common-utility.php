@@ -33,7 +33,22 @@ function sk_breadcrumb( $args = [] ) {
 	if ( function_exists( 'bcn_display_list' ) ) {
 		printf( '<nav class="%s">', esc_attr( $args['nav_class'] ) );
 		printf(  '<ol class="%s"  itemscope itemtype="http://schema.org/BreadcrumbList">', esc_attr( $args['list_class'] ) );
+		// リッチリザルトでエラーになるので、一部書き換える
+		// see: https://www.pitahex.com/breadcrumb-navxt-error/
+		ob_start();
 		bcn_display_list();
+		$bcn = ob_get_clean();
+		foreach ( [
+			'property="itemListElement"' => 'itemprop="itemListElement"',
+			'typeof="ListItem"'          => 'itemscope itemtype="https://schema.org/ListItem"',
+			' typeof="WebPage"'          => '',
+			'property="item"'            => 'itemprop="item"',
+			'property="name"'            => 'itemprop="name"',
+			'property="position"'        => 'itemprop="position"',
+		] as $search => $repl ) {
+			$bcn = str_replace( $search, $repl, $bcn );
+		}
+		echo $bcn;
 		echo '</ol>';
 		echo '</nav>';
 	}
