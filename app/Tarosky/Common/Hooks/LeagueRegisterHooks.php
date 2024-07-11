@@ -77,6 +77,10 @@ class LeagueRegisterHooks extends HookPattern {
 					if ( $tax->parent ) {
 						$wp_query->set( 'posts_per_page', - 1 );
 					}
+					// 公開日の古い順で表示
+					$wp_query->set( 'orderby', [
+						'date' => 'ASC',
+					] );
 					break;
 				case 'post':
 				default:
