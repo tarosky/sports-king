@@ -9,39 +9,57 @@ use Tarosky\Common\Utility\Input;
  * Recommend manager
  * @package Tarosky\Common\UI
  * @property-read Input $input
+ * @property-read string[] $yahoo_post_types Yahooの関連記事を表示する投稿タイプ
+ * @property-read string[] $post_type       「あわせて読みたい」を設定する投稿タイプ
+ * @property-read string[] $target           検索候補になる投稿タイプ
+ * @property-read string   $description     「合わせて読みたい」の表示箇所
  */
 class RecommendManager extends Singleton {
 
 	/**
-	 * @var array 表示する投稿タイプ
+	 * @var array 設定保持用
 	 */
-	protected $post_types = [ 'post', 'sk_blog', 'pnews', 'bk_best_member' ];
-	protected $yahoo_post_types = [ 'post', 'sk_blog', 'pnews' ];
+	protected $args = [];
 
 	/**
 	 * コンストラクタ
 	 *
-	 * @param array $settings
+	 * @param array{post_types: string[], yahoo_post_types: string[]} $settings
 	 */
 	protected function __construct( array $settings = [] ) {
-		if ( is_admin() ) {
-			// エディターの後に表示
-			add_action('add_meta_boxes', function($post_type){
-				if ( false !== array_search( $post_type, $this->post_types ) ) {
-					add_meta_box( 'sk-recommend-links', 'あわせて読みたい', [ $this, 'add_meta_box' ], $post_type, 'normal', 'high' );
-				}
-				if ( false !== array_search( $post_type, $this->yahoo_post_types ) ) {
-					add_meta_box( 'sk-recommend-image-links', 'yahoo関連画像リンク', [ $this, 'add_meta_box_ril' ], $post_type, 'normal', 'high' );
-				}
-			});
-			// Save
-			add_action( 'save_post', [ $this, 'save_post' ], 10, 2 );
-			if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-				add_action( 'wp_ajax_sk_link_search', [ $this, 'ajax' ] );
-				add_action( 'wp_ajax_sk_recommend_auto', [$this, 'ajax_recommend'] );
-				add_action( 'wp_ajax_sk_recommend_image_auto', [$this, 'ajax_recommend_image'] );
-			}
+		$this->args = wp_parse_args( $settings, [
+			'post_types'       => [ 'post' ],
+			'yahoo_post_types' => [ 'post' ],
+			'target'           => [ 'post' ],
+			'description'      => '',
+		] );
+		// エディターの後に表示
+		add_action('add_meta_boxes', [ $this, 'add_meta_boxes' ] );
+		// Save
+		add_action( 'save_post', [ $this, 'save_post' ], 10, 2 );
+		// Register Ajax Action.
+		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+			add_action( 'wp_ajax_sk_link_search', [ $this, 'ajax' ] );
+			add_action( 'wp_ajax_sk_recommend_auto', [$this, 'ajax_recommend'] );
+			add_action( 'wp_ajax_sk_recommend_image_auto', [$this, 'ajax_recommend_image'] );
 		}
+	}
+
+	/**
+	 * メタボックスを登録する
+	 *
+	 * @param string $post_type
+	 *
+	 * @return void
+	 */
+	public function add_meta_boxes( $post_type ) {
+		if ( in_array( $post_type, $this->post_types, true ) ) {
+			add_meta_box( 'sk-recommend-links', 'あわせて読みたい', [ $this, 'add_meta_box' ], $post_type, 'normal', 'high' );
+		}
+		if ( in_array( $post_type, $this->yahoo_post_types ) ) {
+			add_meta_box( 'sk-recommend-image-links', 'Yahoo関連画像リンク', [ $this, 'add_meta_box_ril' ], $post_type, 'normal', 'high' );
+		}
+
 	}
 
 	/**
@@ -49,7 +67,7 @@ class RecommendManager extends Singleton {
 	 */
 	public function ajax() {
 		$args = [
-			'post_type'      => [ 'post', 'sk_blog', 'bk_best_member' ],
+			'post_type'      => $this->target,
 			'post_status'    => [ 'publish', 'future' ],
 			's'              => $this->input->get( 'term' ),
 			'order'          => [
@@ -62,11 +80,16 @@ class RecommendManager extends Singleton {
 			return [
 				'value' => $post->post_title,
 				'label' => sprintf( '【%s】%s %s', get_post_type_object( $post->post_type )->labels->name, $post->post_title, mysql2date( 'Y.m.d', $post->post_date ) ),
-			    'url'  => get_permalink( $post ),
+			    'url'   => get_permalink( $post ),
 			];
 		}, get_posts( $args ) ) );
 	}
 
+	/**
+	 * 自動検索
+	 *
+	 * @return void
+	 */
 	public function ajax_recommend(){
 		wp_send_json( array_map( function ( $post ) {
 			return [
@@ -74,7 +97,7 @@ class RecommendManager extends Singleton {
 				'url'  => get_permalink($post),
 			];
 		}, get_posts( [
-			'post_type'      => [ 'post', 'bk_best_member' ],
+			'post_type'      => $this->target,
 			'post_status'    => [ 'publish', 'future' ],
 			'order' => [
 				'date' => 'DESC',
@@ -82,6 +105,12 @@ class RecommendManager extends Singleton {
 			'posts_per_page' => 5,
 		] ) ) );
 	}
+
+	/**
+	 * Yahoo用 自動検索
+	 *
+	 * @return void
+	 */
 	public function ajax_recommend_image(){
 		wp_send_json( array_map( function ( $post ) {
 			return [
@@ -89,7 +118,7 @@ class RecommendManager extends Singleton {
 				'url'  => get_permalink($post),
 			];
 		}, get_posts( [
-			'post_type'      => [ 'post' ],
+			'post_type'      => $this->target,
 			'post_status'    => [ 'publish', 'future' ],
 			'order' => [
 				'date' => 'DESC',
@@ -157,7 +186,12 @@ class RecommendManager extends Singleton {
 				<p class="sk_recommends__empty">
 					リンクが登録されていません。
 				</p>
-				<p class="sk_recommends__description">リンクはいくつでも追加できますが、5つまでしか表示されません。</p>
+				<?php
+				$description = $this->description;
+				if ( ! empty( $description ) ) :
+					?>
+					<p class="sk_recommends__description"><?php echo esc_html( $description ); ?></p>
+				<?php endif; ?>
 			</div>
 			<?php
 			wp_nonce_field( 'update_recommends', '_recommendsnonce', false );
@@ -169,7 +203,7 @@ class RecommendManager extends Singleton {
 	 * @param \WP_Post $post
 	 */
 	public function add_meta_box_ril( \WP_Post $post ) {
-			wp_enqueue_script( 'sk-link-helper', get_template_directory_uri() . '/assets/js/admin/link-helper.js', [ 'jquery-ui-autocomplete', 'jquery-effects-highlight' ], sk_theme_version(), true );
+			wp_enqueue_script( 'sk-link-helper' );
 			$links = array_filter( (array) get_post_meta( $post->ID, '_recommend_image_links', true ), function($link){
 				return ! empty( $link );
 			} );
@@ -274,16 +308,14 @@ class RecommendManager extends Singleton {
 	 *
 	 * @param string $name
 	 *
-	 * @return null|static
+	 * @return mixed
 	 */
 	public function __get( $name ) {
 		switch ( $name ) {
 			case 'input':
 				return Input::instance();
-				break;
 			default:
-				return null;
-				break;
+				return $this->args[ $name ] ?? null;
 		}
 	}
 
