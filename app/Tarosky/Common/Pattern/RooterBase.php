@@ -16,12 +16,12 @@ abstract class RooterBase extends Singleton {
 	/**
 	 * @var array
 	 */
-	protected $rewrite = [ ];
+	protected $rewrite = array();
 
 	/**
 	 * @var array
 	 */
-	protected $query_vars = [];
+	protected $query_vars = array();
 
 	/**
 	 * @var \WP_Query 現在のクエリオブジェクト
@@ -35,12 +35,12 @@ abstract class RooterBase extends Singleton {
 	 */
 	final protected function __construct( array $settings ) {
 		if ( $this->query_vars ) {
-			add_filter( 'query_vars', [ $this, 'filter_query_vars' ] );
+			add_filter( 'query_vars', array( $this, 'filter_query_vars' ) );
 		}
 		if ( $this->rewrite ) {
-			add_filter( 'rewrite_rules_array', [ $this, 'rewrite_rules_array' ] );
+			add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules_array' ) );
 		}
-		add_action( 'pre_get_posts', [ $this, 'pre_get_posts' ] );
+		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 		$this->on_construct();
 	}
 
@@ -98,10 +98,10 @@ abstract class RooterBase extends Singleton {
 	 * @param string $slug
 	 * @param array $args
 	 */
-	protected function load_template( $file, $slug = '', $args = [] ) {
-		add_filter( 'document_title_parts', [ $this, 'document_title_parts' ] );
+	protected function load_template( $file, $slug = '', $args = array() ) {
+		add_filter( 'document_title_parts', array( $this, 'document_title_parts' ) );
 		do_action( 'template_redirect' );
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		sk_get_template( $file, $slug, $args );
 		exit;
 	}

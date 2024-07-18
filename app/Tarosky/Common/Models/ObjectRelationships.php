@@ -17,23 +17,23 @@ class ObjectRelationships extends Model {
 
 	protected $updated_column = 'updated';
 
-	protected $default_placeholder = [
+	protected $default_placeholder = array(
 		'id'         => '%d',
 		'subject_id' => '%d',
 		'object_id'  => '%d',
 		'type'       => '%s',
 		'updated'    => '%s',
-	];
+	);
 
 	/**
 	 * フックを登録
 	 */
 	protected function hooks() {
 		// 投稿が削除されたら、関連付けもすべて削除
-		add_action( 'delete_post', [ $this, 'delete_post' ] );
+		add_action( 'delete_post', array( $this, 'delete_post' ) );
 		// クエリバーを追加
-		add_filter( 'query_vars', [ $this, 'add_query_vars' ] );
-		add_filter( 'posts_join', [ $this, 'posts_join' ], 10, 2 );
+		add_filter( 'query_vars', array( $this, 'add_query_vars' ) );
+		add_filter( 'posts_join', array( $this, 'posts_join' ), 10, 2 );
 	}
 
 	/**
@@ -66,10 +66,10 @@ SQL;
 	 * @param $post_id
 	 */
 	public function delete_post( $post_id ) {
-		foreach ( [ 'object_id', 'subject_id' ] as $column ) {
-			$this->delete( [
+		foreach ( array( 'object_id', 'subject_id' ) as $column ) {
+			$this->delete( array(
 				$column => $post_id,
-			] );
+			) );
 		}
 	}
 
@@ -83,10 +83,10 @@ SQL;
 	public function set_relation( $type, $subject_id, $object_ids ) {
 		$object_ids = (array) $object_ids;
 		// 全部削除
-		$this->delete( [
+		$this->delete( array(
 			'type'       => $type,
 			'subject_id' => $subject_id,
-		] );
+		) );
 		foreach ( $object_ids as $object_id ) {
 			$this->add_rel( $type, $subject_id, $object_id );
 		}
@@ -102,12 +102,12 @@ SQL;
 	 * @return int
 	 */
 	public function add_rel( $type, $subject_id, $object_id ) {
-		return (int) $this->insert( [
+		return (int) $this->insert( array(
 			'type'       => $type,
 			'subject_id' => $subject_id,
 			'object_id'  => $object_id,
 			'updated'    => current_time( 'mysql' ),
-		] );
+		) );
 	}
 
 	/**
@@ -118,7 +118,7 @@ SQL;
 	 *
 	 * @return array
 	 */
-	public function get_relation( $type, $post_id, $exclude_types = [] ) {
+	public function get_relation( $type, $post_id, $exclude_types = array() ) {
 		$query = <<<SQL
 			SELECT p.* FROM {$this->table} AS r
 			INNER JOIN {$this->db->posts} AS p
@@ -127,12 +127,12 @@ SQL;
 			  AND p.post_type = %s
 			  AND r.subject_id = %d
 SQL;
-		if( $exclude_types ) {
-			$set = '';
+		if ( $exclude_types ) {
+			$set    = '';
 			$query .= ' AND p.post_type NOT IN( ';
-			foreach( $exclude_types as $key => $exclude ){
+			foreach ( $exclude_types as $key => $exclude ) {
 				$deli = '';
-				if( $key ) {
+				if ( $key ) {
 					$deli = ', ';
 				}
 
@@ -159,9 +159,9 @@ SQL;
 	 *
 	 * @return array
 	 */
-	public function get_siblings( $rel, $post_id, $limit = 10, $offset = 0, $exclude_types = [] ) {
-		$placeholders = [$rel, $post_id];
-		$query = <<<SQL
+	public function get_siblings( $rel, $post_id, $limit = 10, $offset = 0, $exclude_types = array() ) {
+		$placeholders = array( $rel, $post_id );
+		$query        = <<<SQL
 			SELECT DISTINCT p.* FROM {$this->table} AS r
 			INNER JOIN {$this->db->posts} AS p
 			ON p.ID = r.subject_id
@@ -169,12 +169,12 @@ SQL;
 			  AND r.object_id = %d
 			  AND p.post_status = 'publish'
 SQL;
-		if( $exclude_types ) {
-			$set = '';
+		if ( $exclude_types ) {
+			$set    = '';
 			$query .= ' AND p.post_type NOT IN( ';
-			foreach( $exclude_types as $key => $exclude ){
+			foreach ( $exclude_types as $key => $exclude ) {
 				$deli = '';
-				if( $key ) {
+				if ( $key ) {
 					$deli = ', ';
 				}
 
@@ -186,15 +186,15 @@ SQL;
 		}
 		$query .= ' ORDER BY p.post_date DESC';
 
-		if( $limit ){
-			$query .= ' LIMIT %d, %d';
+		if ( $limit ) {
+			$query         .= ' LIMIT %d, %d';
 			$placeholders[] = $offset;
 			$placeholders[] = $limit;
 		}
 		array_unshift( $placeholders, $query );
 		return array_map( function ( $row ) {
 			return new \WP_Post( $row );
-		}, call_user_func_array( [ $this, 'results' ], $placeholders ) );
+		}, call_user_func_array( array( $this, 'results' ), $placeholders ) );
 	}
 
 
@@ -226,13 +226,13 @@ SQL;
 			return $join;
 		}
 		// 複数指定を受け入れるため、配列に変換。
-		$with = array_map( function( $id ) {
+		$with = array_map( function ( $id ) {
 			return (int) trim( $id );
 		}, explode( ',', $with ) );
 		// WHERE句を生成
-		$wheres = [
+		$wheres = array(
 			$this->db->prepare( 'type=%s', $type ),
-		];
+		);
 		if ( 1 < count( $with ) ) {
 			// 複数指定されている場合はIN句を使う。
 			$wheres[] = sprintf( 'object_id IN (%s)', implode( ',', $with ) );

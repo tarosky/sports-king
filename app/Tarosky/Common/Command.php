@@ -7,8 +7,7 @@ namespace Tarosky\Common;
  *
  * @package Tarosky\Common
  */
-abstract class Command extends \WP_CLI_Command{
+abstract class Command extends \WP_CLI_Command {
 
 	const COMMAND_NAME = '';
-
 }

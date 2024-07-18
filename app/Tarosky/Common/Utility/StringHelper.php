@@ -13,27 +13,27 @@ class StringHelper extends Singleton {
 	/**
 	 * Return hyphenated letter to snake case
 	 *
-	 * @param string $string String to be snake case.
+	 * @param string $text String to be snake case.
 	 *
 	 * @return string
 	 */
-	public function hungarize( $string ) {
-		return str_replace( '-', '_', $string );
+	public function hungarize( $text ) {
+		return str_replace( '-', '_', $text );
 	}
 
 	/**
 	 * Make hyphenated string to camel case
 	 *
-	 * @param string $string String to hyphenate.
+	 * @param string $text String to hyphenate.
 	 * @param bool   $upper_first Returns Uppercased first letter if true. Defalt false.
 	 * @param string $separator Default '_'.
 	 *
 	 * @return string
 	 */
-	public function camelize( $string, $upper_first = false, $separator = '_' ) {
-		$str = preg_replace_callback( '/'.$separator.'(.)/u', function ( $match ) {
-			return strtoupper( $match[1] );
-		}, strtolower( $string ) );
+	public function camelize( $text, $upper_first = false, $separator = '_' ) {
+		$str = preg_replace_callback( '/' . $separator . '(.)/u', function ( $matches ) {
+			return strtoupper( $matches[1] );
+		}, strtolower( $text ) );
 		if ( $upper_first ) {
 			$str = ucfirst( $str );
 		}
@@ -43,26 +43,26 @@ class StringHelper extends Singleton {
 	/**
 	 * Make camel case to hyphenated string
 	 *
-	 * @param string $string String to be decamelize.
+	 * @param string $text String to be decamelize.
 	 * @param string $separator Default '_'.
 	 *
 	 * @return string
 	 */
-	public function decamelize( $string, $separator = '_' ) {
-		return strtolower( preg_replace_callback( '/(?<!^)([A-Z]+)/u', function ( $match ) use ($separator) {
-			return $separator . strtolower( $match[1] );
-		}, (string) $string ) );
+	public function decamelize( $text, $separator = '_' ) {
+		return strtolower( preg_replace_callback( '/(?<!^)([A-Z]+)/u', function ( $matches ) use ( $separator ) {
+			return $separator . strtolower( $matches[1] );
+		}, (string) $text ) );
 	}
 
 	/**
 	 * Detect if string is MySQL Date
 	 *
-	 * @param string $string DATETIME string.
+	 * @param string $text DATETIME string.
 	 *
 	 * @return bool
 	 */
-	public function is_date( $string ) {
-		return (bool) preg_match( '/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u', $string );
+	public function is_date( $text ) {
+		return (bool) preg_match( '/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u', $text );
 	}
 
 	/**
@@ -79,17 +79,17 @@ class StringHelper extends Singleton {
 	/**
 	 * Trim string
 	 *
-	 * @param string $string String to be trimmed.
+	 * @param string $text String to be trimmed.
 	 * @param int    $limit Default 80.
 	 * @param string $suffix Default &hellip;.
 	 *
 	 * @return string
 	 */
-	public function trim( $string, $limit = 80, $suffix = '&hellip;' ) {
-		if ( $limit < mb_strlen( $string, 'utf-8' ) ) {
-			$string = mb_substr( $string, 0, $limit - 1 ) . $suffix;
+	public function trim( $text, $limit = 80, $suffix = '&hellip;' ) {
+		if ( $limit < mb_strlen( $text, 'utf-8' ) ) {
+			$text = mb_substr( $text, 0, $limit - 1 ) . $suffix;
 		}
 
-		return $string;
+		return $text;
 	}
 }

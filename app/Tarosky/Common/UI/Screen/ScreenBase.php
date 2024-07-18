@@ -61,9 +61,9 @@ abstract class ScreenBase extends Singleton {
 
 	public function __construct( array $settings ) {
 		$index = $this->is_root ? 10 : 11;
-		add_action( 'admin_menu', [ $this, 'admin_menu' ], $index );
-		add_action( 'admin_init', [ $this, 'admin_init' ] );
-		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ), $index );
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		if ( ! $this->menu_title ) {
 			$this->menu_title = $this->title;
 		}
@@ -74,21 +74,21 @@ abstract class ScreenBase extends Singleton {
 	 */
 	public function admin_menu() {
 		if ( $this->is_root ) {
-			add_menu_page( $this->title, $this->menu_title, $this->capability, $this->slug, [
+			add_menu_page( $this->title, $this->menu_title, $this->capability, $this->slug, array(
 				$this,
 				'wrapper',
-			], $this->icon, $this->position );
+			), $this->icon, $this->position );
 			if ( $this->submenu_title ) {
-				add_submenu_page( $this->slug, $this->title, $this->submenu_title, $this->capability, $this->slug, [
+				add_submenu_page( $this->slug, $this->title, $this->submenu_title, $this->capability, $this->slug, array(
 					$this,
 					'wrapper',
-				] );
+				) );
 			}
 		} else {
-			add_submenu_page( $this->parent, $this->title, $this->menu_title, $this->capability, $this->slug, [
+			add_submenu_page( $this->parent, $this->title, $this->menu_title, $this->capability, $this->slug, array(
 				$this,
 				'wrapper',
-			] );
+			) );
 		}
 	}
 
@@ -114,7 +114,7 @@ abstract class ScreenBase extends Singleton {
 	public function wrapper() {
 		?>
 		<div class="wrap">
-			<h2><?= esc_html( $this->title ) ?></h2>
+			<h2><?php echo esc_html( $this->title ); ?></h2>
 			<?php $this->render(); ?>
 		</div>
 		<?php
@@ -126,8 +126,8 @@ abstract class ScreenBase extends Singleton {
 	 */
 	abstract protected function render();
 
-	public function __get($name){
-		switch($name){
+	public function __get( $name ) {
+		switch ( $name ) {
 			case 'input':
 				return Input::instance();
 				break;

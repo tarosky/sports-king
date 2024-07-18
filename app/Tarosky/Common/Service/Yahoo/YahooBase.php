@@ -25,12 +25,12 @@ abstract class YahooBase extends Singleton {
 	/**
 	 * @var array 商用接続情報 'host', 'user', 'pass'を持つ
 	 */
-	protected $production_credential = [];
+	protected $production_credential = array();
 
 	/**
 	 * @var array 接続情報 'host', 'user', 'pass'を持つ
 	 */
-	protected $development_credential = [];
+	protected $development_credential = array();
 
 	/**
 	 * @var string FTPのルートディレクトリ
@@ -51,7 +51,7 @@ abstract class YahooBase extends Singleton {
 	protected function __construct( array $settings ) {
 		if ( $this->can_sync() ) {
 			// 同期を登録
-			add_action( 'transition_post_status', [ $this, 'transition_post_status' ], 10, 3 );
+			add_action( 'transition_post_status', array( $this, 'transition_post_status' ), 10, 3 );
 			// 同期がオンのときだけ実行される
 			$this->init();
 		}
@@ -73,7 +73,7 @@ abstract class YahooBase extends Singleton {
 	 *
 	 * @return void
 	 */
-	abstract public function transition_post_status($new_status, $old_status, $post);
+	abstract public function transition_post_status( $new_status, $old_status, $post );
 
 	/**
 	 * 疎通の確認
@@ -120,7 +120,7 @@ abstract class YahooBase extends Singleton {
 	 *
 	 * @return bool
 	 */
-	protected function connect( $credential = [], $port = 21, $timeout = 15 ) {
+	protected function connect( $credential = array(), $port = 21, $timeout = 15 ) {
 		if ( is_null( $this->conn ) ) {
 			try {
 				if ( ! $credential ) {
@@ -206,11 +206,11 @@ abstract class YahooBase extends Singleton {
 	 * @return bool|int
 	 */
 	public function save_revision( $revision, $post = null ) {
-	    $ret_meta_id = 0;
-		$post = get_post( $post );
-		if( !empty( $post->ID ) ) {
-            $ret_meta_id = update_post_meta( $post->ID, '_yahoo_revision', (int) $revision );
-        }
+		$ret_meta_id = 0;
+		$post        = get_post( $post );
+		if ( ! empty( $post->ID ) ) {
+			$ret_meta_id = update_post_meta( $post->ID, '_yahoo_revision', (int) $revision );
+		}
 		return $ret_meta_id;
 	}
 
@@ -262,7 +262,7 @@ abstract class YahooBase extends Singleton {
 		//英字、数字はすべて半角で表記してください
 		$text = mb_convert_kana( $text, 'r', 'UTF-8' );
 		//特殊ダブルクォート「〝」「〟」は使用しないでください
-		$text = str_replace( [ '〝', '〟' ], '', $text );
+		$text = str_replace( array( '〝', '〟' ), '', $text );
 		//スラッシュ「/」は半角で表記してください
 		$text = str_replace( '／', '/', $text );
 		//記号類(「%」「&」「#」「$」)は全角で表記してください
@@ -270,8 +270,8 @@ abstract class YahooBase extends Singleton {
 		$text = str_replace( '&', '＆', $text );
 		$text = str_replace( '#', '＃', $text );
 		$text = str_replace( '$', '＄', $text );
-        //  制御文字を消す
-        $text = preg_replace('@[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]@', '', $text);
+		//  制御文字を消す
+		$text = preg_replace( '@[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]@', '', $text );
 		//後のスペースを削除
 		$text = rtrim( $text, ' ' );
 
@@ -287,7 +287,7 @@ abstract class YahooBase extends Singleton {
 	 * @return bool|string
 	 */
 	public function get_temp_path( $name, $string ) {
-		$path = sys_get_temp_dir().'/'.$name;
+		$path = sys_get_temp_dir() . '/' . $name;
 		if ( file_put_contents( $path, $string ) ) {
 			return $path;
 		} else {
@@ -314,8 +314,8 @@ abstract class YahooBase extends Singleton {
 			$this->close();
 			return $success;
 		} else {
-//			サンプルファイル吐き出し用
-/*
+			//          サンプルファイル吐き出し用
+			/*
 			$success = true;
 			foreach ( $files as $name => $path ) {
 				$send = '/tmp/sample/'.$name;
@@ -324,8 +324,8 @@ abstract class YahooBase extends Singleton {
 				}
 			}
 			return $success;
- *
- */
+			*
+			*/
 			return false;
 		}
 	}
@@ -372,32 +372,32 @@ abstract class YahooBase extends Singleton {
 	 * @return bool
 	 */
 	public function upload_file( $post, $retry, $revision, $pay = false ) {
-		$content_list = [];
-		$files = [];
-		$date_id = mysql2date( 'Ymd', $post->post_date );
-		$item_id = $this->get_item_id( $post, $retry );
-		$first_created = mysql2date( 'Y-m-d\TH:i:s', $post->post_date );
+		$content_list     = array();
+		$files            = array();
+		$date_id          = mysql2date( 'Ymd', $post->post_date );
+		$item_id          = $this->get_item_id( $post, $retry );
+		$first_created    = mysql2date( 'Y-m-d\TH:i:s', $post->post_date );
 		$revision_created = mysql2date( 'Y-m-d\TH:i:s', $post->post_modified );
 		// 記事は更新だけどyahooへの配信は一回目の場合,最終更新日を公開日にする
-		if( $revision === 1 ) {
+		if ( $revision === 1 ) {
 			$revision_created = $first_created;
 		}
 		// タイトル
 		$post_title = $this->format( $post->post_title );
 		// 本文
-		$content = current( explode( '【関連記事】', $post->post_content ) );
-        $exp_content = explode( "<!--nextpage-->", $content );
-        $content = current( $exp_content );
+		$content     = current( explode( '【関連記事】', $post->post_content ) );
+		$exp_content = explode( '<!--nextpage-->', $content );
+		$content     = current( $exp_content );
 
-        $next_heading_url = $next_heading_title = '';
-        if( $next_content = !empty( $exp_content[1] ) ? $exp_content[1] : NULL ) {
-            //  次ページの最初の見出しをペジネーションの見出しタイトルとして扱う
-            preg_match_all("@<h[1-6].+?</h[1-6]>@u", $next_content, $match);
-            if ( !empty( $match[0] ) ) {
-                $next_heading_url = sprintf( '%s/2', get_permalink( $post->ID ) );
-                $next_heading_title = strip_tags( $match[0][0] );
-            }
-        }
+		$next_heading_url = $next_heading_title = '';
+		if ( $next_content = ! empty( $exp_content[1] ) ? $exp_content[1] : null ) {
+			//  次ページの最初の見出しをペジネーションの見出しタイトルとして扱う
+			preg_match_all( '@<h[1-6].+?</h[1-6]>@u', $next_content, $match );
+			if ( ! empty( $match[0] ) ) {
+				$next_heading_url   = sprintf( '%s/2', get_permalink( $post->ID ) );
+				$next_heading_title = strip_tags( $match[0][0] );
+			}
+		}
 
 		$custom_content = $content;
 		// captionを消す
@@ -406,7 +406,7 @@ abstract class YahooBase extends Singleton {
 		$custom_content = strip_shortcodes( $custom_content );
 
 		// twitterやinstagramのブロック引用を消す
-		$custom_content = preg_replace_callback( '#<blockquote([^>]*?)>(.*?)</blockquote>#us', function($matches) {
+		$custom_content = preg_replace_callback( '#<blockquote([^>]*?)>(.*?)</blockquote>#us', function ( $matches ) {
 			if ( false !== strpos( $matches[1], 'twitter' ) ) {
 				return '';
 			} elseif ( false !== strpos( $matches[1], 'instagram-media' ) ) {
@@ -416,72 +416,71 @@ abstract class YahooBase extends Singleton {
 			}
 		}, $custom_content );
 		// OembedになりそうなURLだけの行を消す
-		$custom_content = implode( "\n", array_filter( explode( "\r\n", $this->format( strip_tags( $custom_content, '<h2>' ) ) ), function( $row ) {
+		$custom_content = implode( "\n", array_filter( explode( "\r\n", $this->format( strip_tags( $custom_content, '<h2>' ) ) ), function ( $row ) {
 			return ! preg_match( '#^https?://[a-zA-Z0-9\.\-_/]+$#', $row );
 		} ) );
 
 		// 4行空白が続いたら圧縮
 		$custom_content = preg_replace( '/\\n{3,}/', "\n\n", $custom_content );
 		//  制御文字を消す
-        $custom_content = preg_replace('@[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]@', '', $custom_content);
+		$custom_content = preg_replace( '@[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]@', '', $custom_content );
 
-		$summary = mb_substr( str_replace( [ "\r\n", "\r", "\n" ], '', $custom_content ), 0, 200 );
+		$summary = mb_substr( str_replace( array( "\r\n", "\r", "\n" ), '', $custom_content ), 0, 200 );
 
-		//	本文の最初に見出しがない場合は付け足す
-		if( !preg_match( '@^<h2>@s', $content ) ) {
-			$content = "<h2></h2>".$content;
+		//  本文の最初に見出しがない場合は付け足す
+		if ( ! preg_match( '@^<h2>@s', $content ) ) {
+			$content = '<h2></h2>' . $content;
 		}
-		//	h2を境に行を分ける
-		if( preg_match_all('@<h2>(.*?)</h2>@s', $content, $matches ) ) {
+		//  h2を境に行を分ける
+		if ( preg_match_all( '@<h2>(.*?)</h2>@s', $content, $matches ) ) {
 
-			$count = count($matches[0]);
+			$count         = count( $matches[0] );
 			$check_content = $content;
-			foreach( $matches[0] as $k => $m ){
+			foreach ( $matches[0] as $k => $m ) {
 				$pattern = '';
-				if( ($k + 1) < $count ) {
-					$pattern = sprintf( "@%s(.*?)%s@s", preg_quote($matches[0][$k], '/'), preg_quote($matches[0][$k+1], '/') );
-				}
-				else {
-					$pattern = sprintf( "@%s(.*?)$@s", preg_quote($matches[0][$k], '/') );
+				if ( ( $k + 1 ) < $count ) {
+					$pattern = sprintf( '@%s(.*?)%s@s', preg_quote( $matches[0][ $k ], '/' ), preg_quote( $matches[0][ $k + 1 ], '/' ) );
+				} else {
+					$pattern = sprintf( '@%s(.*?)$@s', preg_quote( $matches[0][ $k ], '/' ) );
 				}
 
-
-				if( preg_match_all( $pattern, $check_content, $match ) ){
-					$content_list[] = [ $matches[1][$k], $match[1][0] ];
-					$check_content = str_replace($matches[0][$k].$match[1][0], '', $check_content);
+				if ( preg_match_all( $pattern, $check_content, $match ) ) {
+					$content_list[] = array( $matches[1][ $k ], $match[1][0] );
+					$check_content  = str_replace( $matches[0][ $k ] . $match[1][0], '', $check_content );
 				}
 			}
-		}
-		else {
-			$content_list[] = [ '', $content ];
+		} else {
+			$content_list[] = array( '', $content );
 		}
 
 		// 関連リンク
 		$related_link = '';
 
 		$image_links = sk_related_links( false, $post, true );
-		$links = sk_related_links( false, $post );
-        if( $image_links || $links || $next_heading_url ) {
+		$links       = sk_related_links( false, $post );
+		if ( $image_links || $links || $next_heading_url ) {
 			$related_link = '<RelatedLink>';
-			$link_id = 0;
+			$link_id      = 0;
 
-            if( $next_heading_url ) {
+			if ( $next_heading_url ) {
 
-                $link_id++;
-                $related_link .= <<<XML
+				++$link_id;
+				$related_link .= <<<XML
 		<Link Id="{$link_id}" Type="photo">
 			<Url><![CDATA[{$next_heading_url}]]></Url>
 			<Title><![CDATA[{$next_heading_title}]]></Title>
 		</Link>
 XML;
 
-            } else if ( $image_links ) {
+			} elseif ( $image_links ) {
 
 				foreach ( $image_links as $key => $link ) {
-					if( $key >= 1 ) break;
-					$link_id++;
-					$url = $this->format( $link['url'] );
-					$title = $this->format( $link['title'] );
+					if ( $key >= 1 ) {
+						break;
+					}
+					++$link_id;
+					$url           = $this->format( $link['url'] );
+					$title         = $this->format( $link['title'] );
 					$related_link .= <<<XML
 		<Link Id="{$link_id}" Type="photo">
 			<Url><![CDATA[{$url}]]></Url>
@@ -492,10 +491,12 @@ XML;
 			}
 			if ( $links ) {
 				foreach ( $links as $key => $link ) {
-					if( $key >= 5 ) break;
-					$link_id++;
-					$url = $this->format( $link['url'] );
-					$title = $this->format( $link['title'] );
+					if ( $key >= 5 ) {
+						break;
+					}
+					++$link_id;
+					$url           = $this->format( $link['url'] );
+					$title         = $this->format( $link['title'] );
 					$related_link .= <<<XML
 		<Link Id="{$link_id}" Type="pc">
 			<Url><![CDATA[{$url}]]></Url>
@@ -509,7 +510,7 @@ XML;
 		// 有料記事か否か
 		$pay_flg = $pay ? "\n<Pay>1</Pay>" : '';
 		// 本文を作成する
-		$xml = <<<XML
+		$xml        = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <YJNewsFeed Version="1.0">
 	<Identification>
@@ -544,93 +545,92 @@ XML;
 	</NewsLines>
 	<Article>
 XML;
-	$para_count = 1;
-	$img_count = 0;
-	foreach( $content_list as $content_val ) :
+		$para_count = 1;
+		$img_count  = 0;
+		foreach ( $content_list as $content_val ) :
 
-		$first_img = $thumbnail = $caption = $img_name = $sizes = '';
-		$thumbnail_id = 0;
-		$content = $content_val[1];
-		// captionを消す
-		if( preg_match( '#\[caption[^\]]*?](.*?)\[/caption\]#u', $content, $m ) ) {
-			if(preg_match( '@"attachment_.*?"@', $m[0], $am) ){
-				$exp = explode('_', $am[0]);
-				$thumbnail_id = !empty($exp[1]) ? $exp[1]: 0 ;
-			}
-			$content = preg_replace( '#\[caption[^\]]*?](.*?)\[/caption\]#u', '', $content );
-		}
-		// imgを消す
-		if( preg_match( '#<img.*src\s*=\s*[\"|\'](.*?)[\"|\'].*>#i', $content, $m ) ) {
-			if(preg_match( '@wp-image-.* @', $m[0], $am) ){
-				$exp = explode('wp-image-', $am[0]);
-				$thumbnail_id = !empty($exp[1]) ? trim($exp[1], "\x22 \x27"): 0 ;
-			}
-			$content = preg_replace( '#<img.*src\s*=\s*[\"|\'](.*?)[\"|\'].*>#u', '', $content );
-		}
-		// ショートコードを消す
-		$content = strip_shortcodes( $content );
-
-		// twitterやinstagramのブロック引用を消す
-		$content = preg_replace_callback( '#<blockquote([^>]*?)>(.*?)</blockquote>#us', function($matches) {
-			if ( false !== strpos( $matches[1], 'twitter' ) ) {
-				return '';
-			} elseif ( false !== strpos( $matches[1], 'instagram-media' ) ) {
-				return '';
-			} else {
-				return $matches[0];
-			}
-		}, $content );
-		// OembedになりそうなURLだけの行を消す
-		$content = implode( "\n", array_filter( explode( "\r\n", $this->format( strip_tags( $content, '<h2>' ) ) ), function( $row ) {
-			return ! preg_match( '#^https?://[a-zA-Z0-9\.\-_/]+$#', $row );
-		} ) );
-		// 4行空白が続いたら圧縮
-		$content = preg_replace( '/\\n{3,}/', "\n\n", $content );
-        //  制御文字を消す
-        $content = preg_replace('@[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]@', '', $content);
-		// 画像
-		$enclosure = '';
-		if ( 'del' !== $revision ) {
-			if ( $para_count == 1 ) {
-				if( has_post_thumbnail( $post ) ) {
-					$thumbnail_id = get_post_thumbnail_id( $post->ID );
-					$thumbnail = get_post( $thumbnail_id );
-					$caption = $thumbnail->post_content;
-					if ( ! $caption ) {
-						$caption = $thumbnail->post_excerpt;
-					}
-					if ( ! $caption ) {
-						$caption = 'BASKETBALL KING';
-					}
-
-					$caption = mb_substr( $this->format( $caption ), 0, 120, 'utf-8' );
-//					$img_name = "{$date_id}-{$item_id}-{$this->media_id}-{$revision}-00-view.jpg";
-					$img_name = sprintf( "%s-%s-%s-%s-%02d-view.jpg", $date_id, $item_id, $this->media_id, $revision, $img_count );
-					//画像のローカルパスを取得
-					$sizes = wp_get_attachment_image_src( $thumbnail_id, '500n-post-thumbnail' );
-					$img_count++;
+			$first_img    = $thumbnail = $caption = $img_name = $sizes = '';
+			$thumbnail_id = 0;
+			$content      = $content_val[1];
+			// captionを消す
+			if ( preg_match( '#\[caption[^\]]*?](.*?)\[/caption\]#u', $content, $m ) ) {
+				if ( preg_match( '@"attachment_.*?"@', $m[0], $am ) ) {
+					$exp          = explode( '_', $am[0] );
+					$thumbnail_id = ! empty( $exp[1] ) ? $exp[1] : 0;
 				}
+				$content = preg_replace( '#\[caption[^\]]*?](.*?)\[/caption\]#u', '', $content );
 			}
-			else {
-				if( $thumbnail_id && $thumbnail = get_post( $thumbnail_id ) ) {
-					$caption = $thumbnail ? $thumbnail->post_content : '' ;
-					if ( ! $caption ) {
-						$caption = $thumbnail ? $thumbnail->post_excerpt : '' ;
-					}
-					if ( ! $caption ) {
-						$caption = 'BASKETBALL KING';
-					}
-					$caption = mb_substr( $this->format( $caption ), 0, 120, 'utf-8' );
-					$img_name = sprintf( "%s-%s-%s-%s-%02d-view.jpg", $date_id, $item_id, $this->media_id, $revision, $img_count );
-					//画像のローカルパスを取得
-					$sizes = wp_get_attachment_image_src( $thumbnail_id, '500n-post-thumbnail' );
-
-					$img_count++;
+			// imgを消す
+			if ( preg_match( '#<img.*src\s*=\s*[\"|\'](.*?)[\"|\'].*>#i', $content, $m ) ) {
+				if ( preg_match( '@wp-image-.* @', $m[0], $am ) ) {
+					$exp          = explode( 'wp-image-', $am[0] );
+					$thumbnail_id = ! empty( $exp[1] ) ? trim( $exp[1], "\x22 \x27" ) : 0;
 				}
+				$content = preg_replace( '#<img.*src\s*=\s*[\"|\'](.*?)[\"|\'].*>#u', '', $content );
 			}
-			if ( $sizes ) {
-				$files[ $img_name ] = str_replace( home_url( '/' ), ABSPATH, $sizes[0] );
-				$enclosure = <<<XML
+			// ショートコードを消す
+			$content = strip_shortcodes( $content );
+
+			// twitterやinstagramのブロック引用を消す
+			$content = preg_replace_callback( '#<blockquote([^>]*?)>(.*?)</blockquote>#us', function ( $matches ) {
+				if ( false !== strpos( $matches[1], 'twitter' ) ) {
+					return '';
+				} elseif ( false !== strpos( $matches[1], 'instagram-media' ) ) {
+					return '';
+				} else {
+					return $matches[0];
+				}
+			}, $content );
+			// OembedになりそうなURLだけの行を消す
+			$content = implode( "\n", array_filter( explode( "\r\n", $this->format( strip_tags( $content, '<h2>' ) ) ), function ( $row ) {
+				return ! preg_match( '#^https?://[a-zA-Z0-9\.\-_/]+$#', $row );
+			} ) );
+			// 4行空白が続いたら圧縮
+			$content = preg_replace( '/\\n{3,}/', "\n\n", $content );
+			//  制御文字を消す
+			$content = preg_replace( '@[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]@', '', $content );
+			// 画像
+			$enclosure = '';
+			if ( 'del' !== $revision ) {
+				if ( $para_count == 1 ) {
+					if ( has_post_thumbnail( $post ) ) {
+						$thumbnail_id = get_post_thumbnail_id( $post->ID );
+						$thumbnail    = get_post( $thumbnail_id );
+						$caption      = $thumbnail->post_content;
+						if ( ! $caption ) {
+							$caption = $thumbnail->post_excerpt;
+						}
+						if ( ! $caption ) {
+							$caption = 'BASKETBALL KING';
+						}
+
+						$caption = mb_substr( $this->format( $caption ), 0, 120, 'utf-8' );
+						//                  $img_name = "{$date_id}-{$item_id}-{$this->media_id}-{$revision}-00-view.jpg";
+						$img_name = sprintf( '%s-%s-%s-%s-%02d-view.jpg', $date_id, $item_id, $this->media_id, $revision, $img_count );
+						//画像のローカルパスを取得
+						$sizes = wp_get_attachment_image_src( $thumbnail_id, '500n-post-thumbnail' );
+						++$img_count;
+					}
+				} else {
+					if ( $thumbnail_id && $thumbnail = get_post( $thumbnail_id ) ) {
+						$caption = $thumbnail ? $thumbnail->post_content : '';
+						if ( ! $caption ) {
+							$caption = $thumbnail ? $thumbnail->post_excerpt : '';
+						}
+						if ( ! $caption ) {
+							$caption = 'BASKETBALL KING';
+						}
+						$caption  = mb_substr( $this->format( $caption ), 0, 120, 'utf-8' );
+						$img_name = sprintf( '%s-%s-%s-%s-%02d-view.jpg', $date_id, $item_id, $this->media_id, $revision, $img_count );
+						//画像のローカルパスを取得
+						$sizes = wp_get_attachment_image_src( $thumbnail_id, '500n-post-thumbnail' );
+
+						++$img_count;
+					}
+				}
+				if ( $sizes ) {
+					$files[ $img_name ] = str_replace( home_url( '/' ), ABSPATH, $sizes[0] );
+					$enclosure          = <<<XML
 			<Enclosure>
 				<Item Seq="1">
 					<Caption><![CDATA[{$caption}]]></Caption>
@@ -641,12 +641,12 @@ XML;
 				</Item>
 			</Enclosure>
 XML;
+				}
 			}
-		}
 
-		$section_header = $content_val[0] ? sprintf( "<SectionHeader><![CDATA[%s]]></SectionHeader>", $content_val[0] ) : '' ;
-		// 本文を作成する
-		$xml .= <<<XML
+			$section_header = $content_val[0] ? sprintf( '<SectionHeader><![CDATA[%s]]></SectionHeader>', $content_val[0] ) : '';
+			// 本文を作成する
+			$xml .= <<<XML
 
 		<Paragraph Id="{$para_count}">
 			{$section_header}
@@ -654,27 +654,27 @@ XML;
 				<![CDATA[{$content}]]>
 			</Body>
 XML;
-	$xml .= <<<XML
+			$xml .= <<<XML
 
 {$enclosure}
 XML;
 
-	$xml .= <<<XML
+			$xml .= <<<XML
 
 		</Paragraph>
 XML;
-		$para_count++;
+			++$para_count;
 	endforeach;
 		// 本文を作成する
-		$xml .= <<<XML
+		$xml           .= <<<XML
 
 	</Article>
 {$related_link}
 </YJNewsFeed>
 XML;
-		$xml = str_replace( [ "\r\n", "\r" ], "\n", $xml );
-		$name = $this->get_file_name( $revision, $post, $retry );
-		$path = $this->get_temp_path( $name, $xml );
+		$xml            = str_replace( array( "\r\n", "\r" ), "\n", $xml );
+		$name           = $this->get_file_name( $revision, $post, $retry );
+		$path           = $this->get_temp_path( $name, $xml );
 		$files[ $name ] = $path;
 		return $this->upload( $files );
 	}

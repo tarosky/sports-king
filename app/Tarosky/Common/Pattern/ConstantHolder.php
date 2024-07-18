@@ -14,5 +14,4 @@ abstract class ConstantHolder {
 	final private function __construct() {
 		// Do nothing
 	}
-
 }

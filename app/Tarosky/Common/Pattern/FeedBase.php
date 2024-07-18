@@ -22,7 +22,7 @@ abstract class FeedBase extends Singleton {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function __construct( $settings = [] ) {
+	protected function __construct( $settings = array() ) {
 		$this->on_construct();
 	}
 
@@ -70,22 +70,22 @@ abstract class FeedBase extends Singleton {
 
 		$content = $post->post_content;
 		if ( $is_strip_sc ) {
-            $content = strip_shortcodes( $content );
-        }
-		$content = apply_filters( 'the_content', trim( explode('【関連記事】', $content )[0] ), $is_filter_content_through );
+			$content = strip_shortcodes( $content );
+		}
+		$content = apply_filters( 'the_content', trim( explode( '【関連記事】', $content )[0] ), $is_filter_content_through );
 
 		// twitterやinstagramのブロック引用を消す
-        if ( $is_blockquote_through === true ) {
-            $content = preg_replace_callback( '#<blockquote([^>]*?)>(.*?)</blockquote>#us', function($matches) {
-                if ( false !== strpos( $matches[1], 'twitter' ) ) {
-                    return '';
-                } elseif ( false !== strpos( $matches[1], 'instagram-media' ) ) {
-                    return '';
-                } else {
-                    return $matches[0];
-                }
-            }, $content );
-        }
+		if ( $is_blockquote_through === true ) {
+			$content = preg_replace_callback( '#<blockquote([^>]*?)>(.*?)</blockquote>#us', function ( $matches ) {
+				if ( false !== strpos( $matches[1], 'twitter' ) ) {
+					return '';
+				} elseif ( false !== strpos( $matches[1], 'instagram-media' ) ) {
+					return '';
+				} else {
+					return $matches[0];
+				}
+			}, $content );
+		}
 
 		return $content;
 	}
@@ -102,7 +102,7 @@ abstract class FeedBase extends Singleton {
 		// captionを消す
 		$content = preg_replace( '#\[caption[^\]]*?](.*?)\[/caption\]#u', '', $content );
 		// OembedになりそうなURLだけの行を消す
-		$content = implode( "\n", array_filter( explode( "\r\n", $content ), function( $row ) {
+		$content = implode( "\n", array_filter( explode( "\r\n", $content ), function ( $row ) {
 			return ! preg_match( '#^https?://[a-zA-Z0-9\.\-\?=_/]+$#', $row );
 		} ) );
 		// 3行空白が続いたら圧縮
@@ -126,8 +126,8 @@ abstract class FeedBase extends Singleton {
 	 *
 	 */
 	protected function avoid_ad() {
-		add_filter( 'posts_join', [ $this, 'posts_join' ], 10, 2 );
-		add_filter( 'posts_where', [ $this, 'posts_where' ], 10, 2 );
+		add_filter( 'posts_join', array( $this, 'posts_join' ), 10, 2 );
+		add_filter( 'posts_where', array( $this, 'posts_where' ), 10, 2 );
 	}
 
 	/**
@@ -144,9 +144,9 @@ abstract class FeedBase extends Singleton {
 		LEFT JOIN {$wpdb->postmeta} AS isAd
 		ON ({$wpdb->posts}.ID = isAd.post_id) AND (isAd.meta_key = '_is_ad')
 SQL;
-//		LEFT JOIN {$wpdb->postmeta} AS nofeed
-//		ON ({$wpdb->posts}.ID = nofeed.post_id) AND (nofeed.meta_key = 'nofeed')
-		remove_filter( 'posts_join', [ $this, 'posts_join' ], 10 );
+		//      LEFT JOIN {$wpdb->postmeta} AS nofeed
+		//      ON ({$wpdb->posts}.ID = nofeed.post_id) AND (nofeed.meta_key = 'nofeed')
+		remove_filter( 'posts_join', array( $this, 'posts_join' ), 10 );
 		return $join;
 	}
 
@@ -163,7 +163,7 @@ SQL;
 		$where .= <<<SQL
 			AND ( isAd.meta_value != '1' OR isAd.meta_value IS NULL )
 SQL;
-		remove_filter( 'posts_where', [ $this, 'posts_where' ], 10 );
+		remove_filter( 'posts_where', array( $this, 'posts_where' ), 10 );
 		return $where;
 	}
 

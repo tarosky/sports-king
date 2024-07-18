@@ -20,30 +20,30 @@ class VoteResults extends Model {
 
 	protected $created_column = 'created';
 
-	protected $default_placeholder = [
-		'id' => '%d',
-		'post_id' => '%d',
-	    'value' => '%s',
+	protected $default_placeholder = array(
+		'id'          => '%d',
+		'post_id'     => '%d',
+		'value'       => '%s',
 		'question_no' => '%d',
-	    'ip' => '%s',
-	    'sex' => '%s',
-	    'age' => '%s',
-	    'pref' => '%s',
-	    'job' => '%s',
-	    'created' => '%s',
-	];
+		'ip'          => '%s',
+		'sex'         => '%s',
+		'age'         => '%s',
+		'pref'        => '%s',
+		'job'         => '%s',
+		'created'     => '%s',
+	);
 
 	/**
 	 * 回答のキー
 	 *
 	 * @var array
 	 */
-	public $additional_keys = [
-		'sex' => '性別',
-		'job' => '職業',
-		'age' => '世代',
+	public $additional_keys = array(
+		'sex'  => '性別',
+		'job'  => '職業',
+		'age'  => '世代',
 		'pref' => '都道府県',
-	];
+	);
 
 	/**
 	 * スコアを取得する
@@ -53,25 +53,24 @@ class VoteResults extends Model {
 	 * @return array
 	 */
 	public function get_scores( $post_id, $is_multiple = false ) {
-		$ret_results = [];
-		if( !$is_multiple ) {
-			$query = <<<SQL
+		$ret_results = array();
+		if ( ! $is_multiple ) {
+			$query       = <<<SQL
 				SELECT `value`, COUNT(id) AS score FROM {$this->table}
 				WHERE post_id = %d
 				GROUP BY `value`
 				ORDER BY score DESC
 SQL;
 			$ret_results = $this->get_results( $query, $post_id );
-		}
-		else {
+		} else {
 			$query = <<<SQL
 				SELECT id, question_no FROM {$this->table}
 				WHERE post_id = %d
 				GROUP BY `question_no`
 				ORDER BY id ASC
 SQL;
-			foreach( $this->get_results( $query, $post_id ) as $question ) {
-				$query = <<<SQL
+			foreach ( $this->get_results( $query, $post_id ) as $question ) {
+				$query         = <<<SQL
 					SELECT `question_no`, `value`, COUNT(id) AS score FROM {$this->table}
 					WHERE post_id = %d AND question_no = '{$question->question_no}' 
 					GROUP BY `value`
@@ -92,7 +91,7 @@ SQL;
 	 * @return array
 	 */
 	public function get_attributes( $post_id ) {
-		$result = [];
+		$result = array();
 		foreach ( $this->additional_keys as $key => $label ) {
 			$result[ $key ] = $this->get_attribute( $post_id, $key );
 		}
@@ -107,7 +106,7 @@ SQL;
 	 */
 	public function get_attribute( $post_id, $key ) {
 		if ( ! array_key_exists( $key, $this->additional_keys ) ) {
-			return [];
+			return array();
 		}
 		$query = <<<SQL
 			SELECT `{$key}` as label, COUNT(id) AS score FROM {$this->table}
@@ -128,7 +127,7 @@ SQL;
 				$func = "sk_{$key}s";
 				break;
 		}
-		return  array_map( function ( $row ) use ( $func ) {
+		return array_map( function ( $row ) use ( $func ) {
 			$row->label = call_user_func( $func, $row->label );
 			return $row;
 		}, $this->get_results( $query, $post_id ) );

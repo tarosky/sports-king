@@ -14,7 +14,7 @@ class Permalinks extends HookPattern {
 	 * {@inheritDoc}
 	 */
 	protected function register_hooks(): void {
-		add_filter( 'query_vars', [ $this, 'query_vars' ] );
+		add_filter( 'query_vars', array( $this, 'query_vars' ) );
 	}
 
 	/**

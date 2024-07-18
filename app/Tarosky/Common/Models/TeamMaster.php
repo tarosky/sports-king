@@ -15,7 +15,7 @@ class TeamMaster extends Model {
 
 	protected $updated_column = 'updated';
 
-	protected $default_placeholder = [
+	protected $default_placeholder = array(
 		'id'              => '%d',
 		'name'            => '%s',
 		'name_en'         => '%s',
@@ -35,7 +35,7 @@ class TeamMaster extends Model {
 		'title'           => '%s',
 		'comment'         => '%s',
 		'updated'         => '%s',
-	];
+	);
 
 	/**
 	 * テーブルを作成する
@@ -84,9 +84,9 @@ SQL;
 			$id = $data['id'];
 			unset( $data['id'] );
 
-			return $this->update( $data, [
+			return $this->update( $data, array(
 				'id' => $id,
-			] );
+			) );
 		} else {
 			return $this->insert( $data );
 		}
@@ -126,7 +126,7 @@ SQL;
 			  AND post_status = 'publish'
 			  AND post_title = %s
 SQL;
-		$row = $this->get_row( $query, $name );
+		$row   = $this->get_row( $query, $name );
 		return $row ? new \WP_Post( $row ) : null;
 	}
 
@@ -173,9 +173,9 @@ SQL;
 	 * @return null|\stdClass
 	 */
 	public function get_team_by_name( $name ) {
-		$name = Replacements::instance()->normalize( 'team', $name );
+		$name   = Replacements::instance()->normalize( 'team', $name );
 		$length = mb_strlen( $name, 'UTF-8' );
-		$query = <<<SQL
+		$query  = <<<SQL
 			SELECT * FROM {$this->db->posts}
 			WHERE post_type = 'team'
 			  AND post_status = 'publish'

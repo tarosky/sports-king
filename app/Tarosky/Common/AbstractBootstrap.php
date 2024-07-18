@@ -17,26 +17,26 @@ abstract class AbstractBootstrap extends Singleton {
 	 * @return array{ dir:string, namespace:string, only_admin:bool }[]
 	 */
 	protected function autoloads() {
-		$store = [];
-		foreach ( [
-			'Tarosky\\Common\\API\\Ajax'     => false,
-			'Tarosky\\Common\\UI\\Screen'    => true,
-			'Tarosky\\Common\\API\\Rest'     => false,
-			'Tarosky\\Common\\API\\Rooter'   => false,
-			'Tarosky\\Common\\Hooks'         => false,
-		] as $namespace => $only_admin ) {
-			$dir =  str_replace( 'Tarosky/Common', __DIR__, str_replace( '\\', '/', $namespace ) );
+		$store = array();
+		foreach ( array(
+			'Tarosky\\Common\\API\\Ajax'   => false,
+			'Tarosky\\Common\\UI\\Screen'  => true,
+			'Tarosky\\Common\\API\\Rest'   => false,
+			'Tarosky\\Common\\API\\Rooter' => false,
+			'Tarosky\\Common\\Hooks'       => false,
+		) as $namespace => $only_admin ) {
+			$dir = str_replace( 'Tarosky/Common', __DIR__, str_replace( '\\', '/', $namespace ) );
 			if ( ! is_dir( $dir ) ) {
 				continue;
 			}
 			if ( $only_admin && ! is_admin() ) {
 				continue;
 			}
-			$store[] = [
+			$store[] = array(
 				'dir'        => $dir,
 				'namespace'  => $namespace,
 				'only_admin' => $only_admin,
-			];
+			);
 		}
 		return $store;
 	}
@@ -67,12 +67,12 @@ abstract class AbstractBootstrap extends Singleton {
 	 * @return array{dir:string, namespace:string}[]
 	 */
 	protected function command_namespace() {
-		return [
-			[
+		return array(
+			array(
 				'dir'       => __DIR__ . DIRECTORY_SEPARATOR . 'Commands',
 				'namespace' => 'Tarosky\\Common\\Commands',
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -89,14 +89,13 @@ abstract class AbstractBootstrap extends Singleton {
 	 *
 	 * @param array $settings 設定項目
 	 */
-	public function __construct( array $settings = [] ) {
+	public function __construct( array $settings = array() ) {
 		$this->inject_dependencies();
 		$this->do_autoloads();
 		// アセット登録
-		add_action( 'init', [ $this, 'register_assets' ] );
+		add_action( 'init', array( $this, 'register_assets' ) );
 		// アセット読み込み
-		add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ] );
-
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 
 		// コマンドを自動登録
 		if ( defined( 'WP_CLI' ) && \WP_CLI ) {
@@ -132,37 +131,37 @@ abstract class AbstractBootstrap extends Singleton {
 		// jQuery Tokeninput
 		// todo: もうPublic Archivedなので、select2に変更する
 		// see: https://github.com/loopj/jquery-tokeninput
-		wp_register_script( 'jquery-tokeninput', $this->get_root_directory_uri() . '/assets/js/admin/jquery.tokeninput.js', [ 'jquery' ], '1.6.1', true );
+		wp_register_script( 'jquery-tokeninput', $this->get_root_directory_uri() . '/assets/js/admin/jquery.tokeninput.js', array( 'jquery' ), '1.6.1', true );
 		// 管理画面用CSS
 		list( $url, $hash ) = $this->asset_info( '/assets/css/admin/sports-admin.css' );
-		wp_register_style( 'sports-admin', $url, [], $hash, 'screen' );
+		wp_register_style( 'sports-admin', $url, array(), $hash, 'screen' );
 		// Relation Manager
 		list( $url, $hash ) = $this->asset_info( '/assets/js/admin/relation-helper.js' );
-		wp_register_script( 'sk-relation-helper', $url, [ 'jquery-tokeninput', 'jquery-ui-dialog' ], $hash, 'screen' );
+		wp_register_script( 'sk-relation-helper', $url, array( 'jquery-tokeninput', 'jquery-ui-dialog' ), $hash, 'screen' );
 		// 画像セレクター
 		list( $url, $hash ) = $this->asset_info( '/assets/js/admin/image-selector.js' );
-		wp_register_script( 'image-selector', $url, [ 'jquery' ], $hash, true );
+		wp_register_script( 'image-selector', $url, array( 'jquery' ), $hash, true );
 		// URLサジェスト
-		list( $url, $hash )= $this->asset_info( '/assets/js/admin/url-suggest.js' );
-		wp_register_script( 'url-selector', $url, [ 'jquery-ui-autocomplete' ], $hash, true );
-		wp_localize_script( 'url-selector', 'SkUrlSuggest', [
+		list( $url, $hash ) = $this->asset_info( '/assets/js/admin/url-suggest.js' );
+		wp_register_script( 'url-selector', $url, array( 'jquery-ui-autocomplete' ), $hash, true );
+		wp_localize_script( 'url-selector', 'SkUrlSuggest', array(
 			'endpoint' => admin_url( 'admin-ajax.php?action=sk_search_link' ),
-		] );
+		) );
 		// リンクヘルパー
 		list( $url, $hash ) = $this->asset_info( '/assets/js/admin/link-helper.js' );
-		wp_register_script( 'sk-link-helper', $url, [ 'jquery-ui-autocomplete', 'jquery-effects-highlight' ], $hash, true );
+		wp_register_script( 'sk-link-helper', $url, array( 'jquery-ui-autocomplete', 'jquery-effects-highlight' ), $hash, true );
 		// メディアボックス
 		list( $url, $hash ) = $this->asset_info( '/assets/js/admin/media-box.js' );
-		wp_register_script( 'media-box', $url, [ 'jquery-effects-highlight', 'jquery-ui-sortable' ], $hash, true );
+		wp_register_script( 'media-box', $url, array( 'jquery-effects-highlight', 'jquery-ui-sortable' ), $hash, true );
 		// 関連メディア
 		list( $url, $hash ) = $this->asset_info( '/assets/js/admin/related-media-helper.js' );
-		wp_register_script( 'related-media', $url, [ 'jquery-ui-autocomplete', 'jquery-effects-highlight' ], $hash, true );
+		wp_register_script( 'related-media', $url, array( 'jquery-ui-autocomplete', 'jquery-effects-highlight' ), $hash, true );
 		// 置換
 		list( $url, $hash ) = $this->asset_info( '/assets/js/admin/replace-helper.js' );
-		wp_register_script('sk-replacements-helper', $url, ['jquery-effects-highlight'], $hash, true);
+		wp_register_script( 'sk-replacements-helper', $url, array( 'jquery-effects-highlight' ), $hash, true );
 		// デリバリー
 		list( $url, $hash ) = $this->asset_info( '/assets/js/admin/delivery-helper.js' );
-		wp_register_script( 'sk-delivery-helper', $url, [ 'jquery' ], $hash, true );
+		wp_register_script( 'sk-delivery-helper', $url, array( 'jquery' ), $hash, true );
 	}
 
 	/**
@@ -184,7 +183,7 @@ abstract class AbstractBootstrap extends Singleton {
 	protected function asset_info( $rel_path_from_root ) {
 		$path = $this->get_root_dir() . $rel_path_from_root;
 		$url  = $this->get_root_directory_uri() . $rel_path_from_root;
-		return [ $url, md5_file( $path ) ];
+		return array( $url, md5_file( $path ) );
 	}
 
 	/**

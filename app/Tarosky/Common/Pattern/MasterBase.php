@@ -13,7 +13,7 @@ abstract class MasterBase {
 	 * @see static::inject()
 	 * @var array[] $masters マスターデータ。各種リーグの名称やIDを保持する
 	 */
-	protected static $masters = [];
+	protected static $masters = array();
 
 	/**
 	 * Do not make instance
@@ -28,8 +28,8 @@ abstract class MasterBase {
 	 * @return mixed|string|array
 	 */
 	public static function get( $key ) {
-		if ( isset( static::$masters[$key] ) ) {
-			return static::$masters[$key];
+		if ( isset( static::$masters[ $key ] ) ) {
+			return static::$masters[ $key ];
 		} else {
 			return null;
 		}

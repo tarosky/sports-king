@@ -13,9 +13,9 @@ class BreadCrumbHooks extends HookPattern {
 	 * {@inheritDoc}
 	 */
 	protected function register_hooks(): void {
-		add_action( 'bcn_after_fill', [ $this, 'add_pagination_link' ] );
-		add_action( 'bcn_after_fill', [ $this, 'customize_attachment_breadcrumb' ] );
-		add_filter( 'bcn_pick_post_term', [ $this, 'set_main_league' ], 10, 4 );
+		add_action( 'bcn_after_fill', array( $this, 'add_pagination_link' ) );
+		add_action( 'bcn_after_fill', array( $this, 'customize_attachment_breadcrumb' ) );
+		add_filter( 'bcn_pick_post_term', array( $this, 'set_main_league' ), 10, 4 );
 	}
 
 	/**
@@ -25,19 +25,19 @@ class BreadCrumbHooks extends HookPattern {
 	 */
 	public function add_pagination_link( \bcn_breadcrumb_trail $bcn ) {
 		/** @var \bcn_breadcrumb $paginater */
-		$paginater = $bcn->trail[ 0 ] ?? null;
+		$paginater = $bcn->trail[0] ?? null;
 		if ( ! $paginater || ! in_array( 'news-archive-paginated', $paginater->get_types(), true ) ) {
 			// 該当しない。
 			return;
 		}
 		/** @var \bcn_breadcrumb $original_link */
-		$original_link = $bcn->trail[ 1 ] ?? null;
+		$original_link = $bcn->trail[1] ?? null;
 		if ( ! $original_link || ! in_array( 'current-item', $original_link->get_types(), true ) ) {
 			// 該当しない。
 			return;
 		}
 		// リンクさせる
-		$bcn->trail[ 1 ] = new \bcn_breadcrumb( $original_link->get_title(), null, array_filter( $original_link->get_types(), function ( $type ) {
+		$bcn->trail[1] = new \bcn_breadcrumb( $original_link->get_title(), null, array_filter( $original_link->get_types(), function ( $type ) {
 			return 'current-item' !== $type;
 		} ), $original_link->get_url(), $original_link->get_id(), true );
 	}
@@ -57,9 +57,9 @@ class BreadCrumbHooks extends HookPattern {
 		// パンくずの最後の項目を、ここで新しく作るパンくずで置き換える
 		// $types にcurrent-item を指定することによってパンくずの最後の項目のみ右矢印を無くす
 		/** @var \bcn_breadcrumb $item */
-		$item = $bcn->trail[0]; // パンくずは末尾のものから順に配列trailに格納されている
-		$types = $item->get_types();
-		$types[] = 'current-item';
+		$item          = $bcn->trail[0]; // パンくずは末尾のものから順に配列trailに格納されている
+		$types         = $item->get_types();
+		$types[]       = 'current-item';
 		$bcn->trail[0] = new \bcn_breadcrumb( sk_get_attachment_page_title(), null, $types, '', $item->get_id(), false );
 	}
 

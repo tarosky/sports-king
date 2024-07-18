@@ -18,12 +18,12 @@ class PlayerRegisterHooks extends HookPattern {
 	 * {@inheritDoc}
 	 */
 	protected function register_hooks(): void {
-		add_action( 'init', [ $this, 'register_player' ] );
-		add_action( 'edit_form_after_title', [ $this, 'add_team_selector' ] );
-		add_filter( 'query_vars', [ $this, 'add_query_vars' ] );
-		add_filter( "manage_{$this->post_type}_posts_columns", [ $this, 'admin_column_header' ] );
-		add_action( "manage_{$this->post_type}_posts_custom_column", [ $this, 'admin_column_content' ], 10, 2 );
-		add_action( 'pre_get_posts', [ $this, 'pre_get_posts' ] );
+		add_action( 'init', array( $this, 'register_player' ) );
+		add_action( 'edit_form_after_title', array( $this, 'add_team_selector' ) );
+		add_filter( 'query_vars', array( $this, 'add_query_vars' ) );
+		add_filter( "manage_{$this->post_type}_posts_columns", array( $this, 'admin_column_header' ) );
+		add_action( "manage_{$this->post_type}_posts_custom_column", array( $this, 'admin_column_content' ), 10, 2 );
+		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 	}
 
 	/**
@@ -32,9 +32,9 @@ class PlayerRegisterHooks extends HookPattern {
 	 * @return void
 	 */
 	public function register_player() {
-		$args = apply_filters( 'sk_post_type_default_args', [
+		$args = apply_filters( 'sk_post_type_default_args', array(
 			'label'           => 'プレーヤー',
-			'labels'          => [
+			'labels'          => array(
 				'name'               => 'プレーヤー',
 				'singular_name'      => 'プレーヤー',
 				'add_new'            => 'プレーヤーを追加',
@@ -46,19 +46,19 @@ class PlayerRegisterHooks extends HookPattern {
 				'not_found'          => 'プレーヤーはありません',
 				'not_found_in_trash' => 'ゴミ箱にプレーヤーはありません',
 				'parent_item_colon'  => '',
-			],
+			),
 			'public'          => true,
-			'rewrite'         => [
+			'rewrite'         => array(
 				'slug'       => 'player',
 				'with_front' => false,
-			],
+			),
 			'capability_type' => 'post',
 			'menu_position'   => 10,
 			'menu_icon'       => 'dashicons-id-alt',
 			'has_archive'     => true,
-			'taxonomies'      => [ 'post_tag' ],
-			'supports'        => [ 'title', 'editor', 'author', 'thumbnail' ],
-		], $this->post_type );
+			'taxonomies'      => array( 'post_tag' ),
+			'supports'        => array( 'title', 'editor', 'author', 'thumbnail' ),
+		), $this->post_type );
 		register_post_type( $this->post_type, $args );
 	}
 
@@ -74,22 +74,22 @@ class PlayerRegisterHooks extends HookPattern {
 		}
 		// 代表を除外
 		// アルゴリズムが変更したら変わる
-		$query_args = apply_filters( 'sk_team_pulldown_query_args', [
+		$query_args = apply_filters( 'sk_team_pulldown_query_args', array(
 			'post_type'      => 'team',
 			'posts_per_page' => - 1,
 			'no_found_rows'  => true,
-			'orderby'        => [ 'title' => 'ASC' ],
-			'tax_query'      => [
-				[
+			'orderby'        => array( 'title' => 'ASC' ),
+			'tax_query'      => array(
+				array(
 					'taxonomy' => 'league',
-					'terms'    => [ '代表' ],
+					'terms'    => array( '代表' ),
 					'field'    => 'name',
 					'operator' => 'NOT IN',
-				],
-			],
-		] );
-		$teams   = new \WP_Query( $query_args );
-		$options = [];
+				),
+			),
+		) );
+		$teams      = new \WP_Query( $query_args );
+		$options    = array();
 		foreach ( $teams->posts as $team ) {
 			$league      = get_the_terms( $team, 'league' );
 			$league_name = '不明なグループ';
@@ -99,7 +99,7 @@ class PlayerRegisterHooks extends HookPattern {
 				}
 			}
 			if ( ! isset( $options[ $league_name ] ) ) {
-				$options[ $league_name ] = [];
+				$options[ $league_name ] = array();
 			}
 			$options[ $league_name ][ $team->ID ] = $team->post_title;
 		}
@@ -109,13 +109,13 @@ class PlayerRegisterHooks extends HookPattern {
 				<th><label for="sk-team-id">所属チーム</label></th>
 				<td>
 					<select name="post_parent" id="sk-team-id">
-						<option value="0" <?php selected( ! $post->post_parent ) ?>>所属なし</option>
+						<option value="0" <?php selected( ! $post->post_parent ); ?>>所属なし</option>
 						<?php foreach ( $options as $label => $opts ) : ?>
-							<optgroup label="<?php echo esc_attr( $label ) ?>">
+							<optgroup label="<?php echo esc_attr( $label ); ?>">
 								<?php foreach ( $opts as $id => $opt ) : ?>
 									<option
-										value="<?php echo esc_attr( $id ) ?>" <?php selected( $id, (int) $post->post_parent ) ?>>
-										<?php echo esc_html( $opt ) ?>
+										value="<?php echo esc_attr( $id ); ?>" <?php selected( $id, (int) $post->post_parent ); ?>>
+										<?php echo esc_html( $opt ); ?>
 									</option>
 								<?php endforeach; ?>
 							</optgroup>
@@ -152,12 +152,12 @@ class PlayerRegisterHooks extends HookPattern {
 		if ( \Tarosky\Common\Models\Players::instance()->is_national_team( $team_id ) ) {
 			$meta_query = (array) $wp_query->get( 'meta_query' );
 			$meta_query = array_values( array_filter( $meta_query ) );
-			$wp_query->set( 'meta_query', array_merge( $meta_query, [
-				[
+			$wp_query->set( 'meta_query', array_merge( $meta_query, array(
+				array(
 					'key'   => apply_filters( 'sk_national_team_query_key', '_player_international_team' ),
 					'value' => $team_id,
-				],
-			] ) );
+				),
+			) ) );
 		} else {
 			$wp_query->set( 'post_parent', $team_id );
 		}
@@ -170,11 +170,11 @@ class PlayerRegisterHooks extends HookPattern {
 	 * @return string[]
 	 */
 	public function admin_column_header( $columns ) {
-		$new_column = [];
+		$new_column = array();
 		foreach ( $columns as $key => $name ) {
 			$new_column[ $key ] = $name;
 			if ( 'title' === $key ) {
-				$new_column['team'] = 'チーム';
+				$new_column['team']     = 'チーム';
 				$new_column['national'] = '代表';
 			}
 		}

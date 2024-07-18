@@ -43,11 +43,11 @@ abstract class AjaxBase extends Singleton {
 			add_action( 'admin_init', function () {
 				switch ( $this->scope ) {
 					case 'public':
-						add_action( "wp_ajax_nopriv_{$this->action}", [ $this, 'ajax' ] );
-						add_action( "wp_ajax_{$this->action}", [ $this, 'ajax' ] );
+						add_action( "wp_ajax_nopriv_{$this->action}", array( $this, 'ajax' ) );
+						add_action( "wp_ajax_{$this->action}", array( $this, 'ajax' ) );
 						break;
 					default:
-						add_action( "wp_ajax_{$this->action}", [ $this, 'ajax' ] );
+						add_action( "wp_ajax_{$this->action}", array( $this, 'ajax' ) );
 						break;
 				}
 			} );
@@ -91,15 +91,15 @@ abstract class AjaxBase extends Singleton {
 	protected function handle_result( $result ) {
 		if ( is_wp_error( $result ) ) {
 			http_send_status( $result->get_error_code() );
-			wp_send_json( [
+			wp_send_json( array(
 				'success'  => false,
 				'messages' => $result->get_error_messages(),
-			] );
+			) );
 		} else {
-			wp_send_json( [
+			wp_send_json( array(
 				'success' => true,
 				'data'    => $result,
-			] );
+			) );
 		}
 	}
 
@@ -128,6 +128,4 @@ abstract class AjaxBase extends Singleton {
 				break;
 		}
 	}
-
-
 }

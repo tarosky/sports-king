@@ -12,12 +12,12 @@ use Tarosky\Common\Pattern\ConstantHolder;
  */
 class Leagues extends ConstantHolder {
 
-	const ABROAD = [
+	const ABROAD = array(
 		'0' => 'japan',
 		'1' => 'world',
-	];
+	);
 
-	const SEASONS = [
+	const SEASONS = array(
 		1  => '年間シーズン',
 		2  => '1stステージ',
 		3  => '2ndステージ',
@@ -30,106 +30,105 @@ class Leagues extends ConstantHolder {
 		10 => 'ポストシーズン',
 		11 => 'アジア最終予選',
 		12 => '3次予選',
-	];
+	);
 
-	const LEAGUES = [
-		'0' => [
-			'2'  => [
+	const LEAGUES = array(
+		'0' => array(
+			'2'  => array(
 				'slug'  => 'b1',
-				'label' => 'B1'
-			],
-			'7'  => [
+				'label' => 'B1',
+			),
+			'7'  => array(
 				'slug'  => 'b2',
-				'label' => 'B2'
-			],
-			'3'  => [
+				'label' => 'B2',
+			),
+			'3'  => array(
 				'slug'  => 'championship',
-				'label' => 'チャンピオンシップ'
-			],
-			'4' => [
+				'label' => 'チャンピオンシップ',
+			),
+			'4'  => array(
 				'slug'  => 'b1-play-off',
 				'label' => 'B1残留プレーオフ',
-			],
-			'8' => [
+			),
+			'8'  => array(
 				'slug'  => 'b2-play-off',
 				'label' => 'B2プレーオフ',
-			],
-			'11' => [
-				'slug' => 'relegation',
+			),
+			'11' => array(
+				'slug'  => 'relegation',
 				'label' => '入替戦',
-			],
-			'20' => [
-				'slug' => 'early-kanto',
+			),
+			'20' => array(
+				'slug'  => 'early-kanto',
 				'label' => 'アーリーカップ関東',
-			],
-			'21' => [
-				'slug' => 'early-kansai',
+			),
+			'21' => array(
+				'slug'  => 'early-kansai',
 				'label' => 'アーリーカップ関西',
-			],
-			'23' => [
-				'slug' => 'early-tohoku',
+			),
+			'23' => array(
+				'slug'  => 'early-tohoku',
 				'label' => 'アーリーカップ東北',
-			],
-			'24' => [
-				'slug' => 'early-tokai',
+			),
+			'24' => array(
+				'slug'  => 'early-tokai',
 				'label' => 'アーリーカップ東海',
-			],
-			'25' => [
-				'slug' => 'early-hokushinetsu',
+			),
+			'25' => array(
+				'slug'  => 'early-hokushinetsu',
 				'label' => 'アーリーカップ北信越',
-			],
-			'26' => [
-				'slug' => 'early-nishinihon',
+			),
+			'26' => array(
+				'slug'  => 'early-nishinihon',
 				'label' => 'アーリーカップ西日本',
-			],
-		],
-		'1' => [
-		],
-	];
+			),
+		),
+		'1' => array(),
+	);
 
 	/**
 	 * @var array 降格・昇格のライン
 	 */
-	public static $lines = [
-		'cl'      => [
+	public static $lines = array(
+		'cl'      => array(
 			'color' => 'green',
 			'label' => 'CL圏内',
-		],
-		'el'      => [
+		),
+		'el'      => array(
 			'color' => 'blue',
 			'label' => 'EL圏内',
-		],
-		'dropoff'    => [
+		),
+		'dropoff' => array(
 			'color' => 'greylight',
 			'label' => '降格プレーオフ',
-		],
-		'drop'    => [
+		),
+		'drop'    => array(
 			'color' => 'grey',
 			'label' => '降格圏内',
-		],
-		'playoff' => [
+		),
+		'playoff' => array(
 			'color' => 'blue',
 			'label' => 'プレーオフ',
-		],
-		'raise'   => [
+		),
+		'raise'   => array(
 			'color' => 'green',
 			'label' => '昇格圏内',
-		],
-		'cs'   => [
+		),
+		'cs'      => array(
 			'color' => 'green',
 			'label' => 'B.LEAGUE CHAMPIONSHIP %d-%d 出場圏内 ',
-		],
-		'stayoff'    => [
+		),
+		'stayoff' => array(
 			'color' => 'grey',
 			'label' => 'B1 残留プレーオフ %d-%d 出場圏内',
-		],
-	];
+		),
+	);
 
 	/**
 	 *
 	 */
-	public static $round_sort = [
-		'3' => [
+	public static $round_sort = array(
+		'3' => array(
 			'クォーターファイナル１試合目',
 			'クォーターファイナル1試合目',
 			'クォーターファイナル2試合目',
@@ -138,15 +137,15 @@ class Leagues extends ConstantHolder {
 			'セミファイナル2試合目',
 			'セミファイナル3試合目',
 			'ファイナル',
-		]
-	];
+		),
+	);
 
 	/**
 	 * @var array シーズン表示を日毎単位にさせる対象リーグ
 	 */
-	public static $season_to_daily_list = [
-		'euro' =>[5, 9] ,
-	];
+	public static $season_to_daily_list = array(
+		'euro' => array( 5, 9 ),
+	);
 
 	/**
 	 * スラッグを海外か否かに帰る
@@ -250,18 +249,18 @@ class Leagues extends ConstantHolder {
 	public static function get_range( $abroad ) {
 		if ( $abroad ) {
 			if ( date_i18n( 'n' ) < 7 ) {
-				return [
+				return array(
 					date_i18n( 'Y-07-01', current_time( 'timestamp' ) - ( 60 * 60 * 24 * 365 ) ),
 					date_i18n( 'Y-06-31' ),
-				];
+				);
 			} else {
-				return [
+				return array(
 					date_i18n( 'Y-07-01' ),
 					date_i18n( 'Y-06-31', current_time( 'timestamp' ) + ( 60 * 60 * 24 * 365 ) ),
-				];
+				);
 			}
 		} else {
-			return [ date_i18n( 'Y-01-01' ), date_i18n( 'Y-12-31' ) ];
+			return array( date_i18n( 'Y-01-01' ), date_i18n( 'Y-12-31' ) );
 		}
 	}
 
@@ -285,7 +284,7 @@ class Leagues extends ConstantHolder {
 					} elseif ( 17 < $rank ) {
 						return self::$lines['drop'];
 					} else {
-						return [];
+						return array();
 					}
 					break;
 				case '03': // ブンデス
@@ -298,33 +297,33 @@ class Leagues extends ConstantHolder {
 					} elseif ( 16 < $rank ) {
 						return self::$lines['drop'];
 					} else {
-						return [];
+						return array();
 					}
 					break;
 				case '04': // エスパニョーラ
-				    if ( 5 > $rank ) {
-					    return self::$lines['cl'];
-				    } elseif ( 7 > $rank ) {
-					    return self::$lines['el'];
+					if ( 5 > $rank ) {
+						return self::$lines['cl'];
+					} elseif ( 7 > $rank ) {
+						return self::$lines['el'];
 					} elseif ( 17 < $rank ) {
-					    return self::$lines['drop'];
+						return self::$lines['drop'];
 					} else {
-					    return [];
-				    }
+						return array();
+					}
 					break;
 				case '01': // セリエA
-				    if ( 4 > $rank ) {
-					    return self::$lines['cl'];
-				    } elseif ( 6 > $rank ) {
-					    return self::$lines['el'];
-				    } elseif ( 17 < $rank ) {
-					    return self::$lines['drop'];
-				    } else {
-					    return [];
-				    }
+					if ( 4 > $rank ) {
+						return self::$lines['cl'];
+					} elseif ( 6 > $rank ) {
+						return self::$lines['el'];
+					} elseif ( 17 < $rank ) {
+						return self::$lines['drop'];
+					} else {
+						return array();
+					}
 					break;
 				default:
-					return [];
+					return array();
 					break;
 			}
 		} else {
@@ -333,7 +332,7 @@ class Leagues extends ConstantHolder {
 					if ( $rank <= 2 ) {
 						return self::$lines['cs'];
 					}
-					if( $tab === 'wc' ) {
+					if ( $tab === 'wc' ) {
 						if ( $rank > 8 ) {
 							return self::$lines['stayoff'];
 						}
@@ -342,9 +341,9 @@ class Leagues extends ConstantHolder {
 				case 6:
 					if ( $rank < 3 ) {
 						return self::$lines['raise'];
-					} else if ( $rank < 7 ) {
+					} elseif ( $rank < 7 ) {
 						return self::$lines['playoff'];
-					} else if ( $rank > 20 ) {
+					} elseif ( $rank > 20 ) {
 						return self::$lines['drop'];
 					}
 					break;
@@ -356,7 +355,7 @@ class Leagues extends ConstantHolder {
 			}
 		}
 
-		return [ ];
+		return array();
 	}
 
 	/**
@@ -376,53 +375,53 @@ class Leagues extends ConstantHolder {
 				case '02':
 				case '03':
 				case '04':
-					return [
-						'cl'   => $arrays['cl'],
-						'el'   => $arrays['el'],
+					return array(
+						'cl'      => $arrays['cl'],
+						'el'      => $arrays['el'],
 						'dropoff' => $arrays['dropoff'],
-						'drop' => $arrays['drop'],
-					];
+						'drop'    => $arrays['drop'],
+					);
 					break;
 			}
 		} else {
 			switch ( $league_id ) {
 				case 2:
-					$cs = $arrays['cs'];
+					$cs      = $arrays['cs'];
 					$stayoff = $arrays['stayoff'];
 
-					$y = date_i18n('Y');
-					$m = date_i18n('m');
-					$before_season = intval($y);
-					$after_season = (intval($y)-2000) + 1;
-					if( 1 <= intval($m) && intval($m) <= 5 ) :
+					$y             = date_i18n( 'Y' );
+					$m             = date_i18n( 'm' );
+					$before_season = intval( $y );
+					$after_season  = ( intval( $y ) - 2000 ) + 1;
+					if ( 1 <= intval( $m ) && intval( $m ) <= 5 ) :
 						$before_season -= 1;
-						$after_season -= 1;
+						$after_season  -= 1;
 					endif;
-					$cs['label'] = sprintf( $cs['label'], $before_season, $after_season );
+					$cs['label']      = sprintf( $cs['label'], $before_season, $after_season );
 					$stayoff['label'] = sprintf( $stayoff['label'], $before_season, $after_season );
 
-					return [
-						'cs' => $cs,
+					return array(
+						'cs'      => $cs,
 						'stayoff' => $stayoff,
-					];
+					);
 					break;
 				case 6:
-					return [
+					return array(
 						'raise'   => $arrays['raise'],
 						'playoff' => $arrays['playoff'],
 						'drop'    => $arrays['drop'],
-					];
+					);
 					break;
 				case 68:
-					return [
+					return array(
 						'playoff' => $arrays['playoff'],
 						'drop'    => $arrays['drop'],
-					];
+					);
 					break;
 			}
 		}
 
-		return [ ];
+		return array();
 	}
 
 	/**
@@ -435,9 +434,9 @@ class Leagues extends ConstantHolder {
 	 */
 	public static function is_group_league( $abroad, $league_id ) {
 		if ( $abroad ) {
-			return false === array_search( $league_id, [ '01', '02', '03', '04' ] );
+			return false === array_search( $league_id, array( '01', '02', '03', '04' ) );
 		} else {
-			return false === array_search( $league_id, [ '2', '6', '68' ] );
+			return false === array_search( $league_id, array( '2', '6', '68' ) );
 		}
 	}
 
@@ -450,9 +449,9 @@ class Leagues extends ConstantHolder {
 	 */
 	public static function season_label( $season_id ) {
 		$labels = self::SEASONS;
-		if( isset( $labels[$season_id] ) ){
-			return $labels[$season_id];
-		}else{
+		if ( isset( $labels[ $season_id ] ) ) {
+			return $labels[ $season_id ];
+		} else {
 			return '';
 		}
 	}
@@ -466,12 +465,12 @@ class Leagues extends ConstantHolder {
 	 */
 	public static function get_season_id( $label ) {
 		$labels = self::SEASONS;
-		$id = array_search( $label, $labels );
+		$id     = array_search( $label, $labels );
 		if ( false === $id ) {
 			if ( false !== mb_strpos( $label, '決勝', 0, 'utf-8' ) ) {
 				return 5;
 			} else {
-				switch( $label ){
+				switch ( $label ) {
 					case '1次リーグ':
 						return 9;
 						break;
@@ -496,7 +495,7 @@ class Leagues extends ConstantHolder {
 	 *
 	 * @return array
 	 */
-	public function get_season_to_daily_leagues( ) {
-		return self::$season_to_daily_list ;
+	public function get_season_to_daily_leagues() {
+		return self::$season_to_daily_list;
 	}
 }

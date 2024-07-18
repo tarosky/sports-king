@@ -13,7 +13,7 @@ class Leaders extends Model {
 
 	protected $updated_column = 'modified';
 
-	protected $default_placeholder = [
+	protected $default_placeholder = array(
 		'game_id'         => '%d',
 		'team_id'         => '%d',
 		'category'        => '%d',
@@ -25,7 +25,7 @@ class Leaders extends Model {
 		'offence_rebound' => '%d',
 		'defence_rebound' => '%d',
 		'modified'        => '%s',
-	];
+	);
 
 	/**
 	 * Create Database
@@ -60,9 +60,9 @@ SQL;
 	 * @return false|int
 	 */
 	public function clear( $game_id ) {
-		return $this->delete( [
+		return $this->delete( array(
 			'game_id' => $game_id,
-		] );
+		) );
 	}
 
 	/**
@@ -73,20 +73,25 @@ SQL;
 	 * @return false|int
 	 */
 	public function add( $values ) {
-		$keys = [
-			'game_id', 'team_id', 'category', 'period', 'ranking', 'no'
-		];
+		$keys = array(
+			'game_id',
+			'team_id',
+			'category',
+			'period',
+			'ranking',
+			'no',
+		);
 		// Check if record exists
-		$wheres = [];
+		$wheres = array();
 		foreach ( $keys as $key ) {
-			$wheres[] = $this->prepare( "`{$key}` = {$this->default_placeholder[$key]}", $values[$key] );
+			$wheres[] = $this->prepare( "`{$key}` = {$this->default_placeholder[$key]}", $values[ $key ] );
 		}
 		$wheres = implode( ' AND ', $wheres );
-		$query = <<<SQL
+		$query  = <<<SQL
 			SELECT COUNT(*) FROM {$this->table}
 			WHERE {$wheres}
 SQL;
-		$count = $this->get_var( $query );
+		$count  = $this->get_var( $query );
 		if ( $count ) {
 			// Record exists. Update.
 			return (int) $count;
@@ -116,6 +121,4 @@ SQL;
 SQL;
 		return $this->db->get_results( $this->db->prepare( $query, $game_id ) );
 	}
-
-
 }

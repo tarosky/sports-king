@@ -76,7 +76,7 @@ abstract class Model extends Singleton {
 	 *
 	 * @var array
 	 */
-	protected $default_placeholder = [];
+	protected $default_placeholder = array();
 
 	/**
 	 * Row parse class
@@ -118,7 +118,7 @@ abstract class Model extends Singleton {
 	protected function prepare( $sql ) {
 		$args = func_get_args();
 		if ( 1 < count( $args ) ) {
-			return call_user_func_array( [ $this->db, 'prepare' ], $args );
+			return call_user_func_array( array( $this->db, 'prepare' ), $args );
 		} else {
 			return $sql;
 		}
@@ -132,7 +132,7 @@ abstract class Model extends Singleton {
 	 * @return null|\stdClass
 	 */
 	public function row( $query ) {
-		$row = call_user_func_array( [ $this, 'get_row' ], func_get_args() );
+		$row = call_user_func_array( array( $this, 'get_row' ), func_get_args() );
 		if ( ! $row || ! $this->result_class ) {
 			return $row;
 		} else {
@@ -148,9 +148,9 @@ abstract class Model extends Singleton {
 	 * @return array|mixed
 	 */
 	public function results( $query ) {
-		$results = call_user_func_array( [ $this, 'get_results' ], func_get_args() );
+		$results = call_user_func_array( array( $this, 'get_results' ), func_get_args() );
 		if ( $this->result_class ) {
-			$converted_result = [];
+			$converted_result = array();
 			foreach ( $results as $result ) {
 				$converted_result[] = new $this->result_class( $result );
 			}
@@ -170,7 +170,7 @@ abstract class Model extends Singleton {
 	 *
 	 * @return false|int Number of rows or false on failure
 	 */
-	protected function insert( array $values, array $place_holders = [], $table = '' ) {
+	protected function insert( array $values, array $place_holders = array(), $table = '' ) {
 		if ( ! $table ) {
 			$table = $this->table;
 		}
@@ -198,7 +198,7 @@ abstract class Model extends Singleton {
 	 *
 	 * @return false|int
 	 */
-	protected function update( array $values, array $wheres = [], array $place_holders = [], array $where_format = [], $table = '' ) {
+	protected function update( array $values, array $wheres = array(), array $place_holders = array(), array $where_format = array(), $table = '' ) {
 		if ( ! $table ) {
 			$table = $this->table;
 		}
@@ -223,7 +223,7 @@ abstract class Model extends Singleton {
 	 * @return array
 	 */
 	protected function parse_place_holders( $values ) {
-		$place_holders = [];
+		$place_holders = array();
 		foreach ( $values as $key => $val ) {
 			$place_holders[] = isset( $this->default_placeholder[ $key ] ) ? $this->default_placeholder[ $key ] : '%s';
 		}
@@ -241,7 +241,7 @@ abstract class Model extends Singleton {
 	 *
 	 * @return false|int
 	 */
-	protected function delete( array $wheres, $place_holder = [], $table = '' ) {
+	protected function delete( array $wheres, $place_holder = array(), $table = '' ) {
 		if ( ! $table ) {
 			$table = $this->table;
 		}
@@ -267,12 +267,12 @@ abstract class Model extends Singleton {
 			case 'get_results':
 			case 'get_col':
 			case 'query':
-				return call_user_func_array( [ $this->db, $name ], [
-					call_user_func_array( [
+				return call_user_func_array( array( $this->db, $name ), array(
+					call_user_func_array( array(
 						$this,
 						'prepare',
-					], $arguments )
-				] );
+					), $arguments ),
+				) );
 				break;
 			default:
 				// Do nothing.
@@ -285,14 +285,14 @@ abstract class Model extends Singleton {
 	 *
 	 * @param array $args Arguments for overriding properties.
 	 */
-	public function build( $args = [] ) {
-		$args = wp_parse_args( $args, [
-			'name'    => '',
-		] );
+	public function build( $args = array() ) {
+		$args = wp_parse_args( $args, array(
+			'name' => '',
+		) );
 		if ( ! empty( $args['name'] ) ) {
 			$this->name = $args['name'];
 		}
-		add_action( 'admin_init', [ $this, 'build_hook' ] );
+		add_action( 'admin_init', array( $this, 'build_hook' ) );
 		$this->hooks();
 	}
 
@@ -321,7 +321,7 @@ abstract class Model extends Singleton {
 			$installed_version = get_option( "{$this->table}_version", '' );
 			if ( ! $installed_version || version_compare( $this->version, $installed_version, '>' ) ) {
 				if ( ! function_exists( 'dbDelta' ) ) {
-					require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+					require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 				}
 				$for_update = dbDelta( $query );
 				update_option( "{$this->table}_version", $this->version );

@@ -21,7 +21,7 @@ abstract class Module {
 
 	use RichInput;
 
-	private static $instances = [];
+	private static $instances = array();
 
 	/**
 	 * Name of this field.
@@ -73,7 +73,7 @@ abstract class Module {
 	 * @return array
 	 */
 	protected function normalize() {
-		$lists     = [];
+		$lists     = array();
 		$list_text = array_filter( (array) $this->input->post( $this->key( 'list_text' ) ), function ( $var ) {
 			return ! empty( $var );
 		} );
@@ -81,27 +81,27 @@ abstract class Module {
 			return ! empty( $var );
 		} );
 		foreach ( $list_text as $index => $text ) {
-			$lists[] = [
+			$lists[] = array(
 				'text' => $text,
 				'url'  => $list_url[ $index ],
-			];
+			);
 		}
-		$data = [
+		$data = array(
 			'active' => $this->input->post( $this->key( 'active' ) ) ?: 'text',
-			'text'   => [
+			'text'   => array(
 				'title' => (string) $this->input->post( $this->key( 'text_title' ) ),
 				'url'   => (string) $this->input->post( $this->key( 'text_url' ) ),
-			],
-			'image'  => [
+			),
+			'image'  => array(
 				'id'      => (int) $this->input->post( $this->key( 'image_id' ) ),
 				'url'     => (string) $this->input->post( $this->key( 'image_url' ) ),
 				'caption' => (string) $this->input->post( $this->key( 'image_caption' ) ),
-			],
+			),
 			'list'   => $lists,
-			'html'   => [
+			'html'   => array(
 				'content' => (string) $this->input->post( $this->key( 'html_content' ) ),
-			],
-		];
+			),
+		);
 
 		return $data;
 	}
@@ -150,7 +150,7 @@ abstract class Module {
 	 */
 	public function get_raw_data_from( $object ) {
 		// Should override.
-		return [];
+		return array();
 	}
 
 	/**
@@ -159,22 +159,22 @@ abstract class Module {
 	 * @return array
 	 */
 	protected function get_default_value() {
-		return [
+		return array(
 			'active' => 'text',
-			'text'   => [
+			'text'   => array(
 				'title' => '',
 				'url'   => '',
-			],
-			'image'  => [
+			),
+			'image'  => array(
 				'id'      => 0,
 				'caption' => '',
 				'url'     => '',
-			],
-			'list'   => [ ],
-			'html'   => [
+			),
+			'list'   => array(),
+			'html'   => array(
 				'content' => '',
-			],
-		];
+			),
+		);
 	}
 
 	/**
@@ -200,19 +200,19 @@ abstract class Module {
 		<div class="freeInput__selector">
 			<?php
 			foreach (
-				[
+				array(
 					'text'  => 'テキスト',
 					'image' => '画像',
 					'list'  => 'リスト',
 					'html'  => 'HTML',
-				] as $key => $label
+				) as $key => $label
 			) :
 				?>
 				<label class="freeInput__label">
-					<input type="radio" name="<?php echo $this->key( 'active' ) ?>"
-					       value="<?php echo esc_attr( $key ) ?>" <?php checked( $key === $data['active'] ) ?> />
+					<input type="radio" name="<?php echo $this->key( 'active' ); ?>"
+							value="<?php echo esc_attr( $key ); ?>" <?php checked( $key === $data['active'] ); ?> />
 					<span class="freeInput__label--border"></span>
-					<span class="freeInput__label--text"><?php echo esc_html( $label ) ?></span>
+					<span class="freeInput__label--text"><?php echo esc_html( $label ); ?></span>
 				</label>
 			<?php endforeach; ?>
 			<div style="clear:both;"></div>
@@ -223,17 +223,17 @@ abstract class Module {
 			<table class="form-table freeInput__table">
 				<tr>
 					<th>
-						<label for="<?php echo $this->key( 'text_title' ) ?>">テキスト</label>
+						<label for="<?php echo $this->key( 'text_title' ); ?>">テキスト</label>
 					</th>
 					<td>
-						<textarea rows="2" name="<?php echo $this->key( 'text_title' ) ?>"
-						          id="<?php echo $this->key( 'text_title' ) ?>"><?php echo esc_textarea( $data['text']['title'] ) ?></textarea>
+						<textarea rows="2" name="<?php echo $this->key( 'text_title' ); ?>"
+									id="<?php echo $this->key( 'text_title' ); ?>"><?php echo esc_textarea( $data['text']['title'] ); ?></textarea>
 					</td>
 				</tr>
 				<tr>
-					<th><label<?php echo $this->key( 'text_url' ) ?>>URL</label></th>
+					<th><label<?php echo $this->key( 'text_url' ); ?>>URL</label></th>
 					<td>
-						<?php $this->url_input( $this->key( 'text_url' ), $data['text']['url'] ) ?>
+						<?php $this->url_input( $this->key( 'text_url' ), $data['text']['url'] ); ?>
 					</td>
 				</tr>
 			</table>
@@ -243,27 +243,27 @@ abstract class Module {
 		<div class="freeInput__tab" data-type="image">
 			<table class="form-table freeInput__table">
 				<tr>
-					<th><label for="<?php echo $this->key( 'image_id' ) ?>">画像ファイル</label></th>
+					<th><label for="<?php echo $this->key( 'image_id' ); ?>">画像ファイル</label></th>
 					<td>
-						<?php $this->image_input( $this->key( 'image_id' ), $data['image']['id'], 1 ) ?>
+						<?php $this->image_input( $this->key( 'image_id' ), $data['image']['id'], 1 ); ?>
 					</td>
 				</tr>
 				<tr>
-					<th><label for="<?php echo $this->key( 'image_url' ) ?>">URL</label></th>
+					<th><label for="<?php echo $this->key( 'image_url' ); ?>">URL</label></th>
 					<td>
-						<?php $this->url_input( $this->key( 'image_url' ), $data['image']['url'] ) ?>
+						<?php $this->url_input( $this->key( 'image_url' ), $data['image']['url'] ); ?>
 					</td>
 				</tr>
 				<tr>
 					<th>
-						<label for="<?php echo $this->key( 'image_caption' ) ?>">
+						<label for="<?php echo $this->key( 'image_caption' ); ?>">
 							キャプション
 							<small class="description">（任意）</small>
 						</label>
 					</th>
 					<td>
-						<textarea rows="2" name="<?php echo $this->key( 'image_caption' ) ?>"
-						          id="<?php echo $this->key( 'image_caption' ) ?>"><?php echo esc_textarea( $data['image']['caption'] ) ?></textarea>
+						<textarea rows="2" name="<?php echo $this->key( 'image_caption' ); ?>"
+									id="<?php echo $this->key( 'image_caption' ); ?>"><?php echo esc_textarea( $data['image']['caption'] ); ?></textarea>
 					</td>
 				</tr>
 			</table>
@@ -281,8 +281,8 @@ abstract class Module {
 							<label>
 								<small>テキスト:</small>
 								<br/>
-								<input type="text" class="regular-text" name="<?php echo $this->key( 'list_text[]' ) ?>"
-								       value="<?php echo esc_attr( $list['text'] ) ?>"/>
+								<input type="text" class="regular-text" name="<?php echo $this->key( 'list_text[]' ); ?>"
+										value="<?php echo esc_attr( $list['text'] ); ?>"/>
 							</label>
 						</p>
 						<p>
@@ -304,8 +304,8 @@ abstract class Module {
 						<label>
 							<small>テキスト:</small>
 							<br/>
-							<input type="text" class="regular-text" name="<?php echo $this->key( 'list_text[]' ) ?>"
-							       value=""/>
+							<input type="text" class="regular-text" name="<?php echo $this->key( 'list_text[]' ); ?>"
+									value=""/>
 						</label>
 					</p>
 					<p>
@@ -329,8 +329,8 @@ abstract class Module {
 				<strong>複雑なレイアウトのHTMLを入力しない</strong>よう注意してください。
 			</p>
 			<textarea class="freeInput__html" id="$data['html']['content']" rows="10"
-			          name="<?php echo $this->key( 'html_content' ) ?>"
-			          id="<?php echo $this->key( 'html_content' ) ?>"><?php echo esc_textarea( isset( $data['html']['content']) ? $data['html']['content'] :"" ) ?></textarea>
+						name="<?php echo $this->key( 'html_content' ); ?>"
+						id="<?php echo $this->key( 'html_content' ); ?>"><?php echo esc_textarea( isset( $data['html']['content'] ) ? $data['html']['content'] : '' ); ?></textarea>
 		</div><!-- // .freeInput__tab -->
 		<?php
 	}
@@ -374,7 +374,7 @@ abstract class Module {
 	 */
 	public static function generate( $setting ) {
 		$class_name = get_called_class();
-		$instance = new $class_name( $setting );
+		$instance   = new $class_name( $setting );
 		return $instance;
 	}
 
@@ -383,7 +383,7 @@ abstract class Module {
 	 *
 	 * @param array $setting
 	 */
-	protected function __construct( $setting = [] ) {
+	protected function __construct( $setting = array() ) {
 		if ( ! empty( $setting ) ) {
 			$this->set_up( $setting );
 		}

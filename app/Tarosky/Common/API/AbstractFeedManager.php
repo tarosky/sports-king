@@ -20,18 +20,18 @@ abstract class AbstractFeedManager extends Singleton {
 	 *
 	 * @return string[]
 	 */
-    abstract public function get_partners();
+	abstract public function get_partners();
 
-    /**
+	/**
 	 * Constructor
 	 *
 	 * @param array $settings
 	 */
-	public function __construct( array $settings = [] ) {
-		add_action( 'parse_query', [ $this, 'parse_query' ] );
-		add_filter( 'rewrite_rules_array', [ $this, 'rewrite_rules' ] );
-		add_filter( 'query_vars', [ $this, 'query_vars' ] );
-		add_action( 'pre_get_posts', [ $this, 'pre_get_posts' ] );
+	public function __construct( array $settings = array() ) {
+		add_action( 'parse_query', array( $this, 'parse_query' ) );
+		add_filter( 'rewrite_rules_array', array( $this, 'rewrite_rules' ) );
+		add_filter( 'query_vars', array( $this, 'query_vars' ) );
+		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 	}
 
 	/**
@@ -73,28 +73,28 @@ abstract class AbstractFeedManager extends Singleton {
 	 * @author soccerking
 	 */
 	public function parse_query( $wp_query ) {
-		if ( $wp_query->is_feed  ) {
+		if ( $wp_query->is_feed ) {
 			if ( $wp_query->get( 'delivery_partner' ) ) {
 				if ( ! array_key_exists( $wp_query->get( 'delivery_partner' ), $this->partners ) ) {
 					// 上記の条件に当てはまらないにも関わらずフィードなら
 					// 強制停止
-					wp_die(sprintf('このRSSフィードは配信停止中です。<a href="%s">%sへ戻る</a>', home_url(), get_bloginfo('name')), get_bloginfo('name'), [
+					wp_die(sprintf( 'このRSSフィードは配信停止中です。<a href="%s">%sへ戻る</a>', home_url(), get_bloginfo( 'name' ) ), get_bloginfo( 'name' ), array(
 						'response' => 404,
-					]);
+					));
 				}
 			} else {
 				// フィードの種類が許可されているか
 				// see: https://github.com/tarosky/taro-exclusive-sitemap
-				$allowed_feeds = apply_filters( 'sk_allowed_feeds', [ 'rss', 'rss2', 'atom', 'exclusive-sitemap' ] );
+				$allowed_feeds = apply_filters( 'sk_allowed_feeds', array( 'rss', 'rss2', 'atom', 'exclusive-sitemap' ) );
 				foreach ( $allowed_feeds as $feed ) {
 					if ( is_feed( $feed ) ) {
 						return;
 					}
 				}
 				// 上記の条件に当てはまらないにも関わらずフィードなら強制停止
-				wp_die(sprintf('このRSSフィードは配信停止中です。<a href="%s">%sへ戻る</a>', home_url(), get_bloginfo('name')), get_bloginfo('name'), [
+				wp_die(sprintf( 'このRSSフィードは配信停止中です。<a href="%s">%sへ戻る</a>', home_url(), get_bloginfo( 'name' ) ), get_bloginfo( 'name' ), array(
 					'response' => 404,
-				]);
+				));
 			}
 		}
 	}

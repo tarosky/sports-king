@@ -32,7 +32,7 @@ class TeamOrder extends Select {
 			printf( '<optgroup label="%s">', esc_attr( $label ) );
 			foreach ( $indexes as $index ) {
 				$pref = $prefs[ $index ];
-				$num = 47 - intval( $index ) + 1;
+				$num  = 47 - intval( $index ) + 1;
 				$this->show_input( $num, $pref, $current_value );
 			}
 			echo '</optgroup>';

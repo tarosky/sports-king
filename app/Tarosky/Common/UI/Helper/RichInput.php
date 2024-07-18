@@ -30,10 +30,10 @@ trait RichInput {
 		}
 		wp_enqueue_script( 'url-selector' );
 		?>
-		<input type="text" class="regular-text url-suggest" name="<?= esc_attr( $name ) ?>"
-		       id="<?= esc_attr( $name ) ?>"
-		       placeholder="<?= esc_attr( $placeholder ) ?>" value="<?= esc_attr( $value ) ?>"
-		       data-internal="<?= esc_url( home_url() ) ?>"/>
+		<input type="text" class="regular-text url-suggest" name="<?php echo esc_attr( $name ); ?>"
+				id="<?php echo esc_attr( $name ); ?>"
+				placeholder="<?php echo esc_attr( $placeholder ); ?>" value="<?php echo esc_attr( $value ); ?>"
+				data-internal="<?php echo esc_url( home_url() ); ?>"/>
 		<a class="button url-suggest-button" href="#">確認</a>
 		<small class="url-suggest-status">内部</small>
 		<?php
@@ -52,27 +52,27 @@ trait RichInput {
 		$image_ids = array_filter( array_map( 'trim', explode( ',', $value ) ), function ( $id ) {
 			return is_numeric( $id );
 		} );
-		$images    = [];
+		$images    = array();
 		if ( $image_ids ) {
-			$images = get_posts( [
+			$images = get_posts( array(
 				'post_type'      => 'attachment',
 				'post__in'       => $image_ids,
 				'post_mime_type' => 'image',
-			] );
+			) );
 		}
-		$width  = esc_attr(get_option( 'thumbnail_size_w', 150 ));
-		$height = esc_attr(get_option( 'thumbnail_size_h', 150 ));
+		$width  = esc_attr( get_option( 'thumbnail_size_w', 150 ) );
+		$height = esc_attr( get_option( 'thumbnail_size_h', 150 ) );
 
-		$html = <<<HTML
+		$html    = <<<HTML
 <div class="image-selector">
 HTML;
-	$name = esc_attr( $name );
-	$max = max( 1, $max );
-	$id_list = esc_attr( implode(',', $image_ids) );
-	foreach ( $images as $image ) :
-		$src = wp_get_attachment_image_src( $image->ID )[0];
-		$data_id = esc_attr( $image->ID );
-		$html .= <<<HTML
+		$name    = esc_attr( $name );
+		$max     = max( 1, $max );
+		$id_list = esc_attr( implode( ',', $image_ids ) );
+		foreach ( $images as $image ) :
+			$src     = wp_get_attachment_image_src( $image->ID )[0];
+			$data_id = esc_attr( $image->ID );
+			$html   .= <<<HTML
 		<div class="image-selector-container">
 			<img class="image-selector-picture" src="{$src}"
 				 data-id="{$data_id}"/>
@@ -91,12 +91,10 @@ HTML;
 	</p>
 </div>
 HTML;
-		if( $is_display ) {
+		if ( $is_display ) {
 			echo $html;
-		}
-		else {
+		} else {
 			return $html;
 		}
 	}
-
 }

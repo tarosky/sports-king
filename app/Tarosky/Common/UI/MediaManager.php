@@ -21,9 +21,9 @@ class MediaManager extends Singleton {
 	 *
 	 * @param array $settings
 	 */
-	public function __construct( array $settings = [ ] ) {
-		add_action( 'media_cat_edit_form_fields', [ $this, 'edit_form_fields' ], 10, 2 );
-		add_action( 'edited_terms', [ $this, 'edited_terms' ], 10, 2 );
+	public function __construct( array $settings = array() ) {
+		add_action( 'media_cat_edit_form_fields', array( $this, 'edit_form_fields' ), 10, 2 );
+		add_action( 'edited_terms', array( $this, 'edited_terms' ), 10, 2 );
 	}
 
 	/**
@@ -49,14 +49,14 @@ class MediaManager extends Singleton {
 	 * @param string $taxonomy
 	 */
 	public function edit_form_fields( $term, $taxonomy ) {
-		$id = get_term_meta( $term->term_id, 'media_logo', true );
+		$id    = get_term_meta( $term->term_id, 'media_logo', true );
 		$order = get_term_meta( $term->term_id, 'media_order', true );
 		?>
 		<tr>
 			<th>媒体ロゴ</th>
 			<td>
-				<?php wp_nonce_field( 'update_media', '_mediamanagernonce', false ) ?>
-				<?php $this->image_input( 'media_logo', $id, 1 ) ?>
+				<?php wp_nonce_field( 'update_media', '_mediamanagernonce', false ); ?>
+				<?php $this->image_input( 'media_logo', $id, 1 ); ?>
 				<p class="description">
 					サイズは300x100の透過の画像を設定してください
 				</p>
@@ -65,11 +65,10 @@ class MediaManager extends Singleton {
 		<tr>
 			<th><label for="media_order">優先順位</label></th>
 			<td>
-				<input type="number" name="media_order" id="media_order" value="<?= esc_attr( $order ) ?>" />
+				<input type="number" name="media_order" id="media_order" value="<?php echo esc_attr( $order ); ?>" />
 				<p class="description">大きい数字ほど先に表示されます。</p>
 			</td>
 		</tr>
 		<?php
 	}
-
 }

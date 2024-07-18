@@ -23,8 +23,8 @@ class HeadMetaHooks extends HookPattern {
 		// デフォルトのサイトマップをなくす
 		add_filter( 'wp_sitemaps_enabled', '__return_false' );
 		// meta=robotsをカスタマイズ
-		add_filter( 'wp_robots', [ $this, 'robots_meta' ], 10, 1 );
-		add_action( 'wp_head', [ $this, 'archive_canonical' ], 2 );
+		add_filter( 'wp_robots', array( $this, 'robots_meta' ), 10, 1 );
+		add_action( 'wp_head', array( $this, 'archive_canonical' ), 2 );
 	}
 
 	/**
@@ -33,18 +33,18 @@ class HeadMetaHooks extends HookPattern {
 	 * @return array[] 関数名と優先度からなる配列の配列。
 	 */
 	protected function hooks_to_remove() {
-		return apply_filters( 'sk_hooks_to_remove_in_head', [
-			[ 'feed_links_extra', 3 ],
-			[ 'feed_links', 2 ],
-			[ 'rsd_link', 10 ],
-			[ 'wlwmanifest_link', 10 ],
-			[ 'index_rel_link', 10 ],
-			[ 'parent_post_rel_link', 10 ],
-			[ 'start_post_rel_link', 10 ],
-			[ 'adjacent_posts_rel_link_wp_head', 10 ],
-			[ 'wp_generator', 10 ],
-			[ 'wp_shortlink_wp_head', 10 ],
-		] );
+		return apply_filters( 'sk_hooks_to_remove_in_head', array(
+			array( 'feed_links_extra', 3 ),
+			array( 'feed_links', 2 ),
+			array( 'rsd_link', 10 ),
+			array( 'wlwmanifest_link', 10 ),
+			array( 'index_rel_link', 10 ),
+			array( 'parent_post_rel_link', 10 ),
+			array( 'start_post_rel_link', 10 ),
+			array( 'adjacent_posts_rel_link_wp_head', 10 ),
+			array( 'wp_generator', 10 ),
+			array( 'wp_shortlink_wp_head', 10 ),
+		) );
 	}
 
 	/**
@@ -65,7 +65,7 @@ class HeadMetaHooks extends HookPattern {
 	 */
 	protected function avoid_robots_txt_generation() {
 		if ( class_exists( 'wpie\core\WPIE_General' ) ) {
-			remove_action( 'admin_init', [ 'wpie\core\WPIE_General', 'update_file_security' ] );
+			remove_action( 'admin_init', array( 'wpie\core\WPIE_General', 'update_file_security' ) );
 		}
 	}
 
@@ -86,14 +86,14 @@ class HeadMetaHooks extends HookPattern {
 			}
 		} elseif ( is_404() ) {
 			// 404ページはnoindex
-			$robots['noindex']  = true;
+			$robots['noindex'] = true;
 		} elseif ( is_attachment() && $no_index_attachment ) {
 			// 添付ファイルかつnoindex指定ならnoindex
 			$robots['noindex'] = true;
 		} elseif ( function_exists( 'tps_get_search_engine_page' ) && is_page( tps_get_search_engine_page() ) ) {
 			// Google検索プラグインの場合
 			// see: https://github.com/tarosky/taro-programmable-search
-			$robots[ 'noindex' ] = true;
+			$robots['noindex'] = true;
 		}
 		return $robots;
 	}
@@ -122,7 +122,7 @@ class HeadMetaHooks extends HookPattern {
 			return;
 		}
 		// canonicalを出すべき重要なURL
-		$canonical_taxonomies = apply_filters( 'sk_canonical_taxonomies', [ 'category', 'league' ] );
+		$canonical_taxonomies = apply_filters( 'sk_canonical_taxonomies', array( 'category', 'league' ) );
 		if ( ! in_array( get_queried_object()->taxonomy, $canonical_taxonomies, true ) ) {
 			return;
 		}

@@ -18,37 +18,37 @@ class Transfer extends Model {
 
 	protected $updated_column = 'modified';
 
-	protected $default_placeholder = [
-		'id'         => '%d',
-		'post_id'    => '%d',
-		'player_id'  => '%d',
-		'ymd'        => '%s',
-		'national_year' => '%d',
-		'abroad_year'	=> '%d',
-		'abroad_season' => '%d',
+	protected $default_placeholder = array(
+		'id'                      => '%d',
+		'post_id'                 => '%d',
+		'player_id'               => '%d',
+		'ymd'                     => '%s',
+		'national_year'           => '%d',
+		'abroad_year'             => '%d',
+		'abroad_season'           => '%d',
 
-//		'from_abroad'     => '%d',
-//		'from_league_id'  => '%s',
-		'from_league_term_id'	=> '%d',
-		'from_league_is_abroad'	=> '%d',
-		'from_team_id'  => '%d',
-		'from_position' => '%s',
-		'from_number'   => '%d',
-		'from_employ'   => '%s',
-		'from_employ_free'   => '%s',
+		//      'from_abroad'     => '%d',
+		//      'from_league_id'  => '%s',
+			'from_league_term_id' => '%d',
+		'from_league_is_abroad'   => '%d',
+		'from_team_id'            => '%d',
+		'from_position'           => '%s',
+		'from_number'             => '%d',
+		'from_employ'             => '%s',
+		'from_employ_free'        => '%s',
 
-//		'to_abroad'     => '%d',
-//		'to_league_id'  => '%s',
-		'to_league_term_id'     => '%d',
-		'to_league_is_abroad'	=> '%d',
-		'to_team_id'    => '%d',
-		'to_position'   => '%s',
-		'to_number'     => '%d',
-		'to_employ'     => '%s',
-		'to_employ_free'     => '%s',
+		//      'to_abroad'     => '%d',
+		//      'to_league_id'  => '%s',
+			'to_league_term_id'   => '%d',
+		'to_league_is_abroad'     => '%d',
+		'to_team_id'              => '%d',
+		'to_position'             => '%s',
+		'to_number'               => '%d',
+		'to_employ'               => '%s',
+		'to_employ_free'          => '%s',
 
-		'modified'      => '%s',
-	];
+		'modified'                => '%s',
+	);
 
 	/**
 	 * データベースを作成する
@@ -110,10 +110,10 @@ SQL;
 	public function override( $post_id, $data ) {
 
 		$exists = (int) $this->exists( $post_id );
-		if ( !$exists ) {
+		if ( ! $exists ) {
 			return $this->insert( $data );
 		} else {
-			return $this->update( $data, ['id' => $exists] );
+			return $this->update( $data, array( 'id' => $exists ) );
 		}
 	}
 
@@ -121,29 +121,29 @@ SQL;
 	 * 移籍情報を取得
 	 *
 	 */
-	public function get_transfer_info( $args = [] ) {
-		if( !isset($args['status']) ) {
+	public function get_transfer_info( $args = array() ) {
+		if ( ! isset( $args['status'] ) ) {
 			$args['status'] = '"publish"';
 		}
 
 		$query = <<<SQL
 			SELECT * FROM {$this->table}
 SQL;
-		if( $args ) {
+		if ( $args ) {
 			$count = 0;
-			foreach( $args as $key => $val ) {
+			foreach ( $args as $key => $val ) {
 				$junction = 'WHERE';
-				$value = isset($val['value']) ? $val['value'] : $val ;
-				$compare = isset($val['compare']) ? $val['compare'] : '=' ;
+				$value    = isset( $val['value'] ) ? $val['value'] : $val;
+				$compare  = isset( $val['compare'] ) ? $val['compare'] : '=';
 
-				if( $count ) {
+				if ( $count ) {
 					$junction = 'AND';
 				}
 				$query .= <<<SQL
 
 					{$junction} {$key} {$compare} {$value}
 SQL;
-				$count++;
+				++$count;
 			}
 		}
 
@@ -152,5 +152,4 @@ SQL;
 SQL;
 		return $this->get_results( $query );
 	}
-
 }

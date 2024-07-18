@@ -21,11 +21,11 @@ class CategoryManager extends Singleton {
 	 *
 	 * @param array $settings
 	 */
-	public function __construct( array $settings = [] ) {
-//		add_action( 'edit_category_form_fields', [ $this, 'edit_form_fields' ] );
-        add_action( 'category_edit_form_fields', [ $this, 'edit_form_fields' ] );
-		add_action( 'category_edit_form', [ $this, 'category_edit_form' ], 10, 2 );
-		add_action( 'edited_terms', [ $this, 'edited_terms' ], 10, 2 );
+	public function __construct( array $settings = array() ) {
+		//      add_action( 'edit_category_form_fields', [ $this, 'edit_form_fields' ] );
+		add_action( 'category_edit_form_fields', array( $this, 'edit_form_fields' ) );
+		add_action( 'category_edit_form', array( $this, 'category_edit_form' ), 10, 2 );
+		add_action( 'edited_terms', array( $this, 'edited_terms' ), 10, 2 );
 	}
 
 	/**
@@ -87,8 +87,8 @@ class CategoryManager extends Singleton {
 			</th>
 			<td>
 				<select name="sk_category_priority" id="sk_category_priority" size="1">
-					<?php for( $i = 1; $i <= 10; $i++ ) : ?>
-						<?= sprintf( "<option value=\"%d\" %s>%d</option>", $i, selected( $i, get_term_meta( $term->term_id, 'cat_priority', true ), false ) ,$i ) ?>
+					<?php for ( $i = 1; $i <= 10; $i++ ) : ?>
+						<?php echo sprintf( '<option value="%d" %s>%d</option>', $i, selected( $i, get_term_meta( $term->term_id, 'cat_priority', true ), false ), $i ); ?>
 					<?php endfor; ?>
 				</select>
 				<p class="description">
@@ -104,13 +104,13 @@ class CategoryManager extends Singleton {
 				<p class="description">
 					親テーマから継承されている色：
 					<?php if ( $color = sk_term_cascading_meta( $term, 'color', $term->taxonomy, false ) ) : ?>
-						<span style="color: <?= esc_attr( $color ) ?>;">■ <?= esc_attr( $color ) ?></span>
+						<span style="color: <?php echo esc_attr( $color ); ?>;">■ <?php echo esc_attr( $color ); ?></span>
 					<?php else : ?>
 						<strong>なし</strong>
 					<?php endif; ?>
 				</p>
-				<input type="text" value="<?= esc_attr( get_term_meta( $term->term_id, 'color', true ) ) ?>"
-				       id="sk_category_color" name="sk_category_color"/>
+				<input type="text" value="<?php echo esc_attr( get_term_meta( $term->term_id, 'color', true ) ); ?>"
+						id="sk_category_color" name="sk_category_color"/>
 				<script>
 					jQuery(document).ready(function ($) {
 						$('#sk_category_color').wpColorPicker();
@@ -125,11 +125,11 @@ class CategoryManager extends Singleton {
 					継承されている画像:
 				<?php
 				if ( ( $parent_media = sk_term_cascading_meta( $term, 'cat_image', $term->taxonomy, false ) )
-				     && ( $attachment = get_post( $parent_media ) )
-				     && ( 'attachment' == $attachment->post_type )
+					&& ( $attachment = get_post( $parent_media ) )
+					&& ( 'attachment' == $attachment->post_type )
 				) :
 					?>
-						<?= wp_get_attachment_image( $attachment->ID, 'thumbnail' ) ?>
+						<?php echo wp_get_attachment_image( $attachment->ID, 'thumbnail' ); ?>
 					<?php else : ?>
 						なし
 					<?php endif; ?>
@@ -158,5 +158,4 @@ class CategoryManager extends Singleton {
 		</div>
 		<?php
 	}
-
 }

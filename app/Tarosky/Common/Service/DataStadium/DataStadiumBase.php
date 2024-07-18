@@ -31,7 +31,7 @@ abstract class DataStadiumBase {
 	/**
 	 * @var array 接続情報 'host', 'user', 'pass'を持つ
 	 */
-	protected $credential = [];
+	protected $credential = array();
 
 	/**
 	 * @var string FTPのルートディレクトリ
@@ -55,7 +55,7 @@ abstract class DataStadiumBase {
 				throw new \Exception( 'FTPへのログインに失敗しました。', 401 );
 			}
 			// PASVモードにする
-			$this->set_pasv(true);
+			$this->set_pasv( true );
 			// ルートに移動
 			ftp_chdir( $this->conn, $this->root_dir );
 		} catch ( \Exception $e ) {
@@ -132,8 +132,8 @@ abstract class DataStadiumBase {
 	 * @return array
 	 */
 	protected function recursive_list( $dir ) {
-		$files = [];
-		$list = ftp_nlist( $this->conn, $dir );
+		$files = array();
+		$list  = ftp_nlist( $this->conn, $dir );
 		if ( $list ) {
 			foreach ( $list as $file ) {
 				if ( $this->has_extension( $file ) ) {
@@ -146,7 +146,7 @@ abstract class DataStadiumBase {
 						$files[] = $file;
 					}
 				}
-			};
+			}
 		}
 
 		return $files;
@@ -167,8 +167,8 @@ abstract class DataStadiumBase {
 		}
 		$xml_str = str_replace( 'encoding="Shift_JIS"', ' encoding="UTF-8"', mb_convert_encoding( $xml_str, 'utf-8', 'sjis-win' ) );
 		if ( $xml = simplexml_load_string( $xml_str ) ) {
-			$path = untrailingslashit( $this->get_path_base() ).'/'.ltrim( $file, '/' );
-			$dir = dirname( $path );
+			$path = untrailingslashit( $this->get_path_base() ) . '/' . ltrim( $file, '/' );
+			$dir  = dirname( $path );
 			if ( ! is_dir( $dir ) ) {
 				mkdir( $dir, 0755, true );
 			}
@@ -190,7 +190,7 @@ abstract class DataStadiumBase {
 		if ( ! $year ) {
 			$year = date_i18n( 'Y' );
 		}
-		return ABSPATH."NK/data/{$year}/";
+		return ABSPATH . "NK/data/{$year}/";
 	}
 
 	/**
@@ -306,6 +306,4 @@ abstract class DataStadiumBase {
 				break;
 		}
 	}
-
-
 }

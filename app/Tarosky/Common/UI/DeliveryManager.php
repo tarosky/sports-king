@@ -15,40 +15,40 @@ class DeliveryManager extends Singleton {
 	/**
 	 * @var array Field Vavlue
 	 */
-	protected $fields = [
+	protected $fields = array(
 		'1' => '全てに配信（含むYahoo）',
 		'2' => 'Yahoo以外に配信',
 		'3' => 'ニコニコにのみ配信',
 		'5' => 'BKAPPにのみ配信',
 		''  => '配信しない',
-	];
+	);
 
-	protected $post_types = [ 'post', 'bkapp' ];
+	protected $post_types = array( 'post', 'bkapp' );
 
 	/**
 	 * DeliveryManager constructor.
 	 *
 	 * @param array $settings
 	 */
-	protected function __construct( array $settings = [] ) {
+	protected function __construct( array $settings = array() ) {
 		if ( is_admin() ) {
 			// Add meta box
 			add_action( 'add_meta_boxes', function ( $post_type ) {
 				if ( false !== array_search( $post_type, $this->post_types ) ) {
 					// メタボックス追加
-					add_meta_box( 'sk_delivery_manager', '外部配信設定', [
+					add_meta_box( 'sk_delivery_manager', '外部配信設定', array(
 						$this,
 						'add_meta_box',
-					], $post_type, 'side', 'default' );
+					), $post_type, 'side', 'default' );
 					// JSも追加
 					wp_enqueue_script( 'sk-delivery-helper' );
-					wp_localize_script( 'sk-delivery-helper', 'SkDeliveryHelper', $this->get_fields($post_type) );
+					wp_localize_script( 'sk-delivery-helper', 'SkDeliveryHelper', $this->get_fields( $post_type ) );
 				}
 			}, 9 );
 			// Add title
-			add_action( 'edit_form_before_permalink', [ $this, 'after_title' ] );
+			add_action( 'edit_form_before_permalink', array( $this, 'after_title' ) );
 			// Save
-			add_action( 'save_post', [ $this, 'save_post' ], 10, 2 );
+			add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
 		}
 	}
 
@@ -89,11 +89,11 @@ class DeliveryManager extends Singleton {
 		$current_value = $this->get_current_value( $post );
 		?>
 		<div class="sk_delivery__buttons">
-			<?php foreach ( $this->get_fields(get_post_type($post)) as $value => $label ) : ?>
+			<?php foreach ( $this->get_fields( get_post_type( $post ) ) as $value => $label ) : ?>
 				<label class="sk_delivery__label">
 					<input class="sk_delivery__input" type="radio" name="yahoo_upload"
-					       value="<?= esc_attr( $value ) ?>" <?php checked( $current_value == $value ) ?>/>
-					<?= esc_html( $label ) ?>
+							value="<?php echo esc_attr( $value ); ?>" <?php checked( $current_value == $value ); ?>/>
+					<?php echo esc_html( $label ); ?>
 				</label>
 			<?php endforeach; ?>
 		</div>
@@ -150,15 +150,15 @@ class DeliveryManager extends Singleton {
 	protected function get_fields( $post_type ) {
 		$ret_fields = $this->fields;
 
-		switch( $post_type ){
+		switch ( $post_type ) {
 			case 'bkapp':
-				foreach( $ret_fields as $key => $field ) {
-					//	bkapp以外unset
-					if( $key != 5 ) {
-						unset( $ret_fields[$key] );
+				foreach ( $ret_fields as $key => $field ) {
+					//  bkapp以外unset
+					if ( $key != 5 ) {
+						unset( $ret_fields[ $key ] );
 					}
 				}
-				array_values($ret_fields);
+				array_values( $ret_fields );
 				break;
 		}
 		return $ret_fields;
@@ -172,7 +172,7 @@ class DeliveryManager extends Singleton {
 	protected function get_current_value( $post ) {
 		$ret_current_value = $this->get_status( $post );
 
-		switch( get_post_type($post) ){
+		switch ( get_post_type( $post ) ) {
 			case 'bkapp':
 				$ret_current_value = 5;
 				break;
@@ -198,5 +198,4 @@ class DeliveryManager extends Singleton {
 				break;
 		}
 	}
-
 }

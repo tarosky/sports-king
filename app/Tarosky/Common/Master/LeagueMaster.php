@@ -17,7 +17,7 @@ class LeagueMaster extends MasterBase {
 	 * @return string[]
 	 */
 	public static function league_name() {
-		return static::$masters[ 'league_name' ] ?? [];
+		return static::$masters['league_name'] ?? array();
 	}
 
 	/**
@@ -29,14 +29,14 @@ class LeagueMaster extends MasterBase {
 	 * @since 1.0.2
 	 */
 	public static function unavailable_leagues() {
-		return static::$masters[ 'unavailable' ] ?? [];
+		return static::$masters['unavailable'] ?? array();
 	}
 
 	/**
 	 * @return int[]
 	 */
 	public static function ranking_leagues() {
-		return static::$masters[ 'has_ranking' ] ?? [];
+		return static::$masters['has_ranking'] ?? array();
 	}
 
 	/**
@@ -93,7 +93,7 @@ class LeagueMaster extends MasterBase {
 	public static function leagues( $abroad = false ) {
 		$key = $abroad ? 'abroad' : 'domestic';
 
-		return isset( self::$masters[ $key ] ) ? self::$masters[ $key ] : [];
+		return isset( self::$masters[ $key ] ) ? self::$masters[ $key ] : array();
 	}
 
 	/**
@@ -104,6 +104,6 @@ class LeagueMaster extends MasterBase {
 	 * @return bool
 	 */
 	public static function is_abroad_league( $league_id ) {
-		return array_key_exists( (int) $league_id, self::$masters[ 'abroad' ] );
+		return array_key_exists( (int) $league_id, self::$masters['abroad'] );
 	}
 }

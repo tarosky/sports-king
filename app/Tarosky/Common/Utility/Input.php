@@ -77,10 +77,10 @@ class Input extends Singleton {
 	 * @return array
 	 */
 	public function file_info( $key ) {
-		if ( isset( $_FILES[ $key ]['error'] ) && $_FILES[ $key ]['error'] == UPLOAD_ERR_OK ) {
+		if ( isset( $_FILES[ $key ]['error'] ) && UPLOAD_ERR_OK === $_FILES[ $key ]['error'] ) {
 			return $_FILES[ $key ];
 		} else {
-			return [];
+			return array();
 		}
 	}
 
@@ -126,7 +126,7 @@ class Input extends Singleton {
 	 * @return bool|string
 	 */
 	public function remote_ip() {
-		return isset( $_SERVER['REMOTE_ADDR'] ) ? $_SERVER['REMOTE_ADDR'] : false;
+		return $_SERVER['REMOTE_ADDR'] ?? false;
 	}
 
 	/**
@@ -142,5 +142,4 @@ class Input extends Singleton {
 
 		return $nonce && wp_verify_nonce( $nonce, $action );
 	}
-
 }

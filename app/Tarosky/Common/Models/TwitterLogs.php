@@ -19,13 +19,13 @@ class TwitterLogs extends Model {
 
 	protected $updated_column = 'modified';
 
-	protected $default_placeholder = [
-		'id'         => '%s',
-		'abroad'     => '%d',
-		'block_id'   => '%s',
-		'tweet'      => '%s',
-	    'modified'   => '%s',
-	];
+	protected $default_placeholder = array(
+		'id'       => '%s',
+		'abroad'   => '%d',
+		'block_id' => '%s',
+		'tweet'    => '%s',
+		'modified' => '%s',
+	);
 
 	/**
 	 * データベースを作成する
@@ -77,10 +77,10 @@ SQL;
 	 * @return false|int
 	 */
 	public function save( $abroad, $block_id, $text ) {
-		return $this->insert([
-			'abroad' => $abroad,
-		    'block_id' => $block_id,
-		    'tweet' => $text,
-		]);
+		return $this->insert(array(
+			'abroad'   => $abroad,
+			'block_id' => $block_id,
+			'tweet'    => $text,
+		));
 	}
 }

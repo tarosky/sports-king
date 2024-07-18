@@ -15,8 +15,8 @@ class MediaHelperHooks extends HookPattern {
 	 * {@inheritDoc}
 	 */
 	protected function register_hooks(): void {
-		add_filter( 'manage_upload_columns', [ $this, 'attachments_column' ] );
-		add_action( 'manage_media_custom_column', [ $this, 'attachment_column_content' ], 10, 2 );
+		add_filter( 'manage_upload_columns', array( $this, 'attachments_column' ) );
+		add_action( 'manage_media_custom_column', array( $this, 'attachment_column_content' ), 10, 2 );
 	}
 
 	/**
@@ -26,10 +26,10 @@ class MediaHelperHooks extends HookPattern {
 	 * @return string[]
 	 */
 	public function attachments_column( $columns ) {
-		if (  'list' !== filter_input( INPUT_GET, 'mode' ) ) {
+		if ( 'list' !== filter_input( INPUT_GET, 'mode' ) ) {
 			return $columns;
 		}
-		$new_columns = [];
+		$new_columns = array();
 		foreach ( $columns as $key => $label ) {
 			$new_columns[ $key ] = $label;
 			if ( 'parent' === $key ) {
@@ -58,10 +58,10 @@ class MediaHelperHooks extends HookPattern {
 			return;
 		}
 		// 投稿タイプ名を取得
-		$link = esc_url( add_query_arg( [
+		$link = esc_url( add_query_arg( array(
 			'mode'        => 'list',
 			'post_parent' => $parent->ID,
-		], admin_url( 'upload.php' ) ) );
+		), admin_url( 'upload.php' ) ) );
 		printf(
 			'<a href="%s">%s</a>',
 			$link,
@@ -80,9 +80,9 @@ class MediaHelperHooks extends HookPattern {
 			return;
 		}
 		// 本文に利用している可能性を模索
-		$urls = [
+		$urls = array(
 			wp_get_attachment_url( $post_id ),
-		];
+		);
 		if ( str_contains( get_post_mime_type( $post_id ), 'image/' ) ) {
 			foreach ( get_intermediate_image_sizes() as $size ) {
 				$url = wp_get_attachment_image_url( $post_id, $size );

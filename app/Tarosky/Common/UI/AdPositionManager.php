@@ -37,14 +37,14 @@ class AdPositionManager extends Singleton {
 	 * @param array $settings
 	 */
 	protected function __construct( array $settings ) {
-		add_action( 'init', [ $this, 'register_ad_post_type' ] );
-		add_action( 'template_redirect', [ $this, 'template_redirect' ] );
-		add_filter( "manage_{$this->post_type}_posts_columns", [ $this, 'admin_columns' ] );
-		add_action( "manage_{$this->post_type}_posts_custom_column", [ $this, 'do_admin_column' ], 10, 2 );
-		add_action( 'admin_notices', [ $this, 'admin_notice' ] );
-		add_filter( "manage_edit-{$this->taxonomy}_columns", [ $this, 'tax_columns' ] );
-		add_filter( "manage_{$this->taxonomy}_custom_column", [ $this, 'do_tax_columns' ], 10, 3 );
-		add_action( $this->taxonomy . '_edit_form_fields', [ $this, 'form_fields' ] );
+		add_action( 'init', array( $this, 'register_ad_post_type' ) );
+		add_action( 'template_redirect', array( $this, 'template_redirect' ) );
+		add_filter( "manage_{$this->post_type}_posts_columns", array( $this, 'admin_columns' ) );
+		add_action( "manage_{$this->post_type}_posts_custom_column", array( $this, 'do_admin_column' ), 10, 2 );
+		add_action( 'admin_notices', array( $this, 'admin_notice' ) );
+		add_filter( "manage_edit-{$this->taxonomy}_columns", array( $this, 'tax_columns' ) );
+		add_filter( "manage_{$this->taxonomy}_custom_column", array( $this, 'do_tax_columns' ), 10, 3 );
+		add_action( $this->taxonomy . '_edit_form_fields', array( $this, 'form_fields' ) );
 	}
 
 	/**
@@ -54,8 +54,8 @@ class AdPositionManager extends Singleton {
 	 */
 	public function register_ad_post_type() {
 		// Register post type
-		$post_type_args = apply_filters( 'sk_ad_post_type_args', [
-			'labels'          => [ 'name' => '広告ブロック' ],
+		$post_type_args = apply_filters( 'sk_ad_post_type_args', array(
+			'labels'          => array( 'name' => '広告ブロック' ),
 			'public'          => false,
 			'show_ui'         => true,
 			'capability_type' => 'post',
@@ -63,14 +63,14 @@ class AdPositionManager extends Singleton {
 			'menu_position'   => 60,
 			'menu_icon'       => 'dashicons-megaphone',
 			'taxonomies'      => array( 'ad-position' ),
-			'supports'        => [ 'title', 'author' ],
-		] );
+			'supports'        => array( 'title', 'author' ),
+		) );
 		register_post_type( 'ad-content', $post_type_args );
 
 		/* カスタムタクソノミーを定義 */
-		$taxonomy_args = apply_filters( 'sk_ad_taxonomy_args', [
+		$taxonomy_args = apply_filters( 'sk_ad_taxonomy_args', array(
 			'label'             => 'ポジション',
-			'labels'            => [
+			'labels'            => array(
 				'name'          => '広告ポジション',
 				'singular_name' => '広告ポジション',
 				'search_items'  => '広告ポジションを検索',
@@ -81,11 +81,11 @@ class AdPositionManager extends Singleton {
 				'update_item'   => '広告ポジションを更新',
 				'add_new_item'  => '新規広告ポジションを追加',
 				'new_item_name' => '新しい広告ポジション',
-			],
+			),
 			'show_admin_column' => true,
 			'hierarchical'      => false,
-			'meta_box_cb'       => [ $this, 'metabox_cb' ],
-		] );
+			'meta_box_cb'       => array( $this, 'metabox_cb' ),
+		) );
 		register_taxonomy( 'ad-position', 'ad-content', $taxonomy_args );
 	}
 
@@ -141,7 +141,7 @@ class AdPositionManager extends Singleton {
 	 *
 	 * @return string
 	 */
-	public function do_tax_columns ( $value, $column, $term_id ) {
+	public function do_tax_columns( $value, $column, $term_id ) {
 		switch ( $column ) {
 			case 'registered':
 				if ( $this->is_registered( $term_id ) ) {
@@ -190,21 +190,21 @@ class AdPositionManager extends Singleton {
 		if ( $this->suppressed ) {
 			return '';
 		}
-		foreach ( get_posts( [
+		foreach ( get_posts( array(
 			'post_type'      => $this->post_type,
-		    'post_status'    => 'publish',
-		    'posts_per_page' => 1,
-		    'orderby' => [
-			    'date' => 'DESC',
-		    ],
-		    'tax_query' => [
-			    [
-				    'taxonomy' => $this->taxonomy,
-				    'field'    => 'slug',
-				    'terms'    => $slug,
-                ],
-		    ],
-		] ) as $ad ) {
+			'post_status'    => 'publish',
+			'posts_per_page' => 1,
+			'orderby'        => array(
+				'date' => 'DESC',
+			),
+			'tax_query'      => array(
+				array(
+					'taxonomy' => $this->taxonomy,
+					'field'    => 'slug',
+					'terms'    => $slug,
+				),
+			),
+		) ) as $ad ) {
 			return (string) get_post_meta( $ad->ID, '_ad_content', true );
 		}
 		return '';
@@ -218,26 +218,26 @@ class AdPositionManager extends Singleton {
 	 * @return array
 	 */
 	public function get_all( $slug ) {
-		$ads = [];
+		$ads = array();
 		// 広告が抑制中なら何もしない
 		if ( $this->suppressed ) {
 			return $ads;
 		}
-		foreach ( get_posts( [
-			'post_type' => $this->post_type,
-			'post_status' => 'publish',
+		foreach ( get_posts( array(
+			'post_type'      => $this->post_type,
+			'post_status'    => 'publish',
 			'posts_per_page' => -1,
-			'orderby' => [
+			'orderby'        => array(
 				'date' => 'DESC',
-			],
-			'tax_query' => [
-				[
+			),
+			'tax_query'      => array(
+				array(
 					'taxonomy' => $this->taxonomy,
 					'field'    => 'slug',
 					'terms'    => $slug,
-				],
-			],
-		] ) as $ad ) {
+				),
+			),
+		) ) as $ad ) {
 			$ads[] = (string) get_post_meta( $ad->ID, '_ad_content', true );
 		}
 		return $ads;
@@ -250,13 +250,13 @@ class AdPositionManager extends Singleton {
 	 */
 	public function should_register_count() {
 		$should = count( array_keys( $this->positions ) );
-		$terms  = get_terms( [
+		$terms  = get_terms( array(
 			'taxonomy'   => $this->taxonomy,
 			'hide_empty' => false,
-		] );
+		) );
 		foreach ( $terms as $term ) {
-			if ( isset( $this->positions[ $term->slug ]) ) {
-				$should--;
+			if ( isset( $this->positions[ $term->slug ] ) ) {
+				--$should;
 			}
 		}
 		return $should;
@@ -272,18 +272,18 @@ class AdPositionManager extends Singleton {
 		foreach ( $this->positions as $slug => $position ) {
 			$term = get_term( $slug, $this->taxonomy );
 			if ( is_a( $term, 'WP_Term' ) ) {
-				$result = wp_update_term( $term->term_id, $this->taxonomy, [
+				$result = wp_update_term( $term->term_id, $this->taxonomy, array(
 					'term'        => $position['label'],
 					'description' => $position['description'],
-				] );
+				) );
 			} else {
-				$result = wp_insert_term( $position['label'], $this->taxonomy, [
+				$result = wp_insert_term( $position['label'], $this->taxonomy, array(
 					'slug'        => $slug,
 					'description' => $position['description'],
-				] );
+				) );
 			}
 			if ( ! is_wp_error( $result ) ) {
-				$registered ++;
+				++$registered;
 			}
 		}
 
@@ -298,13 +298,13 @@ class AdPositionManager extends Singleton {
 	 */
 	public function metabox_cb( $post, $screen ) {
 		$terms = get_the_terms( $post, 'ad-position' );
-		$tags  = [];
+		$tags  = array();
 		if ( $terms && ! is_wp_error( $terms ) ) {
 			foreach ( $terms as $term ) {
 				$tags[] = $term->name;
 			}
 		}
-		$all_terms = get_terms( 'ad-position', [ 'hide_empty' => false ] );
+		$all_terms = get_terms( 'ad-position', array( 'hide_empty' => false ) );
 		if ( ! is_wp_error( $all_terms ) ) {
 			$all_terms = array_filter( $all_terms, function ( $term ) {
 				return $this->is_registered( $term );
@@ -312,7 +312,7 @@ class AdPositionManager extends Singleton {
 		}
 		?>
 		<input type="hidden" name="tax_input[ad-position]" id="ad-position-saver"
-		       value="<?= esc_attr( implode( ',', $tags ) ) ?>"/>
+				value="<?php echo esc_attr( implode( ',', $tags ) ); ?>"/>
 		<script>
 			(function(){
 				jQuery(document).ready(function($){
@@ -333,11 +333,11 @@ class AdPositionManager extends Singleton {
 				<?php foreach ( $all_terms as $term ) : ?>
 					<div class="adPosition__item">
 						<label class="adPosition__label">
-							<input type="checkbox" class="adPosition__check" value="<?= esc_attr( $term->name ) ?>" <?php checked( has_term( $term->term_id, $term->taxonomy, $post ) ) ?>/>
-							<?= esc_html( $term->name ) ?>
+							<input type="checkbox" class="adPosition__check" value="<?php echo esc_attr( $term->name ); ?>" <?php checked( has_term( $term->term_id, $term->taxonomy, $post ) ); ?>/>
+							<?php echo esc_html( $term->name ); ?>
 						</label>
 						<p class="adPosition__description">
-							<?= esc_html( $term->description ) ?>
+							<?php echo esc_html( $term->description ); ?>
 						</p>
 					</div>
 				<?php endforeach; ?>
@@ -347,7 +347,8 @@ class AdPositionManager extends Singleton {
 					複数の場所にチェックすると、同じタグが複数の箇所に表示されます。
 				</p>
 			</div>
-		<?php endif;
+			<?php
+		endif;
 	}
 
 	/**
@@ -382,11 +383,11 @@ class AdPositionManager extends Singleton {
 		}
 	}
 
-/**
-	 * ターム編集画面にフィールドを追加
-	 *
-	 * @param \WP_Term $term
-	 */
+	/**
+		 * ターム編集画面にフィールドを追加
+		 *
+		 * @param \WP_Term $term
+		 */
 	public function form_fields( $term ) {
 		?>
 		<tr>
@@ -416,9 +417,9 @@ class AdPositionManager extends Singleton {
 	 * @return void
 	 */
 	public function __get( $name ) {
-		switch( $name ) {
+		switch ( $name ) {
 			case 'positions':
-				return apply_filters( 'sk_ad_positions', [] );
+				return apply_filters( 'sk_ad_positions', array() );
 			default:
 				return null;
 		}

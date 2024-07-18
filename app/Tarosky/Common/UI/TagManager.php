@@ -21,12 +21,12 @@ class TagManager extends Singleton {
 	 *
 	 * @param array $settings
 	 */
-	public function __construct( array $settings = [] ) {
-//		add_action( 'edit_tag_form_fields', [ $this, 'edit_form_fields' ] );
-        add_action( 'post_tag_edit_form_fields', [ $this, 'edit_form_fields' ] );
-		add_action( 'bk_transfer_tag_edit_form_fields', [ $this, 'edit_transfer_form_fields' ] );
-		add_action( 'post_tag_edit_form', [ $this, 'post_tag_edit_form' ], 10, 2 );
-		add_action( 'edited_terms', [ $this, 'edited_terms' ], 10, 2 );
+	public function __construct( array $settings = array() ) {
+		//      add_action( 'edit_tag_form_fields', [ $this, 'edit_form_fields' ] );
+		add_action( 'post_tag_edit_form_fields', array( $this, 'edit_form_fields' ) );
+		add_action( 'bk_transfer_tag_edit_form_fields', array( $this, 'edit_transfer_form_fields' ) );
+		add_action( 'post_tag_edit_form', array( $this, 'post_tag_edit_form' ), 10, 2 );
+		add_action( 'edited_terms', array( $this, 'edited_terms' ), 10, 2 );
 	}
 
 	/**
@@ -66,8 +66,8 @@ class TagManager extends Singleton {
 			</th>
 			<td>
 				<select name="sk_tag_priority" id="sk_tag_priority" size="1">
-					<?php for( $i = 1; $i <= 10; $i++ ) : ?>
-						<?= sprintf( "<option value=\"%d\" %s>%d</option>", $i, selected( $i, get_term_meta( $term->term_id, 'tag_priority', true ), false ) ,$i ) ?>
+					<?php for ( $i = 1; $i <= 10; $i++ ) : ?>
+						<?php echo sprintf( '<option value="%d" %s>%d</option>', $i, selected( $i, get_term_meta( $term->term_id, 'tag_priority', true ), false ), $i ); ?>
 					<?php endfor; ?>
 				</select>
 				<p class="description">
@@ -76,7 +76,7 @@ class TagManager extends Singleton {
 			</td>
 		</tr>
 
-		<?php if( $term->taxonomy == 'post_serial' ) : ?>
+		<?php if ( $term->taxonomy == 'post_serial' ) : ?>
 
 			<tr>
 				<th>画像</th>
@@ -85,11 +85,11 @@ class TagManager extends Singleton {
 						継承されている画像:
 					<?php
 					if ( ( $parent_media = sk_term_cascading_meta( $term, 'cat_image', $term->taxonomy, false ) )
-						 && ( $attachment = get_post( $parent_media ) )
-						 && ( 'attachment' == $attachment->post_type )
+						&& ( $attachment = get_post( $parent_media ) )
+						&& ( 'attachment' == $attachment->post_type )
 					) :
 						?>
-							<?= wp_get_attachment_image( $attachment->ID, 'thumbnail' ) ?>
+							<?php echo wp_get_attachment_image( $attachment->ID, 'thumbnail' ); ?>
 						<?php else : ?>
 							なし
 						<?php endif; ?>
@@ -120,5 +120,4 @@ class TagManager extends Singleton {
 		</div>
 		<?php
 	}
-
 }

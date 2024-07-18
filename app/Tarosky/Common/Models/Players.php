@@ -27,7 +27,7 @@ class Players extends Model {
 	 * Place holder
 	 * @var array
 	 */
-	protected $default_placeholder = [
+	protected $default_placeholder = array(
 		'id'       => '%d',
 		'code'     => '%s',
 		'type'     => '%d', // 表示フラグ1は国内、2は海外
@@ -40,7 +40,7 @@ class Players extends Model {
 		'created'  => '%s',
 		'modified' => '%s',
 		'data'     => '%s', // その他データ（JSON）
-	];
+	);
 
 	/**
 	 * Column to be created.
@@ -69,7 +69,7 @@ class Players extends Model {
 			ORDER BY id ASC
 			LIMIT %d, %d
 SQL;
-		$results = [];
+		$results = array();
 		foreach ( $this->results( $query, $offset, $limit ) as $player ) {
 			$data = json_decode( $player->data, true );
 			foreach ( $this->default_placeholder as $key => $pl ) {
@@ -90,14 +90,14 @@ SQL;
 	 *
 	 * @return array
 	 */
-	public function get_players( $names = [] ) {
+	public function get_players( $names = array() ) {
 		if ( ! $names ) {
-			return [];
+			return array();
 		}
-		$in_terms = implode( ', ', array_map( function($name){
-			return $this->db->prepare('%s', $name);
+		$in_terms = implode( ', ', array_map( function ( $name ) {
+			return $this->db->prepare( '%s', $name );
 		}, $names ) );
-		$query = <<<SQL
+		$query    = <<<SQL
 			SELECT p.*, ( count(p.ID) - 1 ) AS dupclidated FROM {$this->db->posts} AS p
 			WHERE post_type = 'player'
 			  AND post_status = 'publish'
@@ -115,14 +115,14 @@ SQL;
 	 * @return bool
 	 */
 	public function is_national_team( $team_id ) {
-		$term_ids = [];
-		$root = get_term_by( 'name', '代表', 'league' );
+		$term_ids = array();
+		$root     = get_term_by( 'name', '代表', 'league' );
 		if ( $root ) {
 			$term_ids[] = $root->term_id;
-			$children = get_terms( 'league', [
+			$children   = get_terms( 'league', array(
 				'hide_empty' => false,
-				'parent' => $root->term_id,
-			] );
+				'parent'     => $root->term_id,
+			) );
 			if ( $children && ! is_wp_error( $children ) ) {
 				foreach ( $children as $child ) {
 					$term_ids[] = $child->term_id;
@@ -145,37 +145,37 @@ SQL;
 	 */
 	public function get_team_members( $team = null ) {
 		$team = get_post( $team );
-		$args = [
+		$args = array(
 			'post_type'      => 'player',
 			'post_status'    => 'publish',
 			'posts_per_page' => - 1,
-			'orderby'        => [
+			'orderby'        => array(
 				'name' => 'ASC',
-			],
-		];
+			),
+		);
 		if ( $this->is_national_team( get_the_ID() ) ) {
-			$args['meta_query'] = [
-				[
-					'key' => '_player_international_team',
-				    'value' => $team->ID,
-				],
-			];
+			$args['meta_query'] = array(
+				array(
+					'key'   => '_player_international_team',
+					'value' => $team->ID,
+				),
+			);
 		} else {
 			$args['post_parent'] = get_the_ID();
 		}
-		$members = [];
-		//	GK DF MF FWの順番にするため先に空配列を作っておく
-		$members['GK'] = [];
-		$members['DF'] = [];
-		$members['MF'] = [];
-		$members['FW'] = [];
+		$members = array();
+		//  GK DF MF FWの順番にするため先に空配列を作っておく
+		$members['GK'] = array();
+		$members['DF'] = array();
+		$members['MF'] = array();
+		$members['FW'] = array();
 		foreach ( get_posts( $args ) as $player ) {
 			$position = get_post_meta( $player->ID, '_player_position', true );
 			if ( ! $position ) {
 				continue;
 			}
 			if ( ! isset( $members[ $position ] ) ) {
-				$members[ $position ] = [];
+				$members[ $position ] = array();
 			}
 			$members[ $position ][] = $player;
 		}
@@ -191,18 +191,18 @@ SQL;
 	 */
 	public function get_player_count( $team_id ) {
 		// 代表かそうでないかでアルゴリズムを変更
-		$args = [
+		$args = array(
 			'post_type'      => 'player',
 			'post_status'    => 'any',
 			'posts_per_page' => 1,
-		];
+		);
 		if ( $this->is_national_team( $team_id ) ) {
-			$args['meta_query'] = [
-				[
+			$args['meta_query'] = array(
+				array(
 					'key'   => apply_filters( 'sk_national_team_query_key', '_player_international_team' ),
 					'value' => $team_id,
-				],
-			];
+				),
+			);
 		} else {
 			$args['post_parent'] = $team_id;
 		}
@@ -226,7 +226,7 @@ SQL;
 			  AND post_title = %s
 			  AND post_parent = %d
 SQL;
-		$row =  $this->get_row( $query, $name, $team_id );
+		$row   = $this->get_row( $query, $name, $team_id );
 		return $row ? new \WP_Post( $row ) : null;
 	}
 
@@ -239,11 +239,11 @@ SQL;
 	 */
 	public function get_old_club( $post_id ) {
 		$old_id = get_post_meta( $post_id, '_player_id', true );
-		$query = <<<SQL
+		$query  = <<<SQL
 		SELECT club FROM {$this->table}
 		WHERE `id` = %d
 SQL;
-		return $this->get_var($query, $old_id);
+		return $this->get_var( $query, $old_id );
 	}
 
 	/**
@@ -253,14 +253,14 @@ SQL;
 	 *
 	 * @return null|\stdClass
 	 */
-	public function get_team_by_name($name) {
+	public function get_team_by_name( $name ) {
 		$query = <<<SQL
 		SELECT * FROM {$this->db->posts}
 		WHERE post_type = 'team'
 		  AND post_status = 'publish'
 		  AND post_title = %s
 SQL;
-		return $this->get_row($query, $name);
+		return $this->get_row( $query, $name );
 	}
 
 	/**
@@ -279,5 +279,4 @@ SQL;
 
 		return (bool) $this->get_var( $query, $id );
 	}
-
 }

@@ -13,12 +13,12 @@ abstract class HookPattern extends Singleton {
 	/**
 	 * @var bool アクティブかどうか
 	 */
-	static protected $active = true;
+	protected static $active = true;
 
 	/**
 	 * {@inheritDoc}
 	 */
-	protected function __construct( $settings = [] ) {
+	protected function __construct( $settings = array() ) {
 		if ( static::$active ) {
 			$this->register_hooks();
 		}
@@ -29,7 +29,7 @@ abstract class HookPattern extends Singleton {
 	 *
 	 * @return void
 	 */
-	abstract protected function register_hooks():void;
+	abstract protected function register_hooks(): void;
 
 	/**
 	 * このフックを登録するかどうか

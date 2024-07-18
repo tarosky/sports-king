@@ -20,8 +20,8 @@ abstract class RestBase extends Singleton {
 	 *
 	 * @param array $settings
 	 */
-	final protected function __construct( array $settings = [] ) {
-		add_action( 'rest_api_init', [ $this, 'rest_init' ] );
+	final protected function __construct( array $settings = array() ) {
+		add_action( 'rest_api_init', array( $this, 'rest_init' ) );
 		$this->on_construct();
 	}
 

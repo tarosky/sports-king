@@ -9,7 +9,7 @@ namespace Tarosky\Common\UI\FreeInput;
  */
 class Post extends Module {
 
-	protected $post_types = [];
+	protected $post_types = array();
 
 	/**
 	 * 投稿データを取得する
@@ -27,11 +27,11 @@ class Post extends Module {
 	 *
 	 * @param array{post_types: string[], name: string, title: string, description: string, nonce_key: string} $setting
 	 */
-	protected function __construct( $setting = [] ) {
+	protected function __construct( $setting = array() ) {
 		parent::__construct( $setting );
 		if ( is_admin() ) {
-			add_action( 'add_meta_boxes', [ $this, 'add_meta_box' ], 10, 2 );
-			add_action( 'save_post', [ $this, 'save_post' ], 10, 2 );
+			add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ), 10, 2 );
+			add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
 		}
 	}
 
@@ -59,7 +59,7 @@ class Post extends Module {
 	public function add_meta_box( $post_type, $post ) {
 		if ( in_array( $post_type, $this->post_types, true ) ) {
 			$this->enqueue_scripts();
-			add_meta_box( 'metabox' . $this->name, $this->title, [ $this, 'render' ], $post_type, 'advanced', 'low' );
+			add_meta_box( 'metabox' . $this->name, $this->title, array( $this, 'render' ), $post_type, 'advanced', 'low' );
 		}
 	}
 
@@ -82,18 +82,18 @@ class Post extends Module {
 	 * @return void
 	 */
 	protected function set_up( $setting ) {
-		$setting = wp_parse_args( $setting, [
-			'post_types'  => [],
+		$setting           = wp_parse_args( $setting, array(
+			'post_types'  => array(),
 			'name'        => '',
 			'title'       => '',
 			'description' => '',
 			'nonce_key'   => '',
-		] );
-		$this->post_types = $setting['post_types'];
-		$this->name = $setting['name'];
-		$this->title = $setting['title'];
+		) );
+		$this->post_types  = $setting['post_types'];
+		$this->name        = $setting['name'];
+		$this->title       = $setting['title'];
 		$this->description = $setting['description'];
-		$this->nonce_key = $setting['nonce_key'];
+		$this->nonce_key   = $setting['nonce_key'];
 	}
 
 	/**

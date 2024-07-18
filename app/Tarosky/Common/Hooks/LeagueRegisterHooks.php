@@ -19,9 +19,9 @@ class LeagueRegisterHooks extends HookPattern {
 	 * {@inheritDoc}
 	 */
 	protected function register_hooks(): void {
-		add_action( 'init', [ $this, 'register_league' ] );
+		add_action( 'init', array( $this, 'register_league' ) );
 
-		add_action( 'pre_get_posts', [ $this, 'pre_get_posts'] );
+		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 	}
 
 	/**
@@ -30,17 +30,17 @@ class LeagueRegisterHooks extends HookPattern {
 	 * @return void
 	 */
 	public function register_league() {
-		$supported_post_types = [ 'team', 'post' ];
-		$args = apply_filters( 'sk_taxonomy_default_args', [
+		$supported_post_types = array( 'team', 'post' );
+		$args                 = apply_filters( 'sk_taxonomy_default_args', array(
 			'label'             => 'リーグ',
 			'hierarchical'      => true,
 			'show_admin_column' => true,
 			'show_in_rest'      => true,
-			'rewrite'           => [
+			'rewrite'           => array(
 				'slug'       => 'league',
 				'with_front' => false,
-			],
-		], 'league' );
+			),
+		), 'league' );
 		register_taxonomy( 'league', $supported_post_types, $args );
 	}
 
@@ -51,7 +51,7 @@ class LeagueRegisterHooks extends HookPattern {
 	 * @return void
 	 */
 	public static function set_prior_post_type( $post_type ) {
-		if ( in_array( $post_type, [ 'post', 'team' ], true ) ) {
+		if ( in_array( $post_type, array( 'post', 'team' ), true ) ) {
 			self::$prior_post_type = $post_type;
 		}
 	}
@@ -78,9 +78,9 @@ class LeagueRegisterHooks extends HookPattern {
 						$wp_query->set( 'posts_per_page', - 1 );
 					}
 					// 公開日の古い順で表示
-					$wp_query->set( 'orderby', [
+					$wp_query->set( 'orderby', array(
 						'date' => 'ASC',
-					] );
+					) );
 					break;
 				case 'post':
 				default:

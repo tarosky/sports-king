@@ -27,17 +27,17 @@ class Stats extends RooterBase {
 	/**
 	 * @var array
 	 */
-	protected $rewrite = [
-		'stats/match/([0-9]+)\.html/?$'           => 'index.php?stats=match&match_id=$matches[1]',
-	    'stats/(japan|world)/([^/]+)/match/([0-9\\-]+)/([0-9]+)/?' => 'index.php?stats=match&abroad=$matches[1]&league=$matches[2]&season=$matches[3]&occasion=$matches[4]',
-	    'stats/(japan|world)/([^/]+)/match/([0-9\\-]+)/?' => 'index.php?stats=match&abroad=$matches[1]&league=$matches[2]&season=$matches[3]',
-		'stats/(japan|world)/([^/]+)/([^/]+)/?' => 'index.php?stats=$matches[3]&abroad=$matches[1]&league=$matches[2]',
-	];
+	protected $rewrite = array(
+		'stats/match/([0-9]+)\.html/?$'                   => 'index.php?stats=match&match_id=$matches[1]',
+		'stats/(japan|world)/([^/]+)/match/([0-9\\-]+)/([0-9]+)/?' => 'index.php?stats=match&abroad=$matches[1]&league=$matches[2]&season=$matches[3]&occasion=$matches[4]',
+		'stats/(japan|world)/([^/]+)/match/([0-9\\-]+)/?' => 'index.php?stats=match&abroad=$matches[1]&league=$matches[2]&season=$matches[3]',
+		'stats/(japan|world)/([^/]+)/([^/]+)/?'           => 'index.php?stats=$matches[3]&abroad=$matches[1]&league=$matches[2]',
+	);
 
 	/**
 	 * @var array
 	 */
-	protected $query_vars = [ 'stats', 'match_id', 'abroad', 'league', 'season', 'date', 'occasion' ];
+	protected $query_vars = array( 'stats', 'match_id', 'abroad', 'league', 'season', 'date', 'occasion' );
 
 	/**
 	 * @var \stdClass 現在の日程・結果
@@ -59,7 +59,7 @@ class Stats extends RooterBase {
 	 * {@inheritDoc}
 	 */
 	protected function on_construct() {
-		add_action( 'bcn_after_fill', [ $this, 'add_breadcrumb_trail' ] );
+		add_action( 'bcn_after_fill', array( $this, 'add_breadcrumb_trail' ) );
 	}
 
 	/**
@@ -80,115 +80,114 @@ class Stats extends RooterBase {
 					}
 					// B2の試合は表示しない
 					if ( ! LeagueMaster::is_available( $match->league_id ) ) {
-                        $wp_query->set_404();
-                        return;
-                    }
+						$wp_query->set_404();
+						return;
+					}
 					$this->match = $match;
-					$this->load_template( 'single', 'match', [
+					$this->load_template( 'single', 'match', array(
 						'match' => $match,
-					] );
+					) );
 				} else {
 					// これはマッチリスト
 					if ( ! $league_id ) {
 						$wp_query->set_404();
 						return;
 					} else {
-					    // B2なら非表示
-					    if ( ! LeagueMaster::is_available( $league_id ) ) {
-                            $wp_query->set_404();
-                            return;
-                        }
+						// B2なら非表示
+						if ( ! LeagueMaster::is_available( $league_id ) ) {
+							$wp_query->set_404();
+							return;
+						}
 						if ( ! ( $season = $wp_query->get( 'season' ) ) ) {
 							// 期間が指定されていなかったら
-						    $season = sk_current_season();
+							$season = sk_current_season();
 						}
 						if ( ! ( $occasion = $wp_query->get( 'occasion' ) ) ) {
 							// 期間が指定されていなかったら
 							$occasion = $this->matches->get_nearest_occasion( 0, $league_id, $season );
-							$ymd = $this->matches->get_nearest_ymd( $abroad, $league_id );
-//							$matches = $this->matches->get_recent(0, $league_id );
-						    $matches = $this->matches->search( '', 0, $league_id, '', '', '', $season, $occasion, null, 100 );
+							$ymd      = $this->matches->get_nearest_ymd( $abroad, $league_id );
+							//                          $matches = $this->matches->get_recent(0, $league_id );
+							$matches = $this->matches->search( '', 0, $league_id, '', '', '', $season, $occasion, null, 100 );
 						} else {
-						    $matches = $this->matches->search( '', 0, $league_id, '', '', '', $season, $occasion, null, 100 );
-						    $ymd = $this->matches->get_start_date( $abroad, $league_id, $season, $occasion );
-                        }
+							$matches = $this->matches->search( '', 0, $league_id, '', '', '', $season, $occasion, null, 100 );
+							$ymd     = $this->matches->get_start_date( $abroad, $league_id, $season, $occasion );
+						}
 
-						//	急遽、データスタジアムのデータが変わったための例外処理
-						//	チャンピオンシップで日程が未定のときでも順番を任意の順にする
-						if( !empty( Leagues::$round_sort[$league_id] ) ) {
-							$round_sort = Leagues::$round_sort[$league_id];
-							$sort = [];
-							$out = count($round_sort);
+						//  急遽、データスタジアムのデータが変わったための例外処理
+						//  チャンピオンシップで日程が未定のときでも順番を任意の順にする
+						if ( ! empty( Leagues::$round_sort[ $league_id ] ) ) {
+							$round_sort = Leagues::$round_sort[ $league_id ];
+							$sort       = array();
+							$out        = count( $round_sort );
 							foreach ( $matches as $m ) {
-								$key = array_search($m->round, $round_sort);
-								if( $key !== false ) {
-									$sort[$key][] = $m;
-								}
-								else {
-									$sort[$out][] = $m;
+								$key = array_search( $m->round, $round_sort );
+								if ( $key !== false ) {
+									$sort[ $key ][] = $m;
+								} else {
+									$sort[ $out ][] = $m;
 								}
 							}
-							ksort($sort);
+							ksort( $sort );
 
 							$matches = array();
-							foreach( $sort as $sort_list ) {
-								foreach( $sort_list as $s ) {
+							foreach ( $sort as $sort_list ) {
+								foreach ( $sort_list as $s ) {
 									$matches[] = $s;
 								}
 							}
 						}
 
-						$this->load_template( 'archive', 'match', [
-							'league_id' => $league_id,
-						    'abroad'    => $abroad,
-						    'matches'   => $matches,
-						    'season'    => $season,
-						    'display_date'    => $ymd ,
-						] );
+						$this->load_template( 'archive', 'match', array(
+							'league_id'    => $league_id,
+							'abroad'       => $abroad,
+							'matches'      => $matches,
+							'season'       => $season,
+							'display_date' => $ymd,
+						) );
 					}
 				}
 				break;
 			case 'player-result':
-				if (! $league_id || ! ( $ranking = sk_get_player_result( $league_id ) ) || ! LeagueMaster::is_available( $league_id ) ) {
+				if ( ! $league_id || ! ( $ranking = sk_get_player_result( $league_id ) ) || ! LeagueMaster::is_available( $league_id ) ) {
 					$wp_query->set_404();
 					return;
 				}
-				$this->load_template( 'single', 'goal', [
+				$this->load_template( 'single', 'goal', array(
 					'league_id' => $league_id,
 					'abroad'    => $abroad,
 					'ranking'   => $ranking,
-				] );
+				) );
 				break;
 			case 'rank':
 				if ( ! $league_id || ! ( $ranking = sk_get_ranking( $league_id ) ) || ! LeagueMaster::is_available( $league_id ) ) {
 					$wp_query->set_404();
 					return;
-                }
+				}
 				$wc_ranking = sk_get_ranking( $league_id, '', true );
-				$this->load_template( 'single', 'rank', [
-					'league_id'  => $league_id,
-					'abroad'     => $abroad,
-				    'ranking'    => $ranking,
-				    'wc_ranking'    => $wc_ranking,
-				    'season'     => $wp_query->get( 'season' ),
-				    'calculated' => (string) $ranking->RankReport->Updated,
-				    'group_league' => Leagues::is_group_league( $abroad, $league_id ),
-				] );
+				$this->load_template( 'single', 'rank', array(
+					'league_id'    => $league_id,
+					'abroad'       => $abroad,
+					'ranking'      => $ranking,
+					'wc_ranking'   => $wc_ranking,
+					'season'       => $wp_query->get( 'season' ),
+					'calculated'   => (string) $ranking->RankReport->Updated,
+					'group_league' => Leagues::is_group_league( $abroad, $league_id ),
+				) );
 				break;
 			case 'redirect':
-				$abroad = intval( 'nk2' == $wp_query->get( 'abroad' ) );
+				$abroad    = intval( 'nk2' == $wp_query->get( 'abroad' ) );
 				$league_id = $this->input->get( 'league' ) ?: ( $abroad ? '02' : '2' );
-				$url = sk_stat_url( 'match', $abroad, $abroad ? '02' : '2' );
+				$url       = sk_stat_url( 'match', $abroad, $abroad ? '02' : '2' );
 				if ( ! is_numeric( $league_id ) ) {
-					$leagues = [
+					$leagues = array(
 						'eng' => '02',
-					    'ger' => '03',
-					    'esp' => '04',
-					    'ita' => '01',
-						'cl' => '11',
-						'el' => '12',
+						'ger' => '03',
+						'esp' => '04',
+						'ita' => '01',
+						'cl'  => '11',
+						'el'  => '12',
 						'acl' => '15',
-					];
+					);
 					if ( isset( $leagues[ $league_id ] ) ) {
 						$league_id = $leagues[ $league_id ];
 					}
@@ -208,24 +207,24 @@ class Stats extends RooterBase {
 						break;
 					case 'match':
 						$block_id = $this->input->get( 'id' );
-						$match = $this->matches->get_match( $abroad, $block_id );
+						$match    = $this->matches->get_match( $abroad, $block_id );
 						if ( $match ) {
 							$url = sk_match_url( $match->id );
 						}
 						break;
 					case 'player-page':
-						$id = (int) $this->input->get('c');
-						foreach ( get_posts( [
-							'post_type' => 'player',
-						    'post_status' => 'publish',
-						    'posts_per_page' => 1,
-						    'meta_query' => [
-							    [
-								    'key' => '_player_id',
-							        'value' => $id,
-							    ],
-						    ],
-						] ) as $post ) {
+						$id = (int) $this->input->get( 'c' );
+						foreach ( get_posts( array(
+							'post_type'      => 'player',
+							'post_status'    => 'publish',
+							'posts_per_page' => 1,
+							'meta_query'     => array(
+								array(
+									'key'   => '_player_id',
+									'value' => $id,
+								),
+							),
+						) ) as $post ) {
 							$url = get_permalink( $post );
 						}
 						break;
@@ -260,19 +259,19 @@ class Stats extends RooterBase {
 		if ( isset( $title['tagline'] ) ) {
 			unset( $title['tagline'] );
 		}
-		$extra_title = [];
+		$extra_title = array();
 		if ( $this->match ) {
 			// これは日程詳細なので、タイトル変更
 			$match = $this->matches->get_match_by_id( get_query_var( 'match_id' ) );
 			if ( ! $match ) {
 				return $title;
 			}
-			$extra_title['match'] = sk_match_title( $match );
+			$extra_title['match']       = sk_match_title( $match );
 			$extra_title['match_label'] = '試合詳細';
 		} else {
 			$extra_title['matc_label'] = sk_stats_title();
 		}
-		if ( ! emptY( $extra_title ) ) {
+		if ( ! empty( $extra_title ) ) {
 			$title = array_merge( $extra_title, $title );
 		}
 
@@ -294,28 +293,28 @@ class Stats extends RooterBase {
 		}
 		$match_id = $wp_query->get( 'match_id' );
 		if ( $match_id ) {
-			$match  = $this->matches->get_match_by_id( $match_id );
+			$match = $this->matches->get_match_by_id( $match_id );
 			if ( ! $match ) {
 				return;
 			}
 			// ルート
-			$root = $bcn->trail[0];
-			$bcn->trail = [ new \bcn_breadcrumb( $root->get_title(), null, [ 'home' ], $root->get_url(), 'home', true ) ];
+			$root       = $bcn->trail[0];
+			$bcn->trail = array( new \bcn_breadcrumb( $root->get_title(), null, array( 'home' ), $root->get_url(), 'home', true ) );
 			// リーグの有無で処理を分岐
 			$league = sk_get_league_by_id( $match->league_id );
 			if ( $league && $league->parent ) {
 				// リーグがある場合はリーグ戦
 				$parent = get_term_by( 'term_id', $league->parent, 'league' );
 				// リーグを追加
-				array_unshift( $bcn->trail, new \bcn_breadcrumb( $parent->name, null, [ 'league-archive' ], get_term_link( $parent ), 'league-' . $parent->term_id, true ) );
-				array_unshift( $bcn->trail, new \bcn_breadcrumb( $league->name, null, [ 'league-archive' ], get_term_link( $league ), 'league-' . $league->term_id, true ) );
+				array_unshift( $bcn->trail, new \bcn_breadcrumb( $parent->name, null, array( 'league-archive' ), get_term_link( $parent ), 'league-' . $parent->term_id, true ) );
+				array_unshift( $bcn->trail, new \bcn_breadcrumb( $league->name, null, array( 'league-archive' ), get_term_link( $league ), 'league-' . $league->term_id, true ) );
 				// 日程結果へのリンクを追加
 				$stats_base = sprintf( '/stats/%s/%s/match/', $parent->slug, $league->slug );
-				array_unshift( $bcn->trail, new \bcn_breadcrumb( '日程・結果', null, [ 'stats-archive' ], home_url( $stats_base ), 'stats-league-' . $league->term_id, true ) );
+				array_unshift( $bcn->trail, new \bcn_breadcrumb( '日程・結果', null, array( 'stats-archive' ), home_url( $stats_base ), 'stats-league-' . $league->term_id, true ) );
 			} else {
 				// リーグがない場合はカップ戦
 				$japan = get_term_by( 'slug', 'japan', 'league' );
-				array_unshift( $bcn->trail, new \bcn_breadcrumb( $japan->name, null, [ 'term' ], get_term_link( $japan ), 'stats-league-' . $japan->term_id, true ) );
+				array_unshift( $bcn->trail, new \bcn_breadcrumb( $japan->name, null, array( 'term' ), get_term_link( $japan ), 'stats-league-' . $japan->term_id, true ) );
 			}
 			// 節へのリンクを追加
 			$match_title = sprintf( '%s vs %s', get_the_title( $match->h_team->ID ), get_the_title( $match->a_team->ID ) );
@@ -323,26 +322,26 @@ class Stats extends RooterBase {
 				// リーグ戦
 				$season_title = sprintf( '%sシーズン第%s節', $match->game_year, $match->occasion );
 				$season_link  = sprintf( '%s%s/%s/', $stats_base, $match->game_year, $match->occasion );
-				array_unshift( $bcn->trail, new \bcn_breadcrumb( $season_title, null, [ 'match-archive' ], home_url( $season_link ), str_replace( '/', '-', $season_link ), true ) );
+				array_unshift( $bcn->trail, new \bcn_breadcrumb( $season_title, null, array( 'match-archive' ), home_url( $season_link ), str_replace( '/', '-', $season_link ), true ) );
 			} else {
 				// カップ戦
 				$season_title = LeagueMaster::label( $match->league_id );
 				$season_link  = home_url( sprintf( 'stats/japan/%s/match', Leagues::get_league_slug( '0', $match->league_id ) ) );
-				array_unshift( $bcn->trail, new \bcn_breadcrumb( $season_title, null, [ 'match-archive' ], $season_link, str_replace( '/', '-', $season_link ), true ) );
+				array_unshift( $bcn->trail, new \bcn_breadcrumb( $season_title, null, array( 'match-archive' ), $season_link, str_replace( '/', '-', $season_link ), true ) );
 				$match_title = $match->round . ' ' . $match_title;
 			}
 			// チームを追加
-			$match_link  = home_url( sprintf( '/stats/match/%d.html', $match->id ) );
-			array_unshift( $bcn->trail, new \bcn_breadcrumb( $match_title, null, [ 'match-single', 'current-item' ], $match_link, "match-{$match->id}", false ) );
+			$match_link = home_url( sprintf( '/stats/match/%d.html', $match->id ) );
+			array_unshift( $bcn->trail, new \bcn_breadcrumb( $match_title, null, array( 'match-single', 'current-item' ), $match_link, "match-{$match->id}", false ) );
 		} else {
 			$league = get_queried_object();
 			if ( ! is_a( $league, 'WP_Term' ) ) {
 				$japan = get_term_by( 'slug', 'japan', 'league' );
-				array_unshift( $bcn->trail, new \bcn_breadcrumb( $japan->name, null, [ 'term' ], get_term_link( $japan ), 'stats-league-' . $japan->term_id, true ) );
-				$slug = get_query_var( 'league' );
+				array_unshift( $bcn->trail, new \bcn_breadcrumb( $japan->name, null, array( 'term' ), get_term_link( $japan ), 'stats-league-' . $japan->term_id, true ) );
+				$slug         = get_query_var( 'league' );
 				$season_title = LeagueMaster::label( Leagues::get_league_id( '0', $slug ) );
 				$season_link  = home_url( sprintf( 'stats/japan/%s/match', $slug ) );
-				array_unshift( $bcn->trail, new \bcn_breadcrumb( $season_title, null, [ 'match-archive', 'current-item' ], $season_link, 'match-' . $slug, false ) );
+				array_unshift( $bcn->trail, new \bcn_breadcrumb( $season_title, null, array( 'match-archive', 'current-item' ), $season_link, 'match-' . $slug, false ) );
 			} else {
 				// 通常のリーグ戦
 				$parent = get_term_by( 'term_id', $league->parent, 'league' );
@@ -352,7 +351,7 @@ class Stats extends RooterBase {
 					$types = $trail->get_types();
 					if ( in_array( 'current-item', $types, true ) ) {
 						// これは最後のパンクズ
-						$new_types = array_values( array_filter( $types, function( $type ) {
+						$new_types            = array_values( array_filter( $types, function ( $type ) {
 							return 'current-item' !== $type;
 						} ) );
 						$bcn->trail[ $index ] = new \bcn_breadcrumb( $trail->get_title(), null, $new_types, $trail->get_url(), $trail->get_id(), true );
@@ -361,16 +360,16 @@ class Stats extends RooterBase {
 				// 日程結果へのリンクを追加
 				$linked     = false;
 				$stats_base = sprintf( '/stats/%s/%s/match/', $parent->slug, $league->slug );
-				$base_types = [ 'stats-archive' ];
-				$new_title = '';
-				$new_link  = '';
-				if ( in_array( get_query_var( 'stats' ), [ 'player-result', 'rank' ] ) ) {
-					$linked = true;
-					$new_title = [
+				$base_types = array( 'stats-archive' );
+				$new_title  = '';
+				$new_link   = '';
+				if ( in_array( get_query_var( 'stats' ), array( 'player-result', 'rank' ) ) ) {
+					$linked    = true;
+					$new_title = array(
 						'player-result' => '個人成績',
 						'rank'          => '順位表',
-					][ get_query_var( 'stats' ) ];
-					$new_link = home_url( str_replace( '/match/', '/' . get_query_var( 'stats' ) . '/', $stats_base ) );
+					)[ get_query_var( 'stats' ) ];
+					$new_link  = home_url( str_replace( '/match/', '/' . get_query_var( 'stats' ) . '/', $stats_base ) );
 				} elseif ( get_query_var( 'season' ) ) {
 					$linked = true;
 					if ( get_query_var( 'occasion' ) ) {
@@ -385,7 +384,7 @@ class Stats extends RooterBase {
 				}
 				array_unshift( $bcn->trail, new \bcn_breadcrumb( '日程・結果', null, $base_types, home_url( $stats_base ), 'stats-league-' . $league->term_id, $linked ) );
 				if ( $new_title ) {
-					array_unshift( $bcn->trail, new \bcn_breadcrumb( $new_title, null, [ 'stats-archive', 'current-item' ], $new_link, 'stats-league-' . $league->term_id, false ) );
+					array_unshift( $bcn->trail, new \bcn_breadcrumb( $new_title, null, array( 'stats-archive', 'current-item' ), $new_link, 'stats-league-' . $league->term_id, false ) );
 				}
 			}
 		}

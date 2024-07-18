@@ -9,7 +9,7 @@ namespace Tarosky\Common\UI\FreeInput;
  */
 class Taxonomy extends Module {
 
-	protected $taxonomies = [];
+	protected $taxonomies = array();
 
 	/**
 	 * データを取得する
@@ -27,13 +27,13 @@ class Taxonomy extends Module {
 	 *
 	 * @param array{taxonomies: string[], name: string, title: string, description: string, nonce_key: string} $setting
 	 */
-	protected function __construct( $setting = [] ) {
+	protected function __construct( $setting = array() ) {
 		parent::__construct( $setting );
 		if ( is_admin() ) {
 			foreach ( $this->taxonomies as $taxonomy ) {
-				add_action( "{$taxonomy}_edit_form_fields", [ $this, 'edit_form_fields' ], 100, 2 );
+				add_action( "{$taxonomy}_edit_form_fields", array( $this, 'edit_form_fields' ), 100, 2 );
 			}
-			add_action( 'edited_terms', [ $this, 'save_term' ], 10, 2 );
+			add_action( 'edited_terms', array( $this, 'save_term' ), 10, 2 );
 		}
 	}
 
@@ -44,7 +44,7 @@ class Taxonomy extends Module {
 	 * @param string $taxonomy
 	 */
 	public function save_term( $term_id, $taxonomy ) {
-		if ( ! in_array( $taxonomy, $this->taxonomies, true ) || ! $this->verify()  ) {
+		if ( ! in_array( $taxonomy, $this->taxonomies, true ) || ! $this->verify() ) {
 			return;
 		}
 		update_term_meta( $term_id, $this->name, $this->normalize() );
@@ -61,7 +61,7 @@ class Taxonomy extends Module {
 		?>
 		<tr>
 			<th>
-				<?php echo esc_html( $this->title ) ?>
+				<?php echo esc_html( $this->title ); ?>
 			</th>
 			<td class="freeInput__row">
 				<?php
@@ -82,18 +82,18 @@ class Taxonomy extends Module {
 	 * @return void
 	 */
 	protected function set_up( $setting ) {
-		$setting = wp_parse_args( $setting, [
-			'taxonomies'  => [],
+		$setting           = wp_parse_args( $setting, array(
+			'taxonomies'  => array(),
 			'name'        => '',
 			'title'       => '',
 			'description' => '',
 			'nonce_key'   => '',
-		] );
-		$this->taxonomies = $setting['taxonomies'];
-		$this->name = $setting['name'];
-		$this->title = $setting['title'];
+		) );
+		$this->taxonomies  = $setting['taxonomies'];
+		$this->name        = $setting['name'];
+		$this->title       = $setting['title'];
 		$this->description = $setting['description'];
-		$this->nonce_key = $setting['nonce_key'];
+		$this->nonce_key   = $setting['nonce_key'];
 	}
 
 

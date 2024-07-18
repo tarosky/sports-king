@@ -15,25 +15,25 @@ class BestManager extends Singleton {
 	/**
 	 * @var array 表示する投稿タイプ
 	 */
-	protected $post_types = [ 'bk_best_member' ];
+	protected $post_types = array( 'bk_best_member' );
 
 	/**
 	 * コンストラクタ
 	 *
 	 * @param array $settings
 	 */
-	protected function __construct( array $settings = [] ) {
+	protected function __construct( array $settings = array() ) {
 		if ( is_admin() ) {
 			// エディターの後に表示
-			add_action('add_meta_boxes', function($post_type){
+			add_action('add_meta_boxes', function ( $post_type ) {
 				if ( false !== array_search( $post_type, $this->post_types ) ) {
-					add_meta_box( 'bk-bestmember-list', 'ベストメンバー選択', [ $this, 'add_meta_box' ], $post_type, 'normal', 'high' );
+					add_meta_box( 'bk-bestmember-list', 'ベストメンバー選択', array( $this, 'add_meta_box' ), $post_type, 'normal', 'high' );
 				}
 			});
 			// Save
-			add_action( 'save_post', [ $this, 'save_post' ], 10, 2 );
+			add_action( 'save_post', array( $this, 'save_post' ), 10, 2 );
 			if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-				add_action( 'wp_ajax_sk_player_search', [ $this, 'ajax' ] );
+				add_action( 'wp_ajax_sk_player_search', array( $this, 'ajax' ) );
 			}
 		}
 	}
@@ -43,27 +43,27 @@ class BestManager extends Singleton {
 	 */
 	public function ajax() {
 
-		$args = [
-			'post_type'      => [ 'player' ],
-			'post_status'    => [ 'publish' ],
-			's'              => $this->input->get( 'term' ),
-			'posts_per_page' => 10,
-		    'suppress_filters' => false,
-		];
+		$args = array(
+			'post_type'        => array( 'player' ),
+			'post_status'      => array( 'publish' ),
+			's'                => $this->input->get( 'term' ),
+			'posts_per_page'   => 10,
+			'suppress_filters' => false,
+		);
 
 		wp_send_json( array_map( function ( $post ) {
-			$team = sk_players_team( $post );
-			$team_name = $team ? $team->post_title : 'チーム無し' ;
+			$team      = sk_players_team( $post );
+			$team_name = $team ? $team->post_title : 'チーム無し';
 			$image_tag = '<span>No Image</span>';
-			if( $image_src = sk_get_player_best_member_image_src( $post ) ) {
-				$image_tag = sprintf('<img src="%s" />', $image_src);
+			if ( $image_src = sk_get_player_best_member_image_src( $post ) ) {
+				$image_tag = sprintf( '<img src="%s" />', $image_src );
 			}
 
 			$pos = '';
-			if( $position_list = sk_meta( '_player_position', $post ) ) {
+			if ( $position_list = sk_meta( '_player_position', $post ) ) {
 				$pos = $position_list;
 			}
-/*
+			/*
 			$player_posistions = sk_players_positions( $post );
 			if( $player_posistions ) {
 				$role_list = sk_position_role( );
@@ -73,21 +73,21 @@ class BestManager extends Singleton {
 					}
 				}
 			}
- * 
- */
+			*
+			*/
 
 			$omit_title = '省略名無し';
-			if( $omit = sk_tscfp('_player_best_member_omit', $post) ) {
+			if ( $omit = sk_tscfp( '_player_best_member_omit', $post ) ) {
 				$omit_title = $omit;
 			}
-			return [
-				'id' => $post->ID,
+			return array(
+				'id'        => $post->ID,
 				'image_tag' => $image_tag,
-				'value' => $post->post_title,
-				'label' => sprintf( '%s{ %s }( %s )【 %s 】', $post->post_title, $omit_title, $pos, $team_name ),
-				'position' => sprintf( '( %s )', $pos ),
-				'team' => sprintf( '【 %s 】', $team_name ),
-			];
+				'value'     => $post->post_title,
+				'label'     => sprintf( '%s{ %s }( %s )【 %s 】', $post->post_title, $omit_title, $pos, $team_name ),
+				'position'  => sprintf( '( %s )', $pos ),
+				'team'      => sprintf( '【 %s 】', $team_name ),
+			);
 		}, get_posts( $args ) ) );
 	}
 
@@ -98,36 +98,35 @@ class BestManager extends Singleton {
 	 * @param \WP_Post $post
 	 */
 	public function add_meta_box( \WP_Post $post ) {
-			wp_enqueue_script( 'sk-best-member-helper', get_template_directory_uri() . '/assets/js/admin/best-member-helper.js', [ 'jquery-ui-autocomplete', 'jquery-effects-highlight' ], sk_theme_version(), true );
+			wp_enqueue_script( 'sk-best-member-helper', get_template_directory_uri() . '/assets/js/admin/best-member-helper.js', array( 'jquery-ui-autocomplete', 'jquery-effects-highlight' ), sk_theme_version(), true );
 
-			
-			$args = [
-				'post_type'      => [ 'player' ],
-				'post_status'    => [ 'publish' ],
-				'posts_per_page' => -1,
-				'include' => -1,
+			$args = array(
+				'post_type'        => array( 'player' ),
+				'post_status'      => array( 'publish' ),
+				'posts_per_page'   => -1,
+				'include'          => -1,
 				'suppress_filters' => false,
-			];
-			
-			$includes = (array)get_post_meta( $post->ID, '_best_member_selects', true );
-			if( current($includes) ) {
+			);
+
+			$includes = (array) get_post_meta( $post->ID, '_best_member_selects', true );
+			if ( current( $includes ) ) {
 				$args['include'] = implode( ', ', $includes );
 			}
-			if( $list = get_posts( $args ) ){
-//				$role_list = sk_position_role( );
-				foreach( $list as $player ) {
-					$team = sk_players_team( $player );
-					$team_name = $team ? $team->post_title : 'チーム無し' ;
+			if ( $list = get_posts( $args ) ) {
+				//              $role_list = sk_position_role( );
+				foreach ( $list as $player ) {
+					$team      = sk_players_team( $player );
+					$team_name = $team ? $team->post_title : 'チーム無し';
 					$image_tag = '<span>No Image</span>';
-					if( $image_src = sk_get_player_best_member_image_src( $player ) ) {
-						$image_tag = sprintf('<img src="%s" />', $image_src);
+					if ( $image_src = sk_get_player_best_member_image_src( $player ) ) {
+						$image_tag = sprintf( '<img src="%s" />', $image_src );
 					}
 
 					$pos = '';
-					if( $position_list = sk_meta( '_player_position', $player ) ) {
+					if ( $position_list = sk_meta( '_player_position', $player ) ) {
 						$pos = $position_list;
 					}
-/*
+					/*
 					$player_posistions = sk_players_positions( $player );
 					$pos = [];
 					if( $player_posistions ) {
@@ -137,56 +136,65 @@ class BestManager extends Singleton {
 							}
 						}
 					}
- * 
- */
-					
+					*
+					*/
+
 					$omit_title = '省略名無し';
-					if( $omit = sk_tscfp('_player_best_member_omit', $player) ) {
+					if ( $omit = sk_tscfp( '_player_best_member_omit', $player ) ) {
 						$omit_title = $omit;
 					}
-					
-					$best_list[] = [
-						'id' => $player->ID,
-						'image' => $image_tag,
-						'title' => $player->post_title,
+
+					$best_list[] = array(
+						'id'         => $player->ID,
+						'image'      => $image_tag,
+						'title'      => $player->post_title,
 						'omit_title' => sprintf( '{ %s }', $omit_title ),
-						'position' => sprintf( '( %s )', $pos),
-						'team' => sprintf( '【 %s 】', $team_name ),
-					];
+						'position'   => sprintf( '( %s )', $pos ),
+						'team'       => sprintf( '【 %s 】', $team_name ),
+					);
 				}
 			}
 
-			$best_list[] = [
-				'id' => 0,
-				'image' => '',
-				'title' => '',
+			$best_list[] = array(
+				'id'         => 0,
+				'image'      => '',
+				'title'      => '',
 				'omit_title' => '',
-				'position' => '',
-				'team' => '',
-			    'script' => true,
-			];
+				'position'   => '',
+				'team'       => '',
+				'script'     => true,
+			);
 
 			?>
 			<div class="sk_best_members">
 				<div class="sk_best_members__controller">
 					<input class="sk_best_members__search" type="text" placeholder="検索して追加 ex."
-					       data-endpoint="<?= admin_url('admin-ajax.php?action=sk_player_search') ?>" />
+							data-endpoint="<?php echo admin_url( 'admin-ajax.php?action=sk_player_search' ); ?>" />
 				</div>
-				<ul class="sk_best_members__list<?php if( !$best_list ) echo ' sk_best_members__list--empty'; ?>" data-max="10">
-					<?php $counter = 0; foreach ( $best_list as $member ) : $is_script = isset($member['script']); ?>
-						<?php if ( $is_script ) :?>
+				<ul class="sk_best_members__list
+				<?php
+				if ( ! $best_list ) {
+					echo ' sk_best_members__list--empty';}
+				?>
+				" data-max="10">
+					<?php
+					$counter = 0;
+					foreach ( $best_list as $member ) :
+						$is_script = isset( $member['script'] );
+						?>
+											<?php if ( $is_script ) : ?>
 							<script type="text/template" class="sk_best_members__tpl">
 						<?php endif; ?>
 
 						<li class="sk_best_members__row">
 							<div class="sk_best_members__data">
-								<input class="sk_best_members__id" type="hidden" name="sk_best_members_id[<?= esc_attr($counter) ?>]"
-								       value="<?= esc_attr($member['id']) ?>" />
-								<div class="sk_best_members__image"><?= $member['image']; ?></div>
-								<div class="sk_best_members__title"><?= $member['title']; ?></div>
-								<div class="sk_best_members__omit_title"><?= $member['omit_title']; ?></div>
-								<div class="sk_best_members__position"><?= $member['position']; ?></div>
-								<div class="sk_best_members__team"><?= $member['team']; ?></div>
+								<input class="sk_best_members__id" type="hidden" name="sk_best_members_id[<?php echo esc_attr( $counter ); ?>]"
+										value="<?php echo esc_attr( $member['id'] ); ?>" />
+								<div class="sk_best_members__image"><?php echo $member['image']; ?></div>
+								<div class="sk_best_members__title"><?php echo $member['title']; ?></div>
+								<div class="sk_best_members__omit_title"><?php echo $member['omit_title']; ?></div>
+								<div class="sk_best_members__position"><?php echo $member['position']; ?></div>
+								<div class="sk_best_members__team"><?php echo $member['team']; ?></div>
 							</div>
 							<div class="sk_best_members__action">
 								<a class="button sk_best_members__delete" href="#">削除</a>
@@ -196,10 +204,13 @@ class BestManager extends Singleton {
 							</div>
 						</li>
 
-					<?php if ( $is_script ) :?>
+											<?php if ( $is_script ) : ?>
 						</script>
 					<?php endif; ?>
-					<?php $counter++; endforeach; ?>
+										<?php
+										++$counter;
+endforeach;
+					?>
 				</ul>
 				<p class="sk_best_members__empty">
 					プレイヤーが登録されていません。
@@ -221,8 +232,8 @@ class BestManager extends Singleton {
 		}
 
 		if ( $this->input->verify_nonce( 'update_bests', '_bestnonce' ) ) {
-			$links    = [];
-			$ids     = (array) $this->input->post( 'sk_best_members_id' );
+			$links = array();
+			$ids   = (array) $this->input->post( 'sk_best_members_id' );
 			update_post_meta( $post_id, '_best_member_selects', $ids );
 		}
 	}
@@ -244,5 +255,4 @@ class BestManager extends Singleton {
 				break;
 		}
 	}
-
 }

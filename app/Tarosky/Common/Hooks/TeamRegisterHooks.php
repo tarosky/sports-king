@@ -19,12 +19,12 @@ class TeamRegisterHooks extends HookPattern {
 	 * {@inheritDoc}
 	 */
 	protected function register_hooks(): void {
-		add_action( 'init', [ $this, 'register_team_post_type' ] );
-		add_filter( "manage_{$this->post_type}_posts_columns", [ $this, 'admin_column_header' ] );
-		add_action( "manage_{$this->post_type}_posts_custom_column", [ $this, 'admin_column_content' ], 10, 2 );
-		add_filter( 'admin_post_thumbnail_html', [ $this, 'post_thumbnail_html' ], 10, 2 );
-		add_action( 'post_submitbox_misc_actions', [ $this, 'submit_box_misc_actions' ] );
-		add_action( 'pre_get_posts', [ $this, 'pre_get_posts' ] );
+		add_action( 'init', array( $this, 'register_team_post_type' ) );
+		add_filter( "manage_{$this->post_type}_posts_columns", array( $this, 'admin_column_header' ) );
+		add_action( "manage_{$this->post_type}_posts_custom_column", array( $this, 'admin_column_content' ), 10, 2 );
+		add_filter( 'admin_post_thumbnail_html', array( $this, 'post_thumbnail_html' ), 10, 2 );
+		add_action( 'post_submitbox_misc_actions', array( $this, 'submit_box_misc_actions' ) );
+		add_action( 'pre_get_posts', array( $this, 'pre_get_posts' ) );
 	}
 
 	/**
@@ -32,9 +32,9 @@ class TeamRegisterHooks extends HookPattern {
 	 * @return void
 	 */
 	public function register_team_post_type() {
-		$args = apply_filters( 'sk_post_type_default_args', [
+		$args = apply_filters( 'sk_post_type_default_args', array(
 			'label'           => 'チーム',
-			'labels'          => [
+			'labels'          => array(
 				'name'                  => 'チーム',
 				'singular_name'         => 'チーム',
 				'add_new'               => 'チームを追加',
@@ -50,19 +50,19 @@ class TeamRegisterHooks extends HookPattern {
 				'set_featured_image'    => 'チームフラッグを設定',
 				'remove_featured_image' => 'チームフラッグを削除',
 				'use_featured_image'    => 'チームフラッグとして利用',
-			],
+			),
 			'public'          => true,
-			'rewrite'         => [
+			'rewrite'         => array(
 				'slug'       => 'team',
 				'with_front' => false,
-			],
+			),
 			'capability_type' => 'post',
 			'menu_position'   => 10,
 			'menu_icon'       => 'dashicons-groups',
 			'has_archive'     => true,
-			'taxonomies'      => [ 'league' ],
-			'supports'        => [ 'title', 'editor', 'author', 'thumbnail' ],
-		], $this->post_type );
+			'taxonomies'      => array( 'league' ),
+			'supports'        => array( 'title', 'editor', 'author', 'thumbnail' ),
+		), $this->post_type );
 		register_post_type( 'team', $args );
 	}
 
@@ -73,7 +73,7 @@ class TeamRegisterHooks extends HookPattern {
 	 * @return string[]
 	 */
 	public function admin_column_header( $columns ) {
-		$new_columns = [];
+		$new_columns = array();
 		foreach ( $columns as $key => $val ) {
 			$new_columns[ $key ] = $val;
 			if ( 'taxonomy-league' == $key ) {
@@ -96,8 +96,8 @@ class TeamRegisterHooks extends HookPattern {
 			case 'players':
 				printf(
 					'<a href="%s">%s</a>',
-					esc_url( admin_url( 'edit.php?post_type=player&team_id='.$post_id ) ),
-					number_format_i18n( \Tarosky\Common\Models\Players::instance()->get_player_count( $post_id ) ).'人'
+					esc_url( admin_url( 'edit.php?post_type=player&team_id=' . $post_id ) ),
+					number_format_i18n( \Tarosky\Common\Models\Players::instance()->get_player_count( $post_id ) ) . '人'
 				);
 				break;
 			default:
@@ -131,7 +131,7 @@ class TeamRegisterHooks extends HookPattern {
 	 *
 	 * @return void
 	 */
-	public function submit_box_misc_actions( $post ){
+	public function submit_box_misc_actions( $post ) {
 		if ( 'team' === $post->post_type ) {
 			?>
 			<div class="misc-pub-section">
@@ -151,9 +151,9 @@ class TeamRegisterHooks extends HookPattern {
 	 */
 	public function pre_get_posts( \WP_Query &$wp_query ) {
 		if ( $wp_query->is_main_query() && $wp_query->is_post_type_archive( 'team' ) ) {
-			$wp_query->set( 'orderby', [
+			$wp_query->set( 'orderby', array(
 				'date' => 'ASC',
-			] );
+			) );
 		}
 	}
 }
