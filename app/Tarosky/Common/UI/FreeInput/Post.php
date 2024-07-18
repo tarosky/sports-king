@@ -95,4 +95,13 @@ class Post extends Module {
 		$this->description = $setting['description'];
 		$this->nonce_key = $setting['nonce_key'];
 	}
+
+	/**
+	 * ポストタイプを出力する
+	 *
+	 * @return string[]
+	 */
+	public function get_post_type() {
+		return $this->post_types;
+	}
 }

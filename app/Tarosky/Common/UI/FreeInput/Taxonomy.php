@@ -14,7 +14,7 @@ class Taxonomy extends Module {
 	/**
 	 * データを取得する
 	 *
-	 * @param \WP_Post $object
+	 * @param \WP_Term $object
 	 *
 	 * @return array
 	 */
@@ -94,5 +94,16 @@ class Taxonomy extends Module {
 		$this->title = $setting['title'];
 		$this->description = $setting['description'];
 		$this->nonce_key = $setting['nonce_key'];
+	}
+
+
+
+	/**
+	 * タクソノミーを出力する
+	 *
+	 * @return string[]
+	 */
+	public function get_post_type() {
+		return $this->taxonomies;
 	}
 }
