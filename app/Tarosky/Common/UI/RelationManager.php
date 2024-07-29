@@ -524,12 +524,21 @@ class RelationManager extends Singleton {
 		}
 		$league = $this->get_primary_league( $post->ID );
 		if ( $league ) {
-			$trails[] = [
-				'label'   => $league->name,
-				'url'     => geT_term_link( $league ),
-				'type'    => 'league',
-				'current' => false,
-			];
+			$leagues = sk_get_term_ancestors( $league, 'league', true );
+			if ( $leagues ) {
+				foreach ( $leagues as $term ) {
+					if ( get_term_meta( $term->term_id, 'breadcrumb_display', true ) ) {
+						// 除外設定あり
+						continue 1;
+					}
+					$trails[] = [
+						'label'   => $term->name,
+						'url'     => get_term_link( $term ),
+						'type'    => 'league',
+						'current' => false,
+					];
+				}
+			}
 		}
 		foreach ( [ 'team', 'player' ] as $type ) {
 			$primary = $this->get_primary( $post->ID, $type );

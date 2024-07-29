@@ -16,6 +16,9 @@ class BreadCrumbHooks extends HookPattern {
 		add_action( 'bcn_after_fill', array( $this, 'add_pagination_link' ) );
 		add_action( 'bcn_after_fill', array( $this, 'customize_attachment_breadcrumb' ) );
 		add_filter( 'bcn_pick_post_term', array( $this, 'set_main_league' ), 10, 4 );
+		// 指定したリーグがパンクズに出ないように
+		add_action( 'league_edit_form_fields', [ $this, 'edit_form' ], 100, 2 );
+		add_action( 'edited_term', [ $this, 'update_term' ], 10, 3 );
 	}
 
 	/**
@@ -81,5 +84,52 @@ class BreadCrumbHooks extends HookPattern {
 			return $term;
 		}
 		return sk_get_main_league( $post_id ) ?: $term;
+	}
+
+	/**
+	 * タグの編集画面をカスタマイズする
+	 *
+	 * @param \WP_Term $term     ターム
+	 * @param string   $taxonomy タクソノー
+	 *
+	 * @return void
+	 */
+	public function edit_form( $term, $taxonomy ) {
+		?>
+		<tr>
+			<th><?php esc_html_e( 'パンくずリストの表示', 'sk' ); ?></th>
+			<td>
+				<?php wp_nonce_field( 'sk_update_bc_display', '_skleaguebcoption', false ); ?>
+				<label>
+					<input type="checkbox" value="1" name="breadcrumb_display" <?php checked( '1', get_term_meta( $term->term_id, 'breadcrumb_display', true ) ); ?> />
+					<?php esc_html_e( 'このリーグをパンくずリストに表示しない', 'sk' ); ?>
+				</label>
+			</td>
+		</tr>
+		<?php
+	}
+
+	/**
+	 * パンクズ設定を保存する
+	 *
+	 * @param int    $term_id  Term ID.
+	 * @param int    $tt_id    Term taxonomy ID.
+	 * @param string $taxonomy タクソノミー名
+	 *
+	 * @return void
+	 */
+	public function update_term( $term_id, $tt_id, $taxonomy ) {
+		if ( 'league' !== $taxonomy ) {
+			return;
+		}
+		if ( ! wp_verify_nonce( filter_input( INPUT_POST, '_skleaguebcoption' ), 'sk_update_bc_display' ) ) {
+			// nonceが不正
+			return;
+		}
+		if ( filter_input( INPUT_POST, 'breadcrumb_display' ) ) {
+			update_term_meta( $term_id, 'breadcrumb_display', 1 );
+		} else {
+			delete_term_meta( $term_id, 'breadcrumb_display' );
+		}
 	}
 }
