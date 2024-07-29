@@ -19,6 +19,7 @@ class BreadCrumbHooks extends HookPattern {
 		// 指定したリーグがパンクズに出ないように
 		add_action( 'league_edit_form_fields', [ $this, 'edit_form' ], 100, 2 );
 		add_action( 'edited_term', [ $this, 'update_term' ], 10, 3 );
+		add_action( 'bcn_after_fill', [ $this, 'filter_hidden_leagues' ], 100 );
 	}
 
 	/**
@@ -130,6 +131,59 @@ class BreadCrumbHooks extends HookPattern {
 			update_term_meta( $term_id, 'breadcrumb_display', 1 );
 		} else {
 			delete_term_meta( $term_id, 'breadcrumb_display' );
+		}
+	}
+
+	/**
+	 * パンくずリストに表示しないリーグを除外する
+	 *
+	 * @param \bcn_breadcrumb_trail $bcn パンクズリストオブジェクト。
+	 * @return void
+	 */
+	public function filter_hidden_leagues( \bcn_breadcrumb_trail $bcn ) {
+		$new_trails = [];
+		$changed = false;
+		foreach ( $bcn->trail as $trail ) {
+			$types = $trail->get_types();
+			if ( in_array( 'current-item', $types ) ) {
+				// 現在のアイテムなら除外
+				$new_trails[] = $trail;
+				continue;
+			}
+			if ( 'league' !== $trail->get_id() && ! in_array( 'league', $types ) ) {
+				// リーグでないので除外
+				$new_trails[] = $trail;
+				continue;
+			}
+			// ここまできたらリーグ、URLから判別する。
+			$url            = $trail->get_url();
+			$hidden_leagues = get_terms( [
+				'taxonomy'   => 'league',
+				'hide_empty' => false,
+				'meta_query' => [
+					[
+						'key'   => 'breadcrumb_display',
+						'value' => '1',
+					],
+				],
+			] );
+			if ( ! $hidden_leagues || is_wp_error( $hidden_leagues ) ) {
+				// 除外すべきリーグはなし。
+				$new_trails[] = $trail;
+				continue;
+			}
+			foreach ( $hidden_leagues as $hidden_league ) {
+				if ( get_term_link( $hidden_league ) === $url ) {
+					// これは除外リーグなので、パンクズから除外。
+					$changed = true;
+					continue 2;
+				}
+			}
+			// ここまできたということは、パンクズに追加してオッケー
+			$new_trails[] = $trail;
+		}
+		if ( $changed ) {
+			$bcn->trail = $new_trails;
 		}
 	}
 }

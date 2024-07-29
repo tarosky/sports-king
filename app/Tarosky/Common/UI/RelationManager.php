@@ -527,10 +527,6 @@ class RelationManager extends Singleton {
 			$leagues = sk_get_term_ancestors( $league, 'league', true );
 			if ( $leagues ) {
 				foreach ( $leagues as $term ) {
-					if ( get_term_meta( $term->term_id, 'breadcrumb_display', true ) ) {
-						// 除外設定あり
-						continue 1;
-					}
 					$trails[] = [
 						'label'   => $term->name,
 						'url'     => get_term_link( $term ),
