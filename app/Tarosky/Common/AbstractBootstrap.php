@@ -106,7 +106,7 @@ abstract class AbstractBootstrap extends Singleton {
 				}
 				foreach ( scandir( $command['dir'] ) as $file ) {
 					if ( preg_match( '#^([^_\.]+)\.php$#u', $file, $match ) ) {
-						$class_name = 'Tarosky\\Common\\Commands\\' . $match[1];
+						$class_name = $command['namespace'] . '\\' . $match[1];
 						if ( class_exists( $class_name ) ) {
 							$reflection = new \ReflectionClass( $class_name );
 							if ( ! $reflection->isAbstract() && $reflection->isSubclassOf( 'Tarosky\\Common\\Command' ) ) {
