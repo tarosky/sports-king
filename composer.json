@@ -3,6 +3,7 @@
     "description": "Library for WordPress sports site.",
     "type": "libary",
     "scripts": {
+        "test":"phpunit",
         "lint": [
             "phpcs --standard=phpcs.ruleset.xml $(find ./app -name '*.php')",
             "phpcs --standard=phpcs.ruleset.xml $(find ./functions -name '*.php')"
@@ -39,18 +40,24 @@
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.3.1",
         "wp-coding-standards/wpcs": "^3.0",
-		"phpcompatibility/php-compatibility": "^9.3",
 		"dealerdirect/phpcodesniffer-composer-installer": "^1.0",
         "phpstan/phpstan": "^1.11",
         "szepeviktor/phpstan-wordpress": "^1.3",
         "phpstan/extension-installer": "^1.4",
         "php-stubs/wp-cli-stubs": "^2.10",
         "tarosky/tscf": "^2.0",
-        "wpackagist-plugin/breadcrumb-navxt": "^7.3"
+        "wpackagist-plugin/breadcrumb-navxt": "^7.3",
+        "phpunit/phpunit": "^9.6",
+        "yoast/phpunit-polyfills": "^3.0"
 	},
     "autoload": {
         "psr-4": {
             "Tarosky\\Common\\": "./app/Tarosky/Common"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tarosky\\SportsKingTests\\": "./tests/src"
         }
     },
     "config": {

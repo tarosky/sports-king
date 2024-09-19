@@ -3,3 +3,4 @@
 composer.lock
 .wp-env.override.json
 /wordpress/
+*.cache
