@@ -11,15 +11,15 @@ namespace Tarosky\Common\Pattern;
 abstract class HookPattern extends Singleton {
 
 	/**
-	 * @var bool アクティブかどうか
+	 * @var array<class-string, bool> 有効化されているかどうか
 	 */
-	protected static $active = true;
+	private static array $inactives = [];
 
 	/**
 	 * {@inheritDoc}
 	 */
 	protected function __construct( $settings = array() ) {
-		if ( static::$active ) {
+		if ( static::is_active() ) {
 			$this->register_hooks();
 		}
 	}
@@ -38,6 +38,16 @@ abstract class HookPattern extends Singleton {
 	 * @return void
 	 */
 	public static function set_active( bool $active ) {
-		static::$active = $active;
+		self::$inactives[ get_called_class() ] = $active;
+	}
+
+	/**
+	 * このフックが有効化どうか
+	 *
+	 * @return bool
+	 */
+	public static function is_active() {
+		$class_name = get_called_class();
+		return ! isset( self::$inactives[ $class_name ] ) || (bool) self::$inactives[ $class_name ];
 	}
 }
