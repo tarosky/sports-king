@@ -23,12 +23,14 @@ jobs:
     uses: tarosky/workflows/.github/workflows/phplint.yml@main
 
   phpstan:
+    name: PHPStan
     uses: tarosky/workflows/.github/workflows/phpcs.yml@main
     with:
       version: 8.0
       composer_command: analyze
 
   phpcs:
+    name: PHP Code Sniffer
     uses: tarosky/workflows/.github/workflows/phpcs.yml@main
     with:
       version: 8.0
