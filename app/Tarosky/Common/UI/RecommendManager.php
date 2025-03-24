@@ -66,7 +66,7 @@ class RecommendManager extends Singleton {
 	 * Parse Ajax request.
 	 */
 	public function ajax() {
-		$args = [
+		$args = apply_filters( 'sk_link_search_ajax_args', [
 			'post_type'      => $this->target,
 			'post_status'    => [ 'publish', 'future' ],
 			's'              => $this->input->get( 'term' ),
@@ -75,7 +75,7 @@ class RecommendManager extends Singleton {
 			],
 			'posts_per_page' => 10,
 		    'suppress_filters' => false,
-		];
+		] );
 		wp_send_json( array_map( function ( $post ) {
 			return [
 				'value' => $post->post_title,
@@ -96,14 +96,14 @@ class RecommendManager extends Singleton {
 				'title' => $post->post_title,
 				'url'  => get_permalink($post),
 			];
-		}, get_posts( [
+		}, get_posts( apply_filters( 'sk_recommend_auto_ajax_args', [
 			'post_type'      => $this->target,
 			'post_status'    => [ 'publish', 'future' ],
 			'order' => [
 				'date' => 'DESC',
 			],
 			'posts_per_page' => 5,
-		] ) ) );
+		] ) ) ) );
 	}
 
 	/**
@@ -117,14 +117,14 @@ class RecommendManager extends Singleton {
 				'title' => $post->post_title,
 				'url'  => get_permalink($post),
 			];
-		}, get_posts( [
+		}, get_posts( apply_filters( 'sk_recommend_image_auto_ajax_args', [
 			'post_type'      => $this->target,
 			'post_status'    => [ 'publish', 'future' ],
 			'order' => [
 				'date' => 'DESC',
 			],
 			'posts_per_page' => 1,
-		] ) ) );
+		] ) ) ) );
 	}
 
 	/**
