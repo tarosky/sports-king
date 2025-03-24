@@ -8,19 +8,21 @@ on:
     branches:
       - main
 jobs:
-#  test:
-#    name: PHP Unit Test
-#    strategy:
-#      matrix:
-#        php: [ '8.0', '8.2' ] #PHP versions to check.
-#        wp: [ 'latest', '6.5' ] # WordPress version to check.
-#    uses: tarosky/workflows/.github/workflows/wp-unit-test.yml@main
-#    with:
-#      php_version: ${{ matrix.php }}
-#      wp_version: ${{ matrix.wp }}
+  test:
+    name: PHP Unit Test
+    strategy:
+      matrix:
+        php: [ '8.0', '8.2' ] #PHP versions to check.
+        wp: [ 'latest', '6.5' ] # WordPress version to check.
+    uses: tarosky/workflows/.github/workflows/wp-unit-test.yml@main
+    with:
+      php_version: ${{ matrix.php }}
+      wp_version: ${{ matrix.wp }}
 
   phplint:
     uses: tarosky/workflows/.github/workflows/phplint.yml@main
+    with:
+      php_versions: '8.0,8.1,8.2'
 
   phpstan:
     name: PHPStan
