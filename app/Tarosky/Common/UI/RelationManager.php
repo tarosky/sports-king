@@ -68,6 +68,7 @@ class RelationManager extends Singleton {
 					$name .= sprintf( '(%s)', $team->post_title );
 				}
 			}
+			$name = apply_filters( 'sk_relation_search_name', $name, $post, $this->input->get( 'type' ) );
 
 			return [
 				'id'   => $post->ID,
