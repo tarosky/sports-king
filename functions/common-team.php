@@ -117,39 +117,3 @@ function sk_get_team_by_id( $id ) {
 		return null;
 	}
 }
-
-/**
- * チームのメインリーグを取得する
- *
- * @param null|int|WP_Post $team
- *
- * @return WP_Term|null
- */
-function sk_get_main_league( $team = null ) {
-	// チームを取得して、なければ終了
-	$team = get_post( $team );
-	if ( ! $team || 'team' !== $team->post_type ) {
-		return null;
-	}
-	// リーグを取得し、空白もしくはエラーだったら終了。
-	$leagues = get_the_terms( $team, 'league' );
-	if ( empty( $leagues )  || is_wp_error( $leagues ) ) {
-		return null;
-	}
-	$leagues = array_values( array_filter( $leagues, function( $term ){
-		// 親投稿が存在している（海外、などの親リーグは除外）
-		return $term->parent > 0;
-	} ) );
-	// フィルターした時点で空なら返す
-	if ( empty( $leagues ) ) {
-		return null;
-	}
-	// 優先度の昇順で並び替える
-	usort( $leagues, function( WP_Term $a, WP_Term $b ) {
-		$a_order = intval( get_term_meta( $a->term_id, 'tag_priority', true ) ?: 11 );
-		$b_order = intval( get_term_meta( $b->term_id, 'tag_priority', true ) ?: 11 );
-		return $a_order - $b_order;
-	} );
-	// 優先順位の一番高いものを返す
-	return $leagues[0] ?? null;
-}

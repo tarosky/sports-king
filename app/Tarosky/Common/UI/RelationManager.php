@@ -67,10 +67,6 @@ class RelationManager extends Singleton {
 				if( $team = sk_players_team($post->ID) ){
 					$name .= sprintf( '(%s)', $team->post_title );
 				}
-			} else if( $this->input->get( 'type' ) == 'team' ) {
-				if( $league = sk_get_main_league($post->ID) ){
-					$name .= sprintf( '(%s)', $league->name );
-				}
 			}
 
 			return [
