@@ -313,24 +313,35 @@ abstract class Model extends Singleton {
 	}
 
 	/**
-	 * 構築時に実行される
+	 * テーブルの更新・作成が必要そうなら実行する
+	 *
+	 * @return void
 	 */
 	public function build_hook() {
 		$query = $this->build_query();
-		if ( $query ) {
-			$installed_version = get_option( "{$this->table}_version", '' );
-			if ( ! $installed_version || version_compare( $this->version, $installed_version, '>' ) ) {
-				if ( ! function_exists( 'dbDelta' ) ) {
-					require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-				}
-				$for_update = dbDelta( $query );
-				update_option( "{$this->table}_version", $this->version );
-				$message = "データベース{$this->table}をバージョン{$this->version}にアップデートしました。";
-				add_action( 'admin_notices', function () use ( $message ) {
-					printf( '<div class="updated"><p>%s</p></div>', esc_html( $message ) );
-				} );
-			}
+		if ( ! $query ) {
+			return;
 		}
+		$installed_version = get_option( "{$this->table}_version", '' );
+		if ( $installed_version && version_compare( $this->version, $installed_version, '<=' ) ) {
+			// すでに十分に新しいバージョンがインストールされているので、何もしない。
+			return;
+		}
+		if ( ! function_exists( 'dbDelta' ) ) {
+			$update_php_path = ABSPATH . 'wp-admin/includes/upgrade.php';
+			if ( ! file_exists( $update_php_path ) ) {
+				// wp-admin/includes/upgrade.phpが存在しない場合は、何もしない。
+				return;
+			}
+			// @phpstan-ignore-next-line requireOnce.fileNotFound
+			require_once $update_php_path;
+		}
+		$for_update = dbDelta( $query );
+		update_option( "{$this->table}_version", $this->version );
+		$message = "データベース{$this->table}をバージョン{$this->version}にアップデートしました。";
+		add_action( 'admin_notices', function () use ( $message ) {
+			printf( '<div class="updated"><p>%s</p></div>', esc_html( $message ) );
+		} );
 	}
 
 	/**
