@@ -35,7 +35,8 @@
     "require": {
         "php": ">=8.0",
         "ext-mbstring": "*",
-        "ext-ftp": "*"
+        "ext-ftp": "*",
+        "phpseclib/phpseclib": "^3.0"
     },
     "require-dev": {
         "wp-coding-standards/wpcs": "^3.0",

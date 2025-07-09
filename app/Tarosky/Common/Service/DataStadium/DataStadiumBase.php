@@ -2,7 +2,6 @@
 
 namespace Tarosky\Common\Service\DataStadium;
 
-
 use Tarosky\Common\Models\Matches;
 use Tarosky\Common\Models\Replacements;
 use Tarosky\Common\Models\TeamMaster;
@@ -17,16 +16,10 @@ use Tarosky\Common\Models\TeamMaster;
  * @property-read Replacements $replacer
  */
 abstract class DataStadiumBase {
-
-	/**
-	 * @var resource FTP接続
-	 */
-	private $conn = null;
-
-	/**
-	 * @var null|\Exception
-	 */
-	private $error = null;
+    /**
+     * @var bool FTP接続かどうか
+     */
+	protected $is_ftp = false;
 
 	/**
 	 * @var array 接続情報 'host', 'user', 'pass'を持つ
@@ -38,29 +31,34 @@ abstract class DataStadiumBase {
 	 */
 	protected $root_dir = '/';
 
-	/**
-	 * コンストラクタでFTP接続を行う
+    /**
+	 * コンストラクタで接続を行う
 	 *
-	 * @param int $port ポート番号。デフォルトは21。
+	 * @param int $port ポート番号。FTPの場合はデフォルトは21。SFTPの場合はデフォルトは22。
 	 * @param int $timeout タイムアウト秒数。デフォルトは15。
 	 */
-	public function __construct( $port = 21, $timeout = 15 ) {
-		try {
-			$this->conn = ftp_connect( $this->credential['host'], $port, $timeout );
-			if ( ! $this->conn ) {
-				throw new \Exception( 'FTP接続を開始できませんでした。', 500 );
-			}
-			$logged_in = ftp_login( $this->conn, $this->credential['user'], $this->credential['pass'] );
-			if ( ! $logged_in ) {
-				throw new \Exception( 'FTPへのログインに失敗しました。', 401 );
-			}
-			// PASVモードにする
-			$this->set_pasv( true );
-			// ルートに移動
-			ftp_chdir( $this->conn, $this->root_dir );
-		} catch ( \Exception $e ) {
-			$this->error = $e;
+	public function __construct( $port = 0, $timeout = 15 ) {
+		if ( get_option( 'sk_use_ftp' ) ) {
+			$this->use_ftp();
 		}
+
+		//  基本ポートはFTP・SFTPで21/22に分ける
+		if ( 0 === $port ) {
+			$port = 22;
+			if ( $this->is_ftp ) {
+				$port = 21;
+			}
+		}
+		$this->adapter->connect( $port, $timeout );
+	}
+
+	/**
+	 * ftpを使用して接続を行う
+	 *
+	 * @param $file
+	 */
+	protected function use_ftp() {
+		$this->is_ftp = true;
 	}
 
 	/**
@@ -71,7 +69,7 @@ abstract class DataStadiumBase {
 	 * @return bool
 	 */
 	protected function has_extension( $file ) {
-		return (bool) preg_match( '#\.[0-9a-zA-Z]+$#', $file );
+		return $this->adapter->has_extension( $file );
 	}
 
 	/**
@@ -83,11 +81,7 @@ abstract class DataStadiumBase {
 	 * @return bool
 	 */
 	public function move( $dir, $absolute = true ) {
-		if ( $absolute ) {
-			ftp_chdir( $this->conn, $this->root_dir );
-		}
-
-		return ftp_chdir( $this->conn, $dir );
+		return $this->adapter->move( $dir, $absolute );
 	}
 
 	/**
@@ -98,17 +92,7 @@ abstract class DataStadiumBase {
 	 * @return array
 	 */
 	public function get_root_list( $recursive = true ) {
-		// ルートに移動
-		if ( ftp_chdir( $this->conn, $this->root_dir ) ) {
-			// ファイルリストを取得
-			if ( $recursive ) {
-				return $this->recursive_list( '.' );
-			} else {
-				return $this->get_list( '.' );
-			}
-		} else {
-			return new \WP_Error( 500, 'ディレクトリに移動できませんでした。' );
-		}
+		return $this->adapter->get_root_list( $recursive );
 	}
 
 	/**
@@ -119,8 +103,7 @@ abstract class DataStadiumBase {
 	 * @return array
 	 */
 	public function get_list( $dir ) {
-		$this->move( $dir );
-		return ftp_nlist( $this->conn, '.' );
+		return $this->adapter->get_list( $dir );
 	}
 
 
@@ -132,24 +115,7 @@ abstract class DataStadiumBase {
 	 * @return array
 	 */
 	protected function recursive_list( $dir ) {
-		$files = array();
-		$list  = ftp_nlist( $this->conn, $dir );
-		if ( $list ) {
-			foreach ( $list as $file ) {
-				if ( $this->has_extension( $file ) ) {
-					$files[] = $file;
-				} else {
-					$child_list = $this->recursive_list( $dir . '/' . $file );
-					if ( $child_list ) {
-						$files[] = $child_list;
-					} else {
-						$files[] = $file;
-					}
-				}
-			}
-		}
-
-		return $files;
+		return $this->adapter->recursive_list( $dir );
 	}
 
 	/**
@@ -229,8 +195,7 @@ abstract class DataStadiumBase {
 	 * @return bool
 	 */
 	public function download( $local, $remote, $mode = FTP_ASCII ) {
-		ftp_chdir( $this->conn, $this->root_dir );
-		return ftp_get( $this->conn, $local, $remote, $mode );
+		return $this->adapter->download( $local, $remote, $mode );
 	}
 
 	/**
@@ -241,20 +206,9 @@ abstract class DataStadiumBase {
 	 * @return int Unixタイムスタンプか、失敗なら-1
 	 */
 	public function get_modified_time( $file ) {
-		ftp_chdir( $this->conn, $this->root_dir );
-		return ftp_mdtm( $this->conn, $file );
+		return $this->adapter->get_modified_time( $file );
 	}
 
-	/**
-	 * PASVモードの設定を行う
-	 *
-	 * @param bool $mode
-	 *
-	 * @return bool
-	 */
-	public function set_pasv( $mode = true ) {
-		return ftp_pasv( $this->conn, $mode );
-	}
 
 	/**
 	 * エラーがあるか確かめる
@@ -262,7 +216,7 @@ abstract class DataStadiumBase {
 	 * @return bool
 	 */
 	public function has_error() {
-		return ! is_null( $this->error );
+		return $this->adapter->has_error();
 	}
 
 	/**
@@ -271,16 +225,14 @@ abstract class DataStadiumBase {
 	 * @return string
 	 */
 	public function error_message() {
-		return $this->has_error() ? $this->error->getMessage() : '';
+		return $this->adapter->error_message();
 	}
 
 	/**
 	 * 接続を終了する
 	 */
 	public function close() {
-		if ( $this->conn ) {
-			ftp_close( $this->conn );
-		}
+		return $this->adapter->close();
 	}
 
 	/**
@@ -300,6 +252,20 @@ abstract class DataStadiumBase {
 				break;
 			case 'replacer':
 				return Replacements::instance();
+				break;
+			case 'adapter':
+				$set_values = [
+					'credential' => $this->credential,
+					'root_dir' => $this->root_dir
+				];
+				if ( $this->is_ftp ) {
+					//  FTP
+					$adapter = DataStadiumAdapterFtp::instance( $set_values );
+				} else {
+					//  SFTP
+					$adapter = DataStadiumAdapterSftp::instance( $set_values );
+				}
+				return $adapter;
 				break;
 			default:
 				return null;
