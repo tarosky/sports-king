@@ -232,7 +232,7 @@ abstract class DataStadiumBase {
 	 * 接続を終了する
 	 */
 	public function close() {
-		return $this->adapter->close();
+		$this->adapter->close();
 	}
 
 	/**
