@@ -55,6 +55,8 @@ class RelationManager extends Singleton {
 
 	/**
 	 * Parse Ajax request.
+	 *
+	 * 関係する選手・チームの検索結果の候補として表示されるデータ
 	 */
 	public function ajax() {
 		wp_send_json( array_map( function ( $post ) {
@@ -321,6 +323,16 @@ class RelationManager extends Singleton {
 								'name' => $p->post_title,
 							];
 						}
+
+						/**
+						 * 関係する選手・チーム（すでに投稿に紐づいているデータ）の表示を書き換えるためのフィルタ
+						 *
+						 * @param array      $json    関係する選手・チームのIDと名前が格納された配列 [ ['id' => $p->ID, 'name' => $p->post_title ] ]
+						 * @param string     $type    投稿タイプ名 player or team
+						 * @param int        $post_id 投稿ID
+						 */
+						$json = apply_filters( 'sk_relations_existing_data', $json, $type, $post->ID );
+
 						printf( 'window.SkRelation.%s = %s;', $type, json_encode( $json ) );
 						?>
 					</script>
