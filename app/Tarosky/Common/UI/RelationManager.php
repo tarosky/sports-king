@@ -457,24 +457,26 @@ class RelationManager extends Singleton {
 				$this->relation->set_relation( $type, $post_id, $object_ids );
 			}
 			// 試合を登録
-			$match_id = $this->input->post('match-rel-id');
-			if( 'del' === $this->input->post('match-should-delete') ){
-				// 削除
-				$this->matches->delete_post($post_id);
-			}elseif( 'new' === $match_id ){
-				// 新規作成前に事前のデータを削除
-				$this->matches->delete_post($post_id);
-				// 新規追加
-				$this->matches->add_rel(
-					$this->input->post('match-abroad'),
-					$this->input->post('match-rel-type'),
-					$post_id,
-					$this->input->post('match-block-id')
-				);
-			}else{
-				// 更新
-				$this->matches->modify($match_id, $this->input->post('match-abroad'), $this->input->post('match-rel-type'), $this->input->post('match-block-id'));
-			}
+            if ( $this->has_form( $post->post_type, 'match') ) {
+                $match_id = $this->input->post('match-rel-id');
+                if ('del' === $this->input->post('match-should-delete')) {
+                    // 削除
+                    $this->matches->delete_post($post_id);
+                } elseif ('new' === $match_id) {
+                    // 新規作成前に事前のデータを削除
+                    $this->matches->delete_post($post_id);
+                    // 新規追加
+                    $this->matches->add_rel(
+                        $this->input->post('match-abroad'),
+                        $this->input->post('match-rel-type'),
+                        $post_id,
+                        $this->input->post('match-block-id')
+                    );
+                } else {
+                    // 更新
+                    $this->matches->modify($match_id, $this->input->post('match-abroad'), $this->input->post('match-rel-type'), $this->input->post('match-block-id'));
+                }
+            }
 			// プライマリーリーグを登録
 			foreach ( [ 'player', 'league', 'team' ] as $key ) {
 				update_post_meta( $post_id, '_primary_' . $key, filter_input( INPUT_POST, 'primary-' . $key ) );
